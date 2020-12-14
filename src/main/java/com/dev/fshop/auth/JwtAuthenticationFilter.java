@@ -1,5 +1,8 @@
 package com.dev.fshop.auth;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,17 +41,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         UserPrincipal user = (UserPrincipal) authResult.getPrincipal();
         List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        String signinKey = SecurityConstant.JWT_SECRET;
+        String signinKey = SecurityConstants.JWT_SECRET;
         String token = Jwts.builder()
                 .signWith(Keys.hmacShaKeyFor(signinKey.getBytes()), SignatureAlgorithm.HS512)
-                .setHeaderParam("type", SecurityConstant.TOKEN_TYPE)
-                .setIssuer(SecurityConstant.TOKEN_ISSUER)
-                .setAudience(SecurityConstant.TOKEN_AUDIENCE)
+                .setHeaderParam("type", SecurityConstants.TOKEN_TYPE)
+                .setIssuer(SecurityConstants.TOKEN_ISSUER)
+                .setAudience(SecurityConstants.TOKEN_AUDIENCE)
                 .setSubject(user.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + 864000000))
                 .claim("role", roles)
                 .compact();
-        String cookieToken = SecurityConstant.TOKEN_HEADER + "=" + token;
+        String cookieToken = SecurityConstants.TOKEN_HEADER + "=" + SecurityConstants.TOKEN_PREFIX + token;
         response.addHeader("Set-Cookie",
                 cookieToken + "; HttpOnly; SameSite=None; Max-Age=864000");
     }
