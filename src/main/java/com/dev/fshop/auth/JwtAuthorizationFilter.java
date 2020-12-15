@@ -58,7 +58,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .parseClaimsJws(token);
                 String username = parseToken.getBody().getSubject();
                 List<SimpleGrantedAuthority> authorities = ((List<?>) parseToken.getBody().get("role")).stream()
-                        .map(authority -> new SimpleGrantedAuthority((String) authority)).collect(Collectors.toList());
+                        .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority)).collect(Collectors.toList());
                 if (!username.isEmpty()) {
                     return new UsernamePasswordAuthenticationToken(username, null, authorities);
                 }
