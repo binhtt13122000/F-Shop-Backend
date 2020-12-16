@@ -18,7 +18,7 @@ public interface OrderDetailReposity extends JpaRepository<OrderDetailEntity, In
     public boolean deleteOrderByCustomer(String userId, List<OrderDetailEntity> orderDetail);
 
     @Query("Select v.orderItemId, v.orderItemQuan, v.orderItemPrice  from OrderDetailEntity u inner join OrderItemEntity v on u.orderId = v.orderId where u.orderId = :orderId")
-    public List<OrderItemEntity> findOrder(String orderId);
+    public List<OrderItemEntity> findOrder(Integer orderId);
 
     @Query("DELETE from OrderItemEntity u where u.orderItemId = :orderItemId ")
     public boolean deleteItemInOrder(int orderItemId);

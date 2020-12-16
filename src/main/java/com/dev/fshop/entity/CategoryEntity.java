@@ -3,10 +3,8 @@ package com.dev.fshop.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -22,5 +20,10 @@ public class CategoryEntity {
     private int proTypeId;
     @Column(name = "proTypeName")
     private String proTypeName;
+
+    @OneToMany(mappedBy = "PromotionEntity", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<PromotionEntity> promotionEntities;
 
 }

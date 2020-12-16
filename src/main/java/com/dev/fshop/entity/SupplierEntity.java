@@ -3,6 +3,7 @@ package com.dev.fshop.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -18,4 +19,9 @@ public class SupplierEntity {
     private int supplierId;
     @Column(name = "supplierName")
     private String supplierName;
+
+    @OneToMany(mappedBy = "ProductEntity", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<ProductEntity> productEntities;
 }

@@ -3,10 +3,8 @@ package com.dev.fshop.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -38,4 +36,20 @@ public class OrderDetailEntity {
     private float orderTotal;
     @Column(name = "status")
     private boolean status;
+
+    @OneToMany(mappedBy = "OrderItemEntity", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<OrderItemEntity> orderItemEntities;
+
+    @OneToMany(mappedBy = "ReviewEntity", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<ReviewEntity> reviewEntities;
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private CustomerEntity customerEntity;
 }

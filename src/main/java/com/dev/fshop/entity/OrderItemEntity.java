@@ -32,4 +32,16 @@ public class OrderItemEntity {
     private Date createAt;
     @Column(name = "contend")
     private String contend;
+
+    @ManyToOne
+    @JoinColumn(name = "proId")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private ProductEntity productEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "orderId")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private OrderDetailEntity orderDetailEntity;
 }

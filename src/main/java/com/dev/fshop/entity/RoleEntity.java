@@ -3,10 +3,8 @@ package com.dev.fshop.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Collection;
 
 @Data
 @Entity
@@ -23,4 +21,9 @@ public class RoleEntity {
     private int roleId;
     @Column(name = "roleName")
     private String roleName;
+
+    @OneToMany(mappedBy = "CustomerEntity", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<CustomerEntity> customerEntities;
 }

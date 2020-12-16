@@ -27,4 +27,16 @@ public class CommentEntity {
     private String phoneNumber;
     @Column(name = "content")
     private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "userId") // thông qua khóa ngoại address_id
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private CustomerEntity customerEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "proId") // thông qua khóa ngoại address_id
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private ProductEntity productEntity;
 }

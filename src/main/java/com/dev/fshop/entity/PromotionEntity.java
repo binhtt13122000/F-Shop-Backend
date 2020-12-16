@@ -3,10 +3,7 @@ package com.dev.fshop.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Setter
@@ -29,4 +26,10 @@ public class PromotionEntity {
     private float promo;
     @Column(name = "status")
     private boolean status;
+
+    @ManyToOne
+    @JoinColumn(name = "userId") // thông qua khóa ngoại address_id
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private CustomerEntity customerEntity;
 }

@@ -25,4 +25,16 @@ public class ReviewEntity {
     private int star;
     @Column(name = "content")
     private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "orderId")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private OrderDetailEntity orderDetailEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "proId")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private ProductEntity productEntity;
 }
