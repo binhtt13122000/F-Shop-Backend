@@ -23,17 +23,12 @@ public class UserController {
 
     @PostMapping(path = "/users")
     public CustomerEntity registerAccount(@RequestBody CustomerEntity customerEntity) {
-        CustomerEntity checkAccountExisted = userServiceInterface.getUserById(customerEntity.getUserId());
-//        if(checkAccountExisted != null) {
-//            return
-//        }
         return userServiceInterface.registerAccountUser(customerEntity);
     }
 
     @GetMapping(path = "/users")
     public CustomerEntity getUserByUserId(@RequestParam(name = "userId")String userId) {
-        CustomerEntity checkAccountExisted = userServiceInterface.getUserById(userId);
-        return  checkAccountExisted;
+        return userServiceInterface.getUserById(userId);
     }
 
     @GetMapping(path = "/users")
@@ -49,28 +44,16 @@ public class UserController {
     @PatchMapping(path = "/users")
     public CustomerEntity changePassword(@RequestParam(name = "userId")String userId, @RequestParam(name = "newPass") String newPass,
                                          @RequestParam(name = "oldPass") String oldPass) {
-     //   CustomerEntity checkAccountExisted = userServiceInterface.getUserById(userId);
-//        if(checkAccountExisted != null) {
-//            return
-//        }
         return userServiceInterface.changePassword(userId,newPass,oldPass);
     }
 
     @PutMapping(path = "/users/{userId}")
     public CustomerEntity updateProfileUser(@PathVariable String userId, @RequestBody CustomerEntity customerEntity) {
- //       CustomerEntity checkAccountExisted = userServiceInterface.getUserById(customerEntity.getUserId());
-//        if(checkAccountExisted != null) {
-//            return
-//        }
         return userServiceInterface.updateProfileUser(userId, customerEntity);
     }
 
     @DeleteMapping(path = "/users/{userId}")
     public boolean removeAccountUserExisted(@PathVariable String userId) {
-        //CustomerEntity checkAccountExisted = userServiceInterface.getUserById(customerEntity.getUserId());
-        ////        if(checkAccountExisted != null) {
-        ////            return
-        ////        }
         return userServiceInterface.removeAccountUser(userId);
     }
 
