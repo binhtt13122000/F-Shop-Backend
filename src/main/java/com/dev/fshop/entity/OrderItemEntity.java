@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "OrderItem")
-public class OrderItem {
+public class OrderItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "orderItemId")
