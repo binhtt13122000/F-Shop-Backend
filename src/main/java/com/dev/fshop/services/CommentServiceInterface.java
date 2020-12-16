@@ -14,7 +14,7 @@ public interface CommentServiceInterface {
     //POST methods
     public CommentEntity createNewComment(CommentEntity commentEntity);
 
-    //Put methods
+    //Patch methods
     public CommentEntity updateCommentContent(String content, Integer commentId);
 
     //DELETE methods
