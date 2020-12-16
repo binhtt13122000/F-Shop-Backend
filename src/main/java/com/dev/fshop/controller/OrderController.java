@@ -15,7 +15,7 @@ public class OrderController {
     private OrderServiceInterface orderServiceInterface;
 
     @GetMapping(path = "/orders/{orderId}")
-    public List<OrderItemEntity> findListOrderItemByOrderId(@PathVariable String orderId) {
+    public List<OrderItemEntity> findListOrderItemByOrderId(@PathVariable Integer orderId) {
         return orderServiceInterface.findListOrderItemByOrderId(orderId);
     }
 

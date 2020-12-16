@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderServiceInterface {
     //Get Methods
-    public List<OrderItemEntity> findListOrderItemByOrderId(String orderId);
+    public List<OrderItemEntity> findListOrderItemByOrderId(Integer orderId);
 
     //Post Methods
     public OrderDetailEntity createNewOrder(OrderDetailEntity orderDetailEntity);

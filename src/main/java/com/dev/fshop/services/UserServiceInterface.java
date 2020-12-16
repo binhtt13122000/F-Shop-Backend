@@ -19,6 +19,7 @@ public interface UserServiceInterface {
     public CustomerEntity changePassword(String userId, String newPassword, String oldPassword);
     public CustomerEntity updateProfileUser(String userId, CustomerEntity customerEntity);
 
+
     //Delete Methods
     public boolean removeAccountUser(String userId);
 
