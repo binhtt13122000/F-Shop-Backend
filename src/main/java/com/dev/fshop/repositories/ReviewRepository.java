@@ -7,10 +7,11 @@ import com.dev.fshop.entity.ReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
-
+@Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 
     @Query("Select v.reviewId, v.content, v.proId, v.content, v.star  from OrderDetailEntity u inner join ReviewEntity v on u.orderId = v.orderId where u.name = :name")

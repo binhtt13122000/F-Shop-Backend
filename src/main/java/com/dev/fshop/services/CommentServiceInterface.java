@@ -7,7 +7,7 @@ import java.util.List;
 public interface CommentServiceInterface {
     //Get methods
     public List<CommentEntity> findCommentByUsername(String name);
-    public List<CommentEntity> findCommentByUserId(String userId);
+   // public List<CommentEntity> findCommentByUserId(String userId);
     public List<CommentEntity> getAllComments();
     public CommentEntity findCommentByCommentId(Integer commentId);
 

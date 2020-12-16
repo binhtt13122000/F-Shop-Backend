@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserServiceInterface{
 //        if(checkExisted == null) {
 //
 //        }
-        return userRepository.insertWithEntityManager(customerEntity);
+        return userRepository.insertCustomerWithEntityManager(customerEntity);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.dev.fshop.controller;
 import com.dev.fshop.entity.CommentEntity;
 import com.dev.fshop.services.CommentServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,33 +16,33 @@ public class CommentController {
     private CommentServiceInterface commentServiceInterface;
 
     @GetMapping(path = "/comments")
-    public List<CommentEntity> getAllComments() {
-        return commentServiceInterface.getAllComments();
+    public ResponseEntity<List<CommentEntity>> getAllComments() {
+        return ResponseEntity.ok().body(commentServiceInterface.getAllComments());
     }
 
     @GetMapping(path = "/comments/{userId}")
-    public List<CommentEntity> findCommentsByUserId(@PathVariable String userId) {
-        return commentServiceInterface.findCommentByUserId(userId);
+    public ResponseEntity<List<CommentEntity>> findCommentsByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok().body(commentServiceInterface.findCommentByUserId(userId));
     }
 
     @GetMapping(path = "/comments/{userName}")
-    public List<CommentEntity> findCommentsByUserName(@PathVariable String userName) {
-        return commentServiceInterface.findCommentByUsername(userName);
+    public ResponseEntity<List<CommentEntity>> findCommentsByUserName(@PathVariable String userName) {
+        return ResponseEntity.ok().body(commentServiceInterface.findCommentByUsername(userName));
     }
 
     @GetMapping(path = "/comments/{commentId}")
-    public CommentEntity findCommentByCommentId(@PathVariable Integer commentId) {
-        return commentServiceInterface.findCommentByCommentId(commentId);
+    public ResponseEntity<CommentEntity> findCommentByCommentId(@PathVariable Integer commentId) {
+        return ResponseEntity.ok().body(commentServiceInterface.findCommentByCommentId(commentId));
     }
 
     @PostMapping(path = "/comments")
-    public CommentEntity createNewComment(@RequestBody CommentEntity commentEntity) {
-        return commentServiceInterface.createNewComment(commentEntity);
+    public ResponseEntity<CommentEntity> createNewComment(@RequestBody CommentEntity commentEntity) {
+        return ResponseEntity.ok().body(commentServiceInterface.createNewComment(commentEntity));
     }
 
     @PatchMapping(path = "/comments/{commentId}")
-    public CommentEntity updateCommentContent(@PathVariable Integer commentId, @RequestBody CommentEntity commentEntity) {
-        return commentServiceInterface.updateCommentContent(commentEntity.getContent(), commentId);
+    public ResponseEntity<CommentEntity> updateCommentContent(@PathVariable Integer commentId, @RequestBody CommentEntity commentEntity) {
+        return ResponseEntity.ok().body(commentServiceInterface.updateCommentContent(commentEntity.getContent(), commentId));
     }
 
     @DeleteMapping(path = "/comments/{commentId}")

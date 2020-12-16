@@ -3,6 +3,7 @@ package com.dev.fshop.controller;
 import com.dev.fshop.entity.ProductEntity;
 import com.dev.fshop.services.ProductServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -15,48 +16,48 @@ public class ProductController {
     private ProductServiceInterface productServiceInterface;
 
     @GetMapping(path = "/products")
-    public List<ProductEntity> getAllProducts() {
-        return productServiceInterface.getAllProducts();
+    public ResponseEntity<List<ProductEntity>> getAllProducts() {
+        return ResponseEntity.ok().body(productServiceInterface.getAllProducts());
     }
 
     @GetMapping(path = "/products/{proName}")
-    public List<ProductEntity> findProductByName(@PathVariable String proName) {
-        return productServiceInterface.findProductsByName(proName);
+    public ResponseEntity<List<ProductEntity>> findProductByName(@PathVariable String proName) {
+        return ResponseEntity.ok().body(productServiceInterface.findProductsByName(proName));
     }
 
     @GetMapping(path = "/products/{proId}")
-    public ProductEntity findProductById(@PathVariable Integer proId) {
-        return productServiceInterface.findProductById(proId);
+    public ResponseEntity<ProductEntity> findProductById(@PathVariable Integer proId) {
+        return ResponseEntity.ok().body(productServiceInterface.findProductById(proId));
     }
 
     @GetMapping(path = "/products")
-    public List<ProductEntity> findProductByPrice(@RequestParam(name = "priceFrom") float priceFrom, @RequestParam(name = "priceTo") float priceTo) {
-        return productServiceInterface.findProductByPrice(priceFrom, priceTo);
+    public ResponseEntity<List<ProductEntity>> findProductByPrice(@RequestParam(name = "priceFrom") float priceFrom, @RequestParam(name = "priceTo") float priceTo) {
+        return ResponseEntity.ok().body(productServiceInterface.findProductByPrice(priceFrom, priceTo));
     }
 
     @GetMapping(path = "/products")
-    public List<ProductEntity> findProductByType(@RequestParam(name = "type") String type) {
-        return productServiceInterface.findProductByType(type);
+    public ResponseEntity<List<ProductEntity>> findProductByType(@RequestParam(name = "type") String type) {
+        return ResponseEntity.ok().body(productServiceInterface.findProductByType(type));
     }
 
     @GetMapping(path = "/products")
-    public List<ProductEntity> getNewProduct(@RequestParam(name = "createAt")Date createAt) {
-        return productServiceInterface.getNewProduct(createAt);
+    public ResponseEntity<List<ProductEntity>> getNewProduct(@RequestParam(name = "createAt")Date createAt) {
+        return ResponseEntity.ok().body(productServiceInterface.getNewProduct(createAt));
     }
 
     @GetMapping(path = "/products")
-    public List<ProductEntity> findGoodProducts(@RequestParam(name = "star")Integer star) {
-        return productServiceInterface.findGoodProduct(star);
+    public ResponseEntity<List<ProductEntity>> findGoodProducts(@RequestParam(name = "star")Integer star) {
+        return ResponseEntity.ok().body(productServiceInterface.findGoodProduct(star));
     }
 
     @PostMapping(path = "/products")
-    public ProductEntity createNewProduct(@RequestBody ProductEntity productEntity) {
-        return productServiceInterface.createNewProduct(productEntity);
+    public ResponseEntity<ProductEntity> createNewProduct(@RequestBody ProductEntity productEntity) {
+        return ResponseEntity.ok().body(productServiceInterface.createNewProduct(productEntity));
     }
 
     @PutMapping(path = "/products/{proId}")
-    public ProductEntity updateProductExisted(@PathVariable Integer proId, @RequestBody ProductEntity productEntity) {
-        return productServiceInterface.updateProductExisted(proId, productEntity);
+    public ResponseEntity<ProductEntity> updateProductExisted(@PathVariable Integer proId, @RequestBody ProductEntity productEntity) {
+        return ResponseEntity.ok().body(productServiceInterface.updateProductExisted(proId, productEntity));
     }
 
     @DeleteMapping(path = "/products/{proId}")

@@ -3,6 +3,7 @@ package com.dev.fshop.controller;
 import com.dev.fshop.entity.PromotionEntity;
 import com.dev.fshop.services.PromotionServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,23 +15,23 @@ public class PromotionController {
     private PromotionServiceInterface promotionServiceInterface;
 
     @GetMapping(path = "/promotions")
-    public List<PromotionEntity> getAllPromotions() {
-        return promotionServiceInterface.getAllPromotions();
+    public ResponseEntity<List<PromotionEntity>> getAllPromotions() {
+        return ResponseEntity.ok().body(promotionServiceInterface.getAllPromotions());
     }
 
     @GetMapping(path = "/promotions/{promotionId}")
-    public  PromotionEntity findPromotionById(@PathVariable Integer promotionId) {
-        return promotionServiceInterface.findPromotionByPromotionId(promotionId);
+    public  ResponseEntity<PromotionEntity> findPromotionById(@PathVariable Integer promotionId) {
+        return ResponseEntity.ok().body(promotionServiceInterface.findPromotionByPromotionId(promotionId));
     }
 
     @GetMapping(path = "/promotions/{userId}")
-    public List<PromotionEntity> getAllPromotionsByUserId(@PathVariable String userId) {
-        return  promotionServiceInterface.getAllPromotionsByUserId(userId);
+    public ResponseEntity<List<PromotionEntity>> getAllPromotionsByUserId(@PathVariable String userId) {
+        return  ResponseEntity.ok().body(promotionServiceInterface.getAllPromotionsByUserId(userId));
     }
 
     @PostMapping(path = "/promotions")
-    public PromotionEntity createNewPromotion(@RequestBody PromotionEntity promotionEntity) {
-        return  promotionServiceInterface.createNewPromotion(promotionEntity);
+    public ResponseEntity<PromotionEntity> createNewPromotion(@RequestBody PromotionEntity promotionEntity) {
+        return  ResponseEntity.ok().body(promotionServiceInterface.createNewPromotion(promotionEntity));
     }
 
     @DeleteMapping(path = "/promotions/{promotionId}")

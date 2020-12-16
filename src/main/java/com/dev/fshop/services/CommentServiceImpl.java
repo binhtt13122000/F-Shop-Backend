@@ -15,10 +15,6 @@ public class CommentServiceImpl implements CommentServiceInterface{
         return commentRepository.findCommentByName(name);
     }
 
-    @Override
-    public List<CommentEntity> findCommentByUserId(String userId) {
-        return commentRepository.findCommentById(userId);
-    }
 
     @Override
     public List<CommentEntity> getAllComments() {

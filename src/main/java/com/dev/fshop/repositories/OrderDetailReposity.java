@@ -1,35 +1,33 @@
 package com.dev.fshop.repositories;
 
-import com.dev.fshop.entity.CustomerEntity;
+
 import com.dev.fshop.entity.OrderDetailEntity;
+import com.dev.fshop.entity.OrderItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<CustomerEntity, Integer> {
+public interface OrderDetailReposity extends JpaRepository<OrderDetailEntity, Integer> {
 
-    @Query("Select u from CustomerEntity u where u.userId = :userId")
-    public CustomerEntity checkUserExist(String userId);
+    @Query
+    public boolean deleteOrderByCustomer(String userId, List<OrderDetailEntity> orderDetail);
 
-    @Query("Select u from CustomerEntity u where u.name LIKE :name")
-    public List<CustomerEntity> searchStudentByName(String name);
+    @Query("Select v.orderItemId, v.orderItemQuan, v.orderItemPrice  from OrderDetailEntity u inner join OrderItemEntity v on u.orderId = v.orderId where u.orderId = :orderId")
+    public List<OrderItemEntity> findOrder(Integer orderId);
 
-    @Query("Select u from CustomerEntity u where u.userId = :userId and u.password = :password")
-    public CustomerEntity checkLoginById(Integer userId, String password);
+    @Query("delete from OrderItemEntity u where u.orderItemId = :orderItemId ")
+    public boolean deleteItemInOrder(int orderItemId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE CustomerEntity u set u.status = 0 where u.userId = :userId")
-    public CustomerEntity deleteAccount(Integer userId);
+    @Query("update OrderItemEntity u set u.orderItemPrice = :quantity where u.orderItemId = :orderItemId ")
+    public OrderDetailEntity updateQuanProduct(Integer quanity, Integer orderItemId);
 
     @Transactional
-    public CustomerEntity insertWithEntityManager(CustomerEntity customerEntity);
+    public OrderDetailEntity insertOrderWithEntityManager(OrderDetailEntity orderDetailEntity);
 
-    public Custome
+}

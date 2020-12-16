@@ -4,6 +4,7 @@ import com.dev.fshop.entity.OrderDetailEntity;
 import com.dev.fshop.entity.OrderItemEntity;
 import com.dev.fshop.services.OrderServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,18 +16,18 @@ public class OrderController {
     private OrderServiceInterface orderServiceInterface;
 
     @GetMapping(path = "/orders/{orderId}")
-    public List<OrderItemEntity> findListOrderItemByOrderId(@PathVariable Integer orderId) {
-        return orderServiceInterface.findListOrderItemByOrderId(orderId);
+    public ResponseEntity<List<OrderItemEntity>> findListOrderItemByOrderId(@PathVariable Integer orderId) {
+        return ResponseEntity.ok().body(orderServiceInterface.findListOrderItemByOrderId(orderId));
     }
 
     @PostMapping(path = "/orders")
-    public OrderDetailEntity createNewOrder(@RequestBody OrderDetailEntity orderDetailEntity) {
-        return orderServiceInterface.createNewOrder(orderDetailEntity);
+    public ResponseEntity<OrderDetailEntity> createNewOrder(@RequestBody OrderDetailEntity orderDetailEntity) {
+        return ResponseEntity.ok().body(orderServiceInterface.createNewOrder(orderDetailEntity));
     }
 
     @PatchMapping(path = "/orders/orderitems/{orderItemId}/products/{quantity}")
-    public OrderDetailEntity updateQuantityProduct(@PathVariable Integer quantity, @PathVariable Integer orderItemId) {
-        return orderServiceInterface.updateQuantityProduct(quantity, orderItemId);
+    public ResponseEntity<OrderDetailEntity> updateQuantityProduct(@PathVariable Integer quantity, @PathVariable Integer orderItemId) {
+        return ResponseEntity.ok().body(orderServiceInterface.updateQuantityProduct(quantity, orderItemId));
     }
 
     @DeleteMapping(path = "/orders")
