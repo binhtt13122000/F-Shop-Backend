@@ -17,7 +17,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     public List<ReviewEntity> findReviewByName(String name);
 
     @Query("Select v.reviewId, v.content, v.proId, u.name  from OrderDetailEntity u inner join ReviewEntity v on u.orderId = v.orderId where v.reviewId = :reviewId")
-    public ReviewEntity findReviewById(String reviewId);
+    public ReviewEntity findReviewById(Integer reviewId);
 
     @Query("DELETE from ReviewEntity u where u.reviewId = :reviewId ")
     public boolean deleteReview( Integer reviewId);

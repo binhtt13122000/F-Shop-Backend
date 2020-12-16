@@ -20,11 +20,11 @@ public interface OrderDetailReposity extends JpaRepository<OrderDetailEntity, In
     @Query("Select v.orderItemId, v.orderItemQuan, v.orderItemPrice  from OrderDetailEntity u inner join OrderItemEntity v on u.orderId = v.orderId where u.orderId = :orderId")
     public List<OrderItemEntity> findOrder(Integer orderId);
 
-    @Query("DELETE from OrderItemEntity u where u.orderItemId = :orderItemId ")
+    @Query("delete from OrderItemEntity u where u.orderItemId = :orderItemId ")
     public boolean deleteItemInOrder(int orderItemId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE OrderItemEntity u set u.orderItemPrice = :quantity where u.orderItemId = :orderItemId ")
+    @Query("update OrderItemEntity u set u.orderItemPrice = :quantity where u.orderItemId = :orderItemId ")
     public OrderDetailEntity updateQuanProduct(Integer quanity, Integer orderItemId);
 
     @Transactional

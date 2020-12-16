@@ -17,13 +17,13 @@ public interface InvoicesRepository extends JpaRepository<InvoicesEntity, Intege
     @Query(value = "SELECT SUM(total_days) FROM MyEntity", nativeQuery = true)
     public float viewRevenue();
 
-    @Query("DELETE from InvoicesEntity u where u.invoiceId = :invoiceId ")
+    @Query("delete from InvoicesEntity u where u.invoiceId = :invoiceId ")
     public boolean deleteInvoices(int invoiceId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE InvoicesEntity u set u.paymentAmount = :paymentAmount, u.invoiceDate = :invoiceDate, u.paymentDate = :paymentDate, u.status = :status where u.invoiceId = :invoiceId ")
+    @Query("update InvoicesEntity u set u.paymentAmount = :paymentAmount, u.invoiceDate = :invoiceDate, u.paymentDate = :paymentDate, u.status = :status where u.invoiceId = :invoiceId ")
     public InvoicesEntity updateInvoices(Integer invoiceId,Float paymentAmount, Date invoiceDate, Date paymentDate, boolean status);
 
     @Transactional
-    public InvoicesEntity insertReviewWithEntityManager(InvoicesEntity invoicesEntity);
+    public InvoicesEntity insertInvoicesWithEntityManager(InvoicesEntity invoicesEntity);
 }

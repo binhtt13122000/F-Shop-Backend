@@ -19,11 +19,11 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
     @Query("Select v.commentId, v.content, v.proId  from CustomerEntity u inner join CommentEntity v on u.userId = v.userId ")
     public List<CommentEntity> findCommentById(String userId);
 
-    @Query("DELETE from CommentEntity u where u.commentId = :commentId ")
+    @Query("delete from CommentEntity u where u.commentId = :commentId ")
     public boolean deleteComment( Integer commentId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE CommentEntity u set u.content = :content where u.commentId = :commentId ")
+    @Query("update CommentEntity u set u.content = :content where u.commentId = :commentId ")
     public CommentEntity updateCommentContent(String content, Integer commentId);
 
     @Transactional

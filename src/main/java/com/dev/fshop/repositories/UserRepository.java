@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<CustomerEntity, Integer> {
+public interface UserRepository extends JpaRepository<CustomerEntity, String> {
 
     @Query("Select u from CustomerEntity u where u.userId = :userId")
     public CustomerEntity checkUserExist(String userId);
@@ -23,14 +23,23 @@ public interface UserRepository extends JpaRepository<CustomerEntity, Integer> {
     public List<CustomerEntity> searchStudentByName(String name);
 
     @Query("Select u from CustomerEntity u where u.userId = :userId and u.password = :password")
-    public CustomerEntity checkLoginById(Integer userId, String password);
+    public CustomerEntity checkLoginById(String userId, String password);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE CustomerEntity u set u.status = 0 where u.userId = :userId")
-    public CustomerEntity deleteAccount(Integer userId);
+    public CustomerEntity deleteAccount(String userId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE CustomerEntity u set u.password = :password where u.userId = :userId")
+    public CustomerEntity updatePassword(String userId, String password);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE CustomerEntity u set u.name = :name, u.birthDate = :birthDate, u.phoneNumber = :phoneNumber, u.gender = :gender, u.address = :address, u.country = :country, u.avatar = :avatar where u.userId = :userId")
+    public CustomerEntity updateProfile(String userId, String name,Date birthDate, String phoneNumber, boolean gender, String address, String country,
+    String avatar);
 
     @Transactional
-    public CustomerEntity insertWithEntityManager(CustomerEntity customerEntity);
+    public CustomerEntity insertCustomerWithEntityManager(CustomerEntity customerEntity);
 
     public CustomerEntity findByCustomerName(String name);
 }
