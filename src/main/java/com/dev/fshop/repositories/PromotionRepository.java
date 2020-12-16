@@ -13,10 +13,9 @@ public interface PromotionRepository extends JpaRepository<PromotionEntity, Inte
     public PromotionEntity findPromotionByName(String promotionName);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE PromotionEntity u set u.promotionName = :namePromo, u.promo = :promo, u.status = :status where u.promotionID = :promotionId")
+    @Query("update PromotionEntity u set u.promotionName = :namePromo, u.promo = :promo, u.status = :status where u.promotionID = :promotionId")
     public PromotionEntity deleteAccount(Integer promotionId, String namePromo, float promo, boolean status );
 
-    @Modifying(clearAutomatically = true)
     @Query("delete  from PromotionEntity u where u.promotionID = :promotionId")
     public PromotionEntity deletePromotion(Integer promotionId);
 

@@ -25,7 +25,6 @@ public interface UserRepository extends JpaRepository<CustomerEntity, Integer> {
     @Query("Select u from CustomerEntity u where u.userId = :userId and u.password = :password")
     public CustomerEntity checkLoginById(Integer userId, String password);
 
-
     @Modifying(clearAutomatically = true)
     @Query("UPDATE CustomerEntity u set u.status = 0 where u.userId = :userId")
     public CustomerEntity deleteAccount(Integer userId);
@@ -33,5 +32,5 @@ public interface UserRepository extends JpaRepository<CustomerEntity, Integer> {
     @Transactional
     public CustomerEntity insertWithEntityManager(CustomerEntity customerEntity);
 
-    public CustomerEntity findByName(String name);
+    public CustomerEntity findByCustomerName(String name);
 }

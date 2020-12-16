@@ -14,14 +14,14 @@ import java.util.List;
 @Repository
 public interface OrderDetailReposity extends JpaRepository<OrderDetailEntity, Integer> {
 
+    @Query
     public boolean deleteOrderByCustomer(String userId, List<OrderDetailEntity> orderDetail);
 
-    @Query("Select v.orderItemId from OrderDetailEntity u inner join OrderItemEntity v on u.orderId = v.orderId where v.orderItemId > :orderItemId")
-    public OrderItemEntity findOrder(String orderId, String orderItemId);
+    @Query("Select v.orderItemId, v.orderItemQuan, v.orderItemPrice  from OrderDetailEntity u inner join OrderItemEntity v on u.orderId = v.orderId where u.orderId = :orderId")
+    public List<OrderItemEntity> findOrder(String orderId);
 
     @Query("DELETE from OrderItemEntity u where u.orderItemId = :orderItemId ")
-    // Tìm kiếm bằng findOrder nếu có thì deleteItemInorder đó
-    public boolean deleteItemInOrder(int orderId, int orderItemId);
+    public boolean deleteItemInOrder(int orderItemId);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE OrderItemEntity u set u.orderItemPrice = :quantity where u.orderItemId = :orderItemId ")

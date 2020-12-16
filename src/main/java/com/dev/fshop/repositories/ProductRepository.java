@@ -37,6 +37,10 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     @Modifying(clearAutomatically = true)
     @Query("update ProductEntity u set  u.proName = :name, u.proPrice = :price, u.proQuantity = :quanity, u.proDescription = :description, u.discount = :discount where u.proId = :id ")
     public ProductEntity updateProduct(Integer id, String name, float price, Integer quantity, String description, float discount);
+
+    @Query("delete from ProductEntity u where u.proId = :proId ")
+    public boolean deleteItemInOrder(int proId);
+
     @Transactional
     public ProductEntity insertProductWithEntityManager(ProductEntity productEntity);
 }
