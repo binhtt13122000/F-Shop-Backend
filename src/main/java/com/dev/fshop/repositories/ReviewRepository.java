@@ -11,7 +11,7 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, String> {
 
 
-    public boolean deleteReview(String reviewId);
+    public boolean deleteReview( String reviewId);
     public Review updateReviewContentStar(String content, Integer star, String reviewId);
     public List<Review> findReviewByProductId(String proId);
 

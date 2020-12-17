@@ -23,7 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "OrderDetail")
+@Table(name = "OrderItem")
 public class OrderDetail {
     @Id
     @Column(name = "orderItemId", nullable = false, unique = true)

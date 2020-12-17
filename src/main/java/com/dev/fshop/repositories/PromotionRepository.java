@@ -11,4 +11,5 @@ public interface PromotionRepository extends JpaRepository<PromotionEntity, Stri
 
     public PromotionEntity findPromotionById(String promotionId);
     public List<PromotionEntity> getAllPromotionByUserId(String userId);
+    public PromotionEntity updateStatusPromotion(boolean status);
 }

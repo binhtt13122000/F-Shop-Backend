@@ -11,10 +11,11 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface OrderDetailReposity extends JpaRepository<OrdersEntity, String> {
+public interface OrdersReposity extends JpaRepository<OrdersEntity, String> {
 
     public List<OrdersEntity> findListOrderItemByUserId(String userId);
     public OrdersEntity updateStatusOrder(String orderId, boolean status);
+    @Query()
     public List<OrderDetail> buyProductByUser(String proId, String quantity, String userId);
     @Query("Select SUM(u.orderTotal) from OrdersEntity u")
     public float viewRevenue();

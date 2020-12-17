@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, String> {
 
+    public List<Comment> findCommentByName(String name);
     public boolean deleteComment( String commentId);
     public Comment updateCommentContent(Comment comment, String commentId);
     public List<Comment> findCommentByProduct(String proId);
