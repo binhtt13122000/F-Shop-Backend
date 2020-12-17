@@ -1,6 +1,8 @@
-package com.dev.fshop.services;
+package com.dev.fshop.services.impl;
 
 import com.dev.fshop.entity.ProductEntity;
+import com.dev.fshop.repositories.ProductRepository;
+import com.dev.fshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,42 +10,42 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class ProductServiceImpl implements ProductServiceInterface{
+public class ProductServiceImpl implements ProductService {
     @Autowired
-    private ProductServiceInterface productServiceInterface;
+    private ProductRepository productRepository;
     @Override
     public List<ProductEntity> getAllProducts() {
-        return productServiceInterface.getAllProducts();
+        return productRepository.findAll();
     }
 
     @Override
     public List<ProductEntity> findProductsByName(String productName) {
-        return productServiceInterface.findProductsByName(productName);
+        return productRepository.searchProductByName(productName);
     }
 
     @Override
-    public ProductEntity findProductById(Integer proId) {
-        return productServiceInterface.findProductById(proId);
+    public ProductEntity findProductById(String proId) {
+        return productRepository.findById(proId).orElse(null);
     }
 
     @Override
     public List<ProductEntity> findProductByPrice(float priceFrom, float priceTo) {
-        return productServiceInterface.findProductByPrice(priceFrom, priceTo);
+        return productRepository.searchProductByPrice(priceFrom,priceTo);
     }
 
     @Override
     public List<ProductEntity> findProductByType(String type) {
-        return productServiceInterface.findProductByType(type);
+        return productRepository.searchProductByType(type);
     }
 
     @Override
     public List<ProductEntity> getNewProduct(Date date) {
-        return productServiceInterface.getNewProduct(date);
+        return productRepository.findNewProduct(date);
     }
 
     @Override
     public List<ProductEntity> findGoodProduct(Integer star) {
-        return productServiceInterface.findGoodProduct(star);
+        return productRepository.findGoodProduct(star);
     }
 
     @Override
@@ -52,26 +54,26 @@ public class ProductServiceImpl implements ProductServiceInterface{
 //        if(checkExisted == null) {
 //
 //        }
-        return productServiceInterface.createNewProduct(productEntity);
+        return productRepository.insertProductWithEntityManager(productEntity);
     }
 
     @Override
-    public ProductEntity updateProductExisted(Integer proId, ProductEntity productEntity) {
+    public ProductEntity updateProductExisted(String proId, ProductEntity productEntity) {
 //        ProductEntity checkExisted = productServiceInterface.findProductById(productEntity.getProId());
 //        if(checkExisted == null) {
 //
 //        }
-        return productServiceInterface.updateProductExisted(proId, productEntity);
+        return productRepository.updateProduct(productEntity,proId);
     }
 
     @Override
-    public boolean deleteProductExisted(Integer proId) {
-        ProductEntity checkExisted = productServiceInterface.findProductById(proId);
+    public boolean deleteProductExisted(String proId) {
+        ProductEntity checkExisted = productRepository.findById(proId).orElse(null);
         if(checkExisted == null) {
             return false;
         }
         else {
-            productServiceInterface.deleteProductExisted(proId);
+            productRepository.deleteProductInOrder(proId);
             return true;
         }
     }

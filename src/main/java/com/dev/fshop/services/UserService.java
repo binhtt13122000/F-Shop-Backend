@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface UserServiceInterface {
+public interface UserService {
     //Get Methods
     public CustomerEntity loginByUserIdAndPass(String userId, String password);
     public List<CustomerEntity> searchCustomersByName(String userName);

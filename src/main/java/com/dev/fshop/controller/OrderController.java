@@ -1,42 +1,41 @@
 package com.dev.fshop.controller;
 
-import com.dev.fshop.entity.OrderDetailEntity;
-import com.dev.fshop.entity.OrderItemEntity;
-import com.dev.fshop.services.OrderServiceInterface;
+import com.dev.fshop.embedded.OrderDetail;
+import com.dev.fshop.entity.OrdersEntity;
+import com.dev.fshop.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/f-shop/v1/api")
+@RequestMapping(path = "/v1/api")
 public class OrderController {
     @Autowired
-    private OrderServiceInterface orderServiceInterface;
+    private OrderService orderServiceInterface;
 
-    @GetMapping(path = "/orders/{orderId}")
-    public ResponseEntity<List<OrderItemEntity>> findListOrderItemByOrderId(@PathVariable Integer orderId) {
-        return ResponseEntity.ok().body(orderServiceInterface.findListOrderItemByOrderId(orderId));
+    @GetMapping(path = "/users/{userId}/orders")
+    public ResponseEntity<List<OrdersEntity>> findListOrderItemByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok().body(orderServiceInterface.findListOrderItemByUserId(userId));
+    }
+
+    @GetMapping(path = "/orders")
+    public ResponseEntity<Float> viewRevenue() {
+        return ResponseEntity.ok().body(orderServiceInterface.viewRevenue());
     }
 
     @PostMapping(path = "/orders")
-    public ResponseEntity<OrderDetailEntity> createNewOrder(@RequestBody OrderDetailEntity orderDetailEntity) {
-        return ResponseEntity.ok().body(orderServiceInterface.createNewOrder(orderDetailEntity));
+    public ResponseEntity<OrdersEntity> createNewOrder(@RequestBody OrdersEntity ordersEntity) {
+        return ResponseEntity.ok().body(orderServiceInterface.createNewOrder(ordersEntity));
     }
 
-    @PatchMapping(path = "/orders/orderitems/{orderItemId}/products/{quantity}")
-    public ResponseEntity<OrderDetailEntity> updateQuantityProduct(@PathVariable Integer quantity, @PathVariable Integer orderItemId) {
-        return ResponseEntity.ok().body(orderServiceInterface.updateQuantityProduct(quantity, orderItemId));
+    @PutMapping(path = "/orders")
+    public ResponseEntity<OrdersEntity> updateOrderExisted(
+            @RequestParam Optional<String> orderId,
+            @RequestParam Optional<Boolean> status) {
+        return null;
     }
 
-    @DeleteMapping(path = "/orders")
-    public boolean deleteOrderByCustomer(@RequestParam(name = "userId")String userId, @RequestBody List<OrderDetailEntity> orderDetailEntities) {
-        return orderServiceInterface.deleteOrderByCustomer(userId, orderDetailEntities);
-    }
-
-    @DeleteMapping(path = "/orders/orderItems/{orderItemId}")
-    public boolean deleteItemInOrder(@PathVariable Integer orderItemId) {
-        return orderServiceInterface.deleteItemInOrder(orderItemId);
-    }
 }

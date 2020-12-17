@@ -1,69 +1,48 @@
 package com.dev.fshop.controller;
 
 import com.dev.fshop.entity.ProductEntity;
-import com.dev.fshop.services.ProductServiceInterface;
+import com.dev.fshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/f-shop/v1/api")
+@RequestMapping(path = "/v1/api")
 public class ProductController {
     @Autowired
-    private ProductServiceInterface productServiceInterface;
-
-    @GetMapping(path = "/products")
-    public ResponseEntity<List<ProductEntity>> getAllProducts() {
-        return ResponseEntity.ok().body(productServiceInterface.getAllProducts());
-    }
-
-    @GetMapping(path = "/products/{proName}")
-    public ResponseEntity<List<ProductEntity>> findProductByName(@PathVariable String proName) {
-        return ResponseEntity.ok().body(productServiceInterface.findProductsByName(proName));
-    }
-
-    @GetMapping(path = "/products/{proId}")
-    public ResponseEntity<ProductEntity> findProductById(@PathVariable Integer proId) {
-        return ResponseEntity.ok().body(productServiceInterface.findProductById(proId));
-    }
-
-    @GetMapping(path = "/products")
-    public ResponseEntity<List<ProductEntity>> findProductByPrice(@RequestParam(name = "priceFrom") float priceFrom, @RequestParam(name = "priceTo") float priceTo) {
-        return ResponseEntity.ok().body(productServiceInterface.findProductByPrice(priceFrom, priceTo));
-    }
-
-    @GetMapping(path = "/products")
-    public ResponseEntity<List<ProductEntity>> findProductByType(@RequestParam(name = "type") String type) {
-        return ResponseEntity.ok().body(productServiceInterface.findProductByType(type));
-    }
-
-    @GetMapping(path = "/products")
-    public ResponseEntity<List<ProductEntity>> getNewProduct(@RequestParam(name = "createAt")Date createAt) {
-        return ResponseEntity.ok().body(productServiceInterface.getNewProduct(createAt));
-    }
-
-    @GetMapping(path = "/products")
-    public ResponseEntity<List<ProductEntity>> findGoodProducts(@RequestParam(name = "star")Integer star) {
-        return ResponseEntity.ok().body(productServiceInterface.findGoodProduct(star));
-    }
+    private ProductService productService;
 
     @PostMapping(path = "/products")
     public ResponseEntity<ProductEntity> createNewProduct(@RequestBody ProductEntity productEntity) {
-        return ResponseEntity.ok().body(productServiceInterface.createNewProduct(productEntity));
+        return ResponseEntity.ok().body(productService.createNewProduct(productEntity));
     }
 
     @PutMapping(path = "/products/{proId}")
-    public ResponseEntity<ProductEntity> updateProductExisted(@PathVariable Integer proId, @RequestBody ProductEntity productEntity) {
-        return ResponseEntity.ok().body(productServiceInterface.updateProductExisted(proId, productEntity));
+    public ResponseEntity<ProductEntity> updateProductExisted(@PathVariable String proId, @RequestBody ProductEntity productEntity) {
+        return ResponseEntity.ok().body(productService.updateProductExisted(proId, productEntity));
     }
 
     @DeleteMapping(path = "/products/{proId}")
-    public boolean deleteProductExisted(@PathVariable Integer proId) {
-        productServiceInterface.deleteProductExisted(proId);
+    public boolean deleteProductExisted(@PathVariable String proId) {
+        productService.deleteProductExisted(proId);
         return true;
     }
+
+    @GetMapping(path = "/products")
+    public ResponseEntity<List<ProductEntity>> findProducts(
+            @RequestParam Optional<Integer> star,
+            @RequestParam Optional<Date> createAt,
+            @RequestParam Optional<String> type,
+            @RequestParam(name = "priceFrom") float priceFrom, @RequestParam(name = "priceTo") float priceTo,
+            @RequestParam Optional<String> proId,
+            @RequestParam Optional<String> proName) {
+        return null;
+    }
+
+
 
 }

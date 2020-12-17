@@ -1,28 +1,35 @@
 package com.dev.fshop.entity;
 
 
-import lombok.*;
+import com.dev.fshop.embedded.Comment;
+import com.dev.fshop.embedded.Review;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.CascadeType;
+import java.util.Collection;
 import java.util.Date;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Table(name = "Product")
 public class ProductEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "proId")
-    private int proId;
-    @Column(name = "supplierId")
-    private int supplierId;
-    @Column(name = "proTypeId")
-    private int proTypeId;
+    @Column(name = "proId", nullable = false, unique = false)
+    private String proId;
     @Column(name = "proName")
     private String proName;
     @Column(name = "proPrice")
@@ -37,4 +44,26 @@ public class ProductEntity {
     private Date updateAt;
     @Column(name = "discount")
     private float discount;
+
+    @ManyToOne
+    @JoinColumn(name = "proTypeId")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private CategoryEntity categoryEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "supplierId")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private SupplierEntity supplierEntity;
+
+    @OneToMany(mappedBy = "ReviewEntity", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<Review> reviewEntities;
+
+    @OneToMany(mappedBy = "CommentEntity", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
+    @ToString.Exclude // Khoonhg sử dụng trong toString()
+    private Collection<Comment> commentEntities;
 }

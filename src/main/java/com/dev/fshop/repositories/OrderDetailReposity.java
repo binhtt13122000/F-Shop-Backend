@@ -1,10 +1,9 @@
 package com.dev.fshop.repositories;
 
 
-import com.dev.fshop.entity.OrderDetailEntity;
-import com.dev.fshop.entity.OrderItemEntity;
+import com.dev.fshop.entity.OrdersEntity;
+import com.dev.fshop.embedded.OrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -12,22 +11,16 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface OrderDetailReposity extends JpaRepository<OrderDetailEntity, Integer> {
+public interface OrderDetailReposity extends JpaRepository<OrdersEntity, String> {
 
-    @Query
-    public boolean deleteOrderByCustomer(String userId, List<OrderDetailEntity> orderDetail);
-
-    @Query("Select v.orderItemId, v.orderItemQuan, v.orderItemPrice  from OrderDetailEntity u inner join OrderItemEntity v on u.orderId = v.orderId where u.orderId = :orderId")
-    public List<OrderItemEntity> findOrder(Integer orderId);
-
-    @Query("delete from OrderItemEntity u where u.orderItemId = :orderItemId ")
-    public boolean deleteItemInOrder(int orderItemId);
-
-    @Modifying(clearAutomatically = true)
-    @Query("update OrderItemEntity u set u.orderItemPrice = :quantity where u.orderItemId = :orderItemId ")
-    public OrderDetailEntity updateQuanProduct(Integer quanity, Integer orderItemId);
-
+    public List<OrdersEntity> findListOrderItemByUserId(String userId);
+    public OrdersEntity updateStatusOrder(String orderId, boolean status);
+    public List<OrderDetail> buyProductByUser(String proId, String quantity, String userId);
+    @Query("Select SUM(u.orderTotal) from OrdersEntity u")
+    public float viewRevenue();
     @Transactional
-    public OrderDetailEntity insertOrderWithEntityManager(OrderDetailEntity orderDetailEntity);
+    public OrdersEntity insertOrderWithEntityManager(OrdersEntity ordersEntity);
+
+
 
 }

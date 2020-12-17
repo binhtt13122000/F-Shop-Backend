@@ -1,24 +1,25 @@
-package com.dev.fshop.services;
+package com.dev.fshop.services.impl;
 
 import com.dev.fshop.entity.CustomerEntity;
 import com.dev.fshop.repositories.UserRepository;
+import com.dev.fshop.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserServiceInterface{
+public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Override
     public CustomerEntity loginByUserIdAndPass(String userId, String password) {
-        return userRepository.checkLoginById(userId, password);
+        return userRepository.checkLoginByIdPassword(userId, password);
     }
 
     @Override
     public List<CustomerEntity> searchCustomersByName(String userName) {
-        return userRepository.searchStudentByName(userName);
+        return userRepository.findByCustomerName(userName);
     }
 
     @Override
@@ -61,8 +62,7 @@ public class UserServiceImpl implements UserServiceInterface{
 //        if(checkExisted == null) {
 //
 //        }
-        return userRepository.updateProfile(userId, customerEntity.getName(), customerEntity.getBirthDate(), customerEntity.getPhoneNumber(),
-                customerEntity.isGender(), customerEntity.getAddress(), customerEntity.getCountry(), customerEntity.getAvatar());
+        return userRepository.updateProfile(customerEntity);
     }
 
     @Override

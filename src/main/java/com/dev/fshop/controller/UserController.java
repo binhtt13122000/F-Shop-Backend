@@ -1,61 +1,61 @@
 package com.dev.fshop.controller;
 
 import com.dev.fshop.entity.CustomerEntity;
-import com.dev.fshop.services.UserServiceInterface;
+import com.dev.fshop.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
-@RequestMapping(path = "/f-shop/v1/api")
+@RequestMapping(path = "/v1/api")
 public class UserController {
     @Autowired
-    private UserServiceInterface userServiceInterface;
+    private UserService userService;
 
     @GetMapping(path = "/users")
     public ResponseEntity<CustomerEntity> login(@RequestBody CustomerEntity customerEntity){
-        return  ResponseEntity.ok().body(userServiceInterface.loginByUserIdAndPass(customerEntity.getUserId(), customerEntity.getPassword()));
+        return  ResponseEntity.ok().body(userService.loginByUserIdAndPass(customerEntity.getUserId(), customerEntity.getPassword()));
     }
 
     @PostMapping(path = "/users")
     public ResponseEntity<CustomerEntity> registerAccount(@RequestBody CustomerEntity customerEntity) {
-        return ResponseEntity.ok().body(userServiceInterface.registerAccountUser(customerEntity));
+        return ResponseEntity.ok().body(userService.registerAccountUser(customerEntity));
     }
 
     @GetMapping(path = "/users")
-    public ResponseEntity<CustomerEntity> getUserByUserId(@RequestParam(name = "userId")String userId) {
-        return ResponseEntity.ok().body(userServiceInterface.getUserById(userId));
+    public ResponseEntity<CustomerEntity> findUser(
+            @RequestParam Optional<String> userId,
+            @RequestParam Optional<String> userName) {
+        return null;
     }
 
-    @GetMapping(path = "/users")
-    public ResponseEntity<List<CustomerEntity>> getAllUsers() {
-        return ResponseEntity.ok().body(userServiceInterface.getAllUsers());
-    }
+//    @GetMapping(path = "/users")
+//    public ResponseEntity<List<CustomerEntity>> getAllUsers() {
+//        return ResponseEntity.ok().body(userService.getAllUsers());
+//    }
 
-    @GetMapping(path = "/users")
-    public ResponseEntity<List<CustomerEntity>> getUsersByName(@RequestParam(name = "userName") String userName) {
-        return ResponseEntity.ok().body(userServiceInterface.searchCustomersByName(userName));
-    }
 
     @PatchMapping(path = "/users")
-    public ResponseEntity<CustomerEntity> changePassword(@RequestParam(name = "userId")String userId, @RequestParam(name = "newPass") String newPass,
-                                         @RequestParam(name = "oldPass") String oldPass) {
-        return ResponseEntity.ok().body(userServiceInterface.changePassword(userId,newPass,oldPass));
+    public ResponseEntity<CustomerEntity> changePassword(HttpServletRequest request) {
+        String userId = request.getParameter("userId");
+        String newPass = request.getParameter("newPass");
+        String oldPass = request.getParameter("oldPass");
+        return ResponseEntity.ok().body(userService.changePassword(userId,newPass,oldPass));
     }
 
     @PutMapping(path = "/users/{userId}")
     public ResponseEntity<CustomerEntity> updateProfileUser(@PathVariable String userId, @RequestBody CustomerEntity customerEntity) {
-        return ResponseEntity.ok().body(userServiceInterface.updateProfileUser(userId, customerEntity));
+        return ResponseEntity.ok().body(userService.updateProfileUser(userId, customerEntity));
     }
 
     @DeleteMapping(path = "/users/{userId}")
     public boolean removeAccountUserExisted(@PathVariable String userId) {
-        return userServiceInterface.removeAccountUser(userId);
+        return userService.removeAccountUser(userId);
     }
 
 }
