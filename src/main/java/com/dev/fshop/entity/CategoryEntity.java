@@ -29,9 +29,9 @@ public class CategoryEntity {
     @Column(name = "proTypeName")
     private String proTypeName;
 
-    @OneToMany(mappedBy = "PromotionEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ProductEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<PromotionEntity> promotionEntities;
+    private Collection<ProductEntity> productEntities;
 
 }
