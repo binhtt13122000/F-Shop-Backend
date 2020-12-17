@@ -79,7 +79,7 @@ public class CustomerEntity {
     private Collection<PromotionEntity> promotionEntities;
 
     @ManyToOne
-    @JoinColumn(name = "roleId") // thông qua khóa ngoại address_id
+    @JoinColumn(name = "roleId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private RoleEntity roleEntity;

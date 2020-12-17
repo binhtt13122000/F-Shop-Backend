@@ -52,7 +52,7 @@ public class OrdersEntity {
     @OneToMany(mappedBy = "ReviewEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Review> reviewEntities;
+    private Collection<ReviewEntity> reviewEntities;
 
     @ManyToOne
     @JoinColumn(name = "userId")
