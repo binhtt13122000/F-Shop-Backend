@@ -34,7 +34,7 @@ public class PromotionEntity {
     private boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "userId") // thông qua khóa ngoại address_id
+    @JoinColumn(name = "userId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private CustomerEntity customerEntity;
