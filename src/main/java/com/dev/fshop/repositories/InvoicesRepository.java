@@ -1,16 +1,15 @@
 package com.dev.fshop.repositories;
 
-import com.dev.fshop.entity.InvoicesEntity;
-import com.dev.fshop.entity.OrderDetailEntity;
-import com.dev.fshop.entity.OrderItemEntity;
-import com.dev.fshop.entity.ReviewEntity;
+import com.dev.fshop.entities.InvoicesEntity;
+import com.dev.fshop.entities.OrderDetailEntity;
+import com.dev.fshop.entities.OrderItemEntity;
+import com.dev.fshop.entities.ReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.List;
 
 public interface InvoicesRepository extends JpaRepository<InvoicesEntity, Integer> {
 

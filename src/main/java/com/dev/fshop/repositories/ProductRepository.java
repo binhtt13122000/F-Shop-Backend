@@ -1,7 +1,7 @@
 package com.dev.fshop.repositories;
 
 
-import com.dev.fshop.entity.ProductEntity;
+import com.dev.fshop.entities.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

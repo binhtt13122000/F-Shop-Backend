@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entity.PromotionEntity;
+import com.dev.fshop.entities.PromotionEntity;
 import com.dev.fshop.repositories.PromotionRepository;
 import com.dev.fshop.services.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;

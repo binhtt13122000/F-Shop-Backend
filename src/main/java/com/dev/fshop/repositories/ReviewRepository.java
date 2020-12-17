@@ -1,6 +1,6 @@
 package com.dev.fshop.repositories;
 
-import com.dev.fshop.embedded.Review;
+import com.dev.fshop.supporters.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

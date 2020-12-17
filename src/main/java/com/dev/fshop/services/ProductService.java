@@ -1,6 +1,6 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.entity.ProductEntity;
+import com.dev.fshop.entities.ProductEntity;
 
 import java.util.Date;
 import java.util.List;

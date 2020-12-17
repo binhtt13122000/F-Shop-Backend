@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.embedded.Review;
+import com.dev.fshop.supporters.Review;
 import com.dev.fshop.repositories.ReviewRepository;
 import com.dev.fshop.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;

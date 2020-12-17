@@ -1,6 +1,6 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.embedded.Comment;
+import com.dev.fshop.supporters.Comment;
 
 import java.util.List;
 

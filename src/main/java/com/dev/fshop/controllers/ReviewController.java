@@ -1,6 +1,6 @@
-package com.dev.fshop.controller;
+package com.dev.fshop.controllers;
 
-import com.dev.fshop.embedded.Review;
+import com.dev.fshop.supporters.Review;
 import com.dev.fshop.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

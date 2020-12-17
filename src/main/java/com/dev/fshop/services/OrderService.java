@@ -1,8 +1,7 @@
 package com.dev.fshop.services;
 
 
-import com.dev.fshop.embedded.OrderDetail;
-import com.dev.fshop.entity.OrdersEntity;
+import com.dev.fshop.entities.OrdersEntity;
 
 import java.util.List;
 
