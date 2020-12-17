@@ -1,6 +1,6 @@
 package com.dev.fshop.repositories;
 
-import com.dev.fshop.embedded.Comment;
+import com.dev.fshop.entity.CommentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.stereotype.Repository;
@@ -9,12 +9,12 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, String> {
+public interface CommentRepository extends JpaRepository<CommentEntity, String> {
 
-    public List<Comment> findCommentByName(String name);
+    public List<CommentEntity> findCommentByName(String name);
     public boolean deleteComment( String commentId);
-    public Comment updateCommentContent(Comment comment, String commentId);
-    public List<Comment> findCommentByProduct(String proId);
+    public CommentEntity updateCommentContent(CommentEntity commentEntity, String commentId);
+    public List<CommentEntity> findCommentByProduct(String proId);
     @Transactional
-    public Comment insertCommentWithEntityManager(Comment comment);
+    public CommentEntity insertCommentWithEntityManager(CommentEntity commentEntity);
 }

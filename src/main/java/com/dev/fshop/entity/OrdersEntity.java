@@ -2,7 +2,6 @@ package com.dev.fshop.entity;
 
 
 import com.dev.fshop.embedded.OrderDetail;
-import com.dev.fshop.embedded.Review;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
