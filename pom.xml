@@ -91,13 +91,8 @@
 <!--        api document-->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-core</artifactId>
-            <version>1.1.49</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.1.49</version>
+            <version>1.5.2</version>
         </dependency>
     </dependencies>
 
