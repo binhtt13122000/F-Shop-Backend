@@ -1,12 +1,19 @@
 package com.dev.fshop.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
 import java.util.Collection;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -14,9 +21,8 @@ import java.util.Collection;
 @Table(name = "Supplier")
 public class SupplierEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "supplierId")
-    private int supplierId;
+    @Column(name = "supplierId", nullable = false, unique = false)
+    private String supplierId;
     @Column(name = "supplierName")
     private String supplierName;
 

@@ -1,27 +1,33 @@
-package com.dev.fshop.entity;
+package com.dev.fshop.embedded;
 
 
-import lombok.*;
 
-import javax.persistence.*;
+import com.dev.fshop.entity.OrdersEntity;
+import com.dev.fshop.entity.ProductEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Getter
-@Setter
 @Entity
 @Table(name = "OrderItem")
-public class OrderItemEntity {
+public class OrderDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "orderItemId")
-    private int orderItemId;
-    @Column(name = "proId")
-    private int proId;
-    @Column(name = "orderId")
-    private  int orderId;
+    @Column(name = "orderItemId", nullable = false, unique = true)
+    private String orderItemId;
     @Column(name = "orderItemQuan")
     private int orderItemQuan;
     @Column(name = "orderItemPrice")
@@ -43,5 +49,5 @@ public class OrderItemEntity {
     @JoinColumn(name = "orderId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private OrderDetailEntity orderDetailEntity;
+    private OrdersEntity ordersEntity;
 }

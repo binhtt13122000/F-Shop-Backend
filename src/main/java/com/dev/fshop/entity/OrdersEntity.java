@@ -1,27 +1,35 @@
 package com.dev.fshop.entity;
 
 
-import lombok.*;
+import com.dev.fshop.embedded.OrderDetail;
+import com.dev.fshop.embedded.Review;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
 import java.util.Collection;
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Getter
-@Setter
 @Entity
-@Table(name = "OrderDetail")
-public class OrderDetailEntity {
+@Table(name = "Orders")
+public class OrdersEntity {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "orderId")
-    private int orderId;
-    @Column(name = "userId")
-    private String userId;
+    @Column(name = "orderId", nullable = false, unique = false)
+    private String orderId;
     @Column(name = "name")
     private String name;
     @Column(name = "phoneNumber")
@@ -40,12 +48,12 @@ public class OrderDetailEntity {
     @OneToMany(mappedBy = "OrderItemEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<OrderItemEntity> orderItemEntities;
+    private Collection<OrderDetail> orderItemEntities;
 
     @OneToMany(mappedBy = "ReviewEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<ReviewEntity> reviewEntities;
+    private Collection<Review> reviewEntities;
 
     @ManyToOne
     @JoinColumn(name = "userId")

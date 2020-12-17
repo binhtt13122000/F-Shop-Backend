@@ -1,31 +1,20 @@
 package com.dev.fshop.repositories;
 
-import com.dev.fshop.entity.CommentEntity;
-import com.dev.fshop.entity.CustomerEntity;
-import com.dev.fshop.entity.OrderDetailEntity;
-import com.dev.fshop.entity.ReviewEntity;
+import com.dev.fshop.embedded.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
-public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
+@Repository
+public interface ReviewRepository extends JpaRepository<Review, String> {
 
-    @Query("Select v.reviewId, v.content, v.proId, v.content, v.star  from OrderDetailEntity u inner join ReviewEntity v on u.orderId = v.orderId where u.name = :name")
-    public List<ReviewEntity> findReviewByName(String name);
 
-    @Query("Select v.reviewId, v.content, v.proId, u.name  from OrderDetailEntity u inner join ReviewEntity v on u.orderId = v.orderId where v.reviewId = :reviewId")
-    public ReviewEntity findReviewById(Integer reviewId);
-
-    @Query("DELETE from ReviewEntity u where u.reviewId = :reviewId ")
-    public boolean deleteReview( Integer reviewId);
-
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE ReviewEntity u set u.content = :content,u.star = :star where u.reviewId = :reviewId ")
-    public ReviewEntity updateReviewContentStar(String content, Integer star, Integer reviewId);
+    public boolean deleteReview( String reviewId);
+    public Review updateReviewContentStar(String content, Integer star, String reviewId);
+    public List<Review> findReviewByProductId(String proId);
 
     @Transactional
-    public ReviewEntity insertReviewWithEntityManager(ReviewEntity reviewEntity);
+    public Review insertReviewWithEntityManager(Review review);
 }

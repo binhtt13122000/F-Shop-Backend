@@ -1,24 +1,31 @@
 package com.dev.fshop.entity;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
 import java.util.Collection;
+
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Table(name = "Role")
 public class RoleEntity {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "roleId")
-    private int roleId;
+    @Column(name = "roleId", nullable = false, unique = true)
+    private String roleId;
     @Column(name = "roleName")
     private String roleName;
 
