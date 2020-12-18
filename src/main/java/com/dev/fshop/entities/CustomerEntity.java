@@ -60,7 +60,7 @@ public class CustomerEntity {
     private Collection<CommentEntity> commentEntities;
 
 
-    @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<OrdersEntity> ordersEntities;
