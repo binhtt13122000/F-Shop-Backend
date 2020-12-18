@@ -1,8 +1,8 @@
 package com.dev.fshop.repositories;
 
 
-import com.dev.fshop.entities.OrdersEntity;
-import com.dev.fshop.supporters.OrderDetail;
+import com.dev.fshop.entity.OrdersEntity;
+import com.dev.fshop.embedded.OrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
