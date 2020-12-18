@@ -1,18 +1,19 @@
 package com.dev.fshop.repositories;
 
-import com.dev.fshop.entity.ReviewEntity;
+import com.dev.fshop.entities.ReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
-//    public boolean deleteReview( String reviewId);
+
+//    @Query("update ReviewEntity  u set u.content = :password, u.star = :star  where  u.reviewId = :reviewId")
 //    public ReviewEntity updateReviewContentStar(String content, Integer star, String reviewId);
-//    public List<ReviewEntity> findReviewByProductId(String proId);
-//
+
+    public List<ReviewEntity> findReviewEntitiesByProductEntity(String proId);
+
 //    @Transactional
 //    public ReviewEntity insertReviewWithEntityManager(ReviewEntity reviewEntity);
 
