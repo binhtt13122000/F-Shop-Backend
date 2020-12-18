@@ -1,18 +1,19 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.embedded.Comment;
+
+import com.dev.fshop.entities.CommentEntity;
 
 import java.util.List;
 
 public interface CommentService {
     //Get methods
-    public List<Comment> findCommentByProductId(String productId);
+    public List<CommentEntity> findCommentByProductId(String productId);
 
     //POST methods
-    public Comment createNewComment(Comment comment);
+    public CommentEntity createNewComment(CommentEntity comment);
 
     //Patch methods
-    public Comment updateCommentContent(Comment comment, String commentId);
+    public CommentEntity updateCommentContent(CommentEntity comment, String commentId);
 
     //DELETE methods
     public boolean deleteComment(String commentId);

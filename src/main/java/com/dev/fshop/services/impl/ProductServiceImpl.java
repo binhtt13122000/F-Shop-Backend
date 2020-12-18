@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entity.ProductEntity;
+import com.dev.fshop.entities.ProductEntity;
 import com.dev.fshop.repositories.ProductRepository;
 import com.dev.fshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductEntity> findProductsByName(String productName) {
-        return productRepository.searchProductByName(productName);
+        return productRepository.findProductEntitiesByProName(productName);
     }
 
     @Override
@@ -30,12 +30,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductEntity> findProductByPrice(float priceFrom, float priceTo) {
-        return productRepository.searchProductByPrice(priceFrom,priceTo);
+        return productRepository.findProductEntitiesByProPrice(priceFrom,priceTo);
     }
 
     @Override
     public List<ProductEntity> findProductByType(String type) {
-        return productRepository.searchProductByType(type);
+        return productRepository.findProductEntitiesByCategoryEntity(type);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 //        if(checkExisted == null) {
 //
 //        }
-        return productRepository.insertProductWithEntityManager(productEntity);
+        return productRepository.save(productEntity);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
 //        if(checkExisted == null) {
 //
 //        }
-        return productRepository.updateProduct(productEntity,proId);
+        return productRepository.save(productEntity);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
             return false;
         }
         else {
-            productRepository.deleteProductInOrder(proId);
+            productRepository.deleteById(proId);
             return true;
         }
     }

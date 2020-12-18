@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entity.OrdersEntity;
+import com.dev.fshop.entities.OrdersEntity;
 import com.dev.fshop.repositories.OrdersReposity;
 import com.dev.fshop.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrdersEntity> findListOrderItemByUserId(String userId) {
-        return ordersReposity.findListOrderItemByUserId(userId);
+        return ordersReposity.findOrdersEntityByCustomerEntity(userId);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
 //        if(checkExisted == null) {
 //
 //        }
-        return ordersReposity.insertOrderWithEntityManager(ordersEntity);
+        return ordersReposity.save(ordersEntity);
     }
 
     @Override

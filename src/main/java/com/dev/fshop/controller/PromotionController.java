@@ -1,6 +1,6 @@
 package com.dev.fshop.controller;
 
-import com.dev.fshop.entity.PromotionEntity;
+import com.dev.fshop.entities.PromotionEntity;
 import com.dev.fshop.services.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +16,13 @@ public class PromotionController {
 
 
     @GetMapping(path = "/promotions/{promotionId}")
+    @CrossOrigin
     public ResponseEntity<PromotionEntity> findPromotionById(@PathVariable String promotionId) {
         return ResponseEntity.ok().body(promotionService.findPromotionByPromotionId(promotionId));
     }
 
     @GetMapping(path = "/promotions")
+    @CrossOrigin
     public ResponseEntity<List<PromotionEntity>> getAllPromotionsByUserId(@RequestParam(name = "userId") String userId) {
         return  ResponseEntity.ok().body(promotionService.getAllPromotionsByUserId(userId));
     }

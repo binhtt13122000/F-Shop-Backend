@@ -1,6 +1,6 @@
 package com.dev.fshop.controller;
 
-import com.dev.fshop.embedded.Comment;
+import com.dev.fshop.entities.CommentEntity;
 import com.dev.fshop.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +16,25 @@ public class CommentController {
     private CommentService commentServiceInterface;
 
     @GetMapping(path = "/products/{productId}/comments")
-    public ResponseEntity<List<Comment>> findCommentByProductId(@PathVariable String productId) {
+    @CrossOrigin
+    public ResponseEntity<List<CommentEntity>> findCommentByProductId(@PathVariable String productId) {
         return ResponseEntity.ok().body(commentServiceInterface.findCommentByProductId(productId));
     }
 
     @PostMapping(path = "/comments")
-    public ResponseEntity<Comment> createNewComment(@RequestBody Comment comment) {
+    @CrossOrigin
+    public ResponseEntity<CommentEntity> createNewComment(@RequestBody CommentEntity comment) {
         return ResponseEntity.ok().body(commentServiceInterface.createNewComment(comment));
     }
 
     @PatchMapping(path = "/comments/{commentId}")
-    public ResponseEntity<Comment> updateCommentContent(@PathVariable String commentId, @RequestBody Comment comment) {
+    @CrossOrigin
+    public ResponseEntity<CommentEntity> updateCommentContent(@PathVariable String commentId, @RequestBody CommentEntity comment) {
         return ResponseEntity.ok().body(commentServiceInterface.updateCommentContent(comment, commentId));
     }
 
     @DeleteMapping(path = "/comments/{commentId}")
+    @CrossOrigin
     public boolean deleteCommentByCommentId(@PathVariable String commentId) {
         return commentServiceInterface.deleteComment(commentId);
     }

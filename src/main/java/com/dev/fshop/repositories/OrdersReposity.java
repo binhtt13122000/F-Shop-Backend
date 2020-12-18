@@ -1,26 +1,28 @@
 package com.dev.fshop.repositories;
 
 
-import com.dev.fshop.entity.OrdersEntity;
-import com.dev.fshop.embedded.OrderDetail;
+import com.dev.fshop.entities.OrdersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
 public interface OrdersReposity extends JpaRepository<OrdersEntity, String> {
 
-    public List<OrdersEntity> findListOrderItemByUserId(String userId);
+    public List<OrdersEntity> findOrdersEntityByCustomerEntity(String userId);
+
+    @Query("update OrdersEntity  u set u.status = :status where u.orderId = :orderId")
     public OrdersEntity updateStatusOrder(String orderId, boolean status);
-    @Query()
-    public List<OrderDetail> buyProductByUser(String proId, String quantity, String userId);
+
+ //   public List<OrderDetail> buyProductByUser(String proId, String quantity, String userId);
+
     @Query("Select SUM(u.orderTotal) from OrdersEntity u")
     public float viewRevenue();
-    @Transactional
-    public OrdersEntity insertOrderWithEntityManager(OrdersEntity ordersEntity);
+//
+//    @Transactional
+//    public OrdersEntity insertOrderWithEntityManager(OrdersEntity ordersEntity);
 
 
 

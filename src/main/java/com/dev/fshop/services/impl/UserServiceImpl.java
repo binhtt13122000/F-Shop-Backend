@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entity.CustomerEntity;
+import com.dev.fshop.entities.CustomerEntity;
 import com.dev.fshop.repositories.UserRepository;
 import com.dev.fshop.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<CustomerEntity> searchCustomersByName(String userName) {
-        return userRepository.findByCustomerName(userName);
+        return  userRepository.findByName(userName);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 //        if(checkExisted == null) {
 //
 //        }
-        return userRepository.insertCustomerWithEntityManager(customerEntity);
+        return  userRepository.save(customerEntity);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 //        if(checkExisted == null) {
 //
 //        }
-        return userRepository.updateProfile(customerEntity);
+        return userRepository.save(customerEntity);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         if(checkExisted == null) {
             return false;
         }else {
-            userRepository.deleteAccount(userId);
+            userRepository.deleteById(userId);
             return true;
         }
     }

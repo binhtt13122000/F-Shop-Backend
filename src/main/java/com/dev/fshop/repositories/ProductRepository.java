@@ -1,25 +1,32 @@
 package com.dev.fshop.repositories;
 
 
-import com.dev.fshop.entity.ProductEntity;
+import com.dev.fshop.entities.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, String>{
 
-    public List<ProductEntity> searchProductByName(String name);
-    public List<ProductEntity> searchProductByPrice(float priceFrom, float priceTo);
-    public List<ProductEntity> searchProductByType(String type);
-    public List<ProductEntity> findNewProduct(Date date);
-    public List<ProductEntity> findGoodProduct(Integer star);
-    public ProductEntity updateProduct(ProductEntity productEntity, String proId);
-    public boolean deleteProductInOrder(String proId);
+    public List<ProductEntity> findProductEntitiesByProName(String name);
 
-    @Transactional
-    public ProductEntity insertProductWithEntityManager(ProductEntity productEntity);
+    @Query("select u from ProductEntity u where u.proPrice > :priceFrom and u.proPrice < :priceTo")
+    public List<ProductEntity> findProductEntitiesByProPrice(float priceFrom, float priceTo);
+
+    public List<ProductEntity> findProductEntitiesByCategoryEntity(String type);
+
+    @Query("select u from ProductEntity u where u.createAt > :date ")
+    public List<ProductEntity> findNewProduct(Date date);
+
+    @Query("select u.productEntity.proId from ReviewEntity u where u.star > :star ")
+    public List<ProductEntity> findGoodProduct(Integer star);
+
+    public boolean deleteProductEntitiesByProId(String proId);
+//
+//    @Transactional
+//    public ProductEntity insertProductWithEntityManager(ProductEntity productEntity);
 }
