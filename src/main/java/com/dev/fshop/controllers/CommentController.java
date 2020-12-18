@@ -1,6 +1,6 @@
-package com.dev.fshop.controller;
+package com.dev.fshop.controllers;
 
-import com.dev.fshop.embedded.Comment;
+import com.dev.fshop.supporters.Comment;
 import com.dev.fshop.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

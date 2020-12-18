@@ -1,8 +1,8 @@
-package com.dev.fshop.embedded;
+package com.dev.fshop.supporters;
 
 
-import com.dev.fshop.entity.OrdersEntity;
-import com.dev.fshop.entity.ProductEntity;
+import com.dev.fshop.entities.OrdersEntity;
+import com.dev.fshop.entities.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

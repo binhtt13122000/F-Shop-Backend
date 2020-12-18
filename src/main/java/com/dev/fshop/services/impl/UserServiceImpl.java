@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entity.CustomerEntity;
+import com.dev.fshop.entities.CustomerEntity;
 import com.dev.fshop.repositories.UserRepository;
 import com.dev.fshop.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

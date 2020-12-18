@@ -1,7 +1,7 @@
-package com.dev.fshop.entity;
+package com.dev.fshop.entities;
 
 
-import com.dev.fshop.embedded.Comment;
+import com.dev.fshop.supporters.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

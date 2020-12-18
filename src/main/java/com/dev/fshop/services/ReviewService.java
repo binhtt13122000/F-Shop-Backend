@@ -1,6 +1,6 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.embedded.Review;
+import com.dev.fshop.supporters.Review;
 import java.util.List;
 
 public interface ReviewService {

@@ -1,7 +1,6 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.entity.CustomerEntity;
-import org.springframework.data.jpa.repository.Query;
+import com.dev.fshop.entities.CustomerEntity;
 
 import java.util.List;
 

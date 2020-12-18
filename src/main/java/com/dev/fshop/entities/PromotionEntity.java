@@ -1,4 +1,4 @@
-package com.dev.fshop.entity;
+package com.dev.fshop.entities;
 
 
 import lombok.AllArgsConstructor;
