@@ -63,17 +63,17 @@ public class CustomerEntity {
     @Column(name = "status")
     private boolean status;
 
-    @OneToMany(mappedBy = "CommentEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
     @ToString.Exclude // Khoonhg sử dụng trong toString()
     private Collection<CommentEntity> commentEntities;
 
-    @OneToMany(mappedBy = "OrderDetailEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<OrdersEntity> orderDetailEntities;
 
-    @OneToMany(mappedBy = "PromotionEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<PromotionEntity> promotionEntities;

@@ -1,6 +1,6 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.entities.CustomerEntity;
+import com.dev.fshop.entity.CustomerEntity;
 
 import java.util.List;
 

@@ -44,12 +44,12 @@ public class OrdersEntity {
     @Column(name = "status")
     private boolean status;
 
-    @OneToMany(mappedBy = "OrderItemEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ordersEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<OrderDetail> orderItemEntities;
 
-    @OneToMany(mappedBy = "ReviewEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ordersEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<ReviewEntity> reviewEntities;

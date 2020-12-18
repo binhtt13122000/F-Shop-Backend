@@ -1,6 +1,6 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.entities.PromotionEntity;
+import com.dev.fshop.entity.PromotionEntity;
 
 import java.util.List;
 

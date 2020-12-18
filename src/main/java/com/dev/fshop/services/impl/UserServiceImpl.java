@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entities.CustomerEntity;
+import com.dev.fshop.entity.CustomerEntity;
 import com.dev.fshop.repositories.UserRepository;
 import com.dev.fshop.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +14,20 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Override
     public CustomerEntity loginByUserIdAndPass(String userId, String password) {
-        return userRepository.checkLoginByIdPassword(userId, password);
+//        return userRepository.checkLoginByIdPassword(userId, password);
+        return null;
     }
 
     @Override
     public List<CustomerEntity> searchCustomersByName(String userName) {
-        return userRepository.findByCustomerName(userName);
+//        return userRepository.findByCustomerName(userName);
+        return null;
     }
 
     @Override
     public List<CustomerEntity> getAllUsers() {
-        return userRepository.findAll();
+        return null;
+//        return userRepository.findAll();
     }
 
     @Override
@@ -38,7 +41,8 @@ public class UserServiceImpl implements UserService {
 //        if(checkExisted == null) {
 //
 //        }
-        return userRepository.insertCustomerWithEntityManager(customerEntity);
+//        return userRepository.insertCustomerWithEntityManager(customerEntity);
+        return null;
     }
 
     @Override
@@ -53,7 +57,8 @@ public class UserServiceImpl implements UserService {
 //
 //            }
 //        }
-        return userRepository.updatePassword(userId, newPassword);
+//        return userRepository.updatePassword(userId, newPassword);
+        return null;
     }
 
     @Override
@@ -62,7 +67,8 @@ public class UserServiceImpl implements UserService {
 //        if(checkExisted == null) {
 //
 //        }
-        return userRepository.updateProfile(customerEntity);
+//        return userRepository.updateProfile(customerEntity);
+        return null;
     }
 
     @Override
@@ -71,7 +77,7 @@ public class UserServiceImpl implements UserService {
         if(checkExisted == null) {
             return false;
         }else {
-            userRepository.deleteAccount(userId);
+//            userRepository.deleteAccount(userId);
             return true;
         }
     }

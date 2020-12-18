@@ -12,14 +12,14 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, String>{
 
-    public List<ProductEntity> searchProductByName(String name);
-    public List<ProductEntity> searchProductByPrice(float priceFrom, float priceTo);
-    public List<ProductEntity> searchProductByType(String type);
-    public List<ProductEntity> findNewProduct(Date date);
-    public List<ProductEntity> findGoodProduct(Integer star);
-    public ProductEntity updateProduct(ProductEntity productEntity, String proId);
-    public boolean deleteProductInOrder(String proId);
-
-    @Transactional
-    public ProductEntity insertProductWithEntityManager(ProductEntity productEntity);
+//    public List<ProductEntity> searchProductByName(String name);
+//    public List<ProductEntity> searchProductByPrice(float priceFrom, float priceTo);
+//    public List<ProductEntity> searchProductByType(String type);
+//    public List<ProductEntity> findNewProduct(Date date);
+//    public List<ProductEntity> findGoodProduct(Integer star);
+//    public ProductEntity updateProduct(ProductEntity productEntity, String proId);
+//    public boolean deleteProductInOrder(String proId);
+//
+//    @Transactional
+//    public ProductEntity insertProductWithEntityManager(ProductEntity productEntity);
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface PromotionRepository extends JpaRepository<PromotionEntity, String> {
 
-    public PromotionEntity findPromotionById(String promotionId);
-    public List<PromotionEntity> getAllPromotionByUserId(String userId);
-    public PromotionEntity updateStatusPromotion(boolean status);
+//    public PromotionEntity findPromotionById(String promotionId);
+//    public List<PromotionEntity> getAllPromotionByUserId(String userId);
+//    public PromotionEntity updateStatusPromotion(boolean status);
 }

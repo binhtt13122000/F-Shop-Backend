@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entities.ProductEntity;
+import com.dev.fshop.entity.ProductEntity;
 import com.dev.fshop.repositories.ProductRepository;
 import com.dev.fshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductEntity> findProductsByName(String productName) {
-        return productRepository.searchProductByName(productName);
+//        return productRepository.searchProductByName(productName);
+        return null;
     }
 
     @Override
@@ -30,22 +31,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductEntity> findProductByPrice(float priceFrom, float priceTo) {
-        return productRepository.searchProductByPrice(priceFrom,priceTo);
+//        return productRepository.searchProductByPrice(priceFrom,priceTo);
+        return null;
     }
+
 
     @Override
     public List<ProductEntity> findProductByType(String type) {
-        return productRepository.searchProductByType(type);
+        return null;
+//        return productRepository.searchProductByType(type);
     }
 
     @Override
     public List<ProductEntity> getNewProduct(Date date) {
-        return productRepository.findNewProduct(date);
+        return null;
+//        return productRepository.findNewProduct(date);
     }
 
     @Override
     public List<ProductEntity> findGoodProduct(Integer star) {
-        return productRepository.findGoodProduct(star);
+        return null;
+//        return productRepository.findGoodProduct(star);
     }
 
     @Override
@@ -54,7 +60,8 @@ public class ProductServiceImpl implements ProductService {
 //        if(checkExisted == null) {
 //
 //        }
-        return productRepository.insertProductWithEntityManager(productEntity);
+//        return productRepository.insertProductWithEntityManager(productEntity);
+        return null;
     }
 
     @Override
@@ -63,7 +70,8 @@ public class ProductServiceImpl implements ProductService {
 //        if(checkExisted == null) {
 //
 //        }
-        return productRepository.updateProduct(productEntity,proId);
+//        return productRepository.updateProduct(productEntity,proId);
+        return null;
     }
 
     @Override
@@ -73,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
             return false;
         }
         else {
-            productRepository.deleteProductInOrder(proId);
+//            productRepository.deleteProductInOrder(proId);
             return true;
         }
     }

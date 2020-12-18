@@ -29,7 +29,7 @@ public class RoleEntity {
     @Column(name = "roleName")
     private String roleName;
 
-    @OneToMany(mappedBy = "CustomerEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "roleEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<CustomerEntity> customerEntities;

@@ -11,10 +11,10 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, String> {
 
-    public List<CommentEntity> findCommentByName(String name);
-    public boolean deleteComment( String commentId);
-    public CommentEntity updateCommentContent(CommentEntity commentEntity, String commentId);
+//    public List<CommentEntity> findCommentByName(String name);
+//    public boolean deleteComment(String commentId);
+//    public CommentEntity updateCommentContent(CommentEntity commentEntity, String commentId);
     public List<CommentEntity> findCommentByProduct(String proId);
-    @Transactional
-    public CommentEntity insertCommentWithEntityManager(CommentEntity commentEntity);
+//    @Transactional
+//    public CommentEntity insertCommentWithEntityManager(CommentEntity commentEntity);
 }

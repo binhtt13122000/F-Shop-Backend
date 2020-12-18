@@ -26,7 +26,7 @@ public class SupplierEntity {
     @Column(name = "supplierName")
     private String supplierName;
 
-    @OneToMany(mappedBy = "ProductEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "supplierEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<ProductEntity> productEntities;

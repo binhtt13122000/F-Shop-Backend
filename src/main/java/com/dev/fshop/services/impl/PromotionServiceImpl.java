@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entities.PromotionEntity;
+import com.dev.fshop.entity.PromotionEntity;
 import com.dev.fshop.repositories.PromotionRepository;
 import com.dev.fshop.services.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,14 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public PromotionEntity findPromotionByPromotionId(String promotionId) {
-        return promotionRepository.findPromotionById(promotionId);
+//        return promotionRepository.findPromotionById(promotionId);
+        return null;
     }
 
     @Override
     public List<PromotionEntity> getAllPromotionsByUserId(String userId) {
-        return promotionRepository.getAllPromotionByUserId(userId);
+//        return promotionRepository.getAllPromotionByUserId(userId);
+        return null;
     }
 
 

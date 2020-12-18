@@ -1,7 +1,7 @@
 package com.dev.fshop.services;
 
 
-import com.dev.fshop.entities.OrdersEntity;
+import com.dev.fshop.entity.OrdersEntity;
 
 import java.util.List;
 

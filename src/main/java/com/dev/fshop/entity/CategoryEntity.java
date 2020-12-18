@@ -29,7 +29,7 @@ public class CategoryEntity {
     @Column(name = "proTypeName")
     private String proTypeName;
 
-    @OneToMany(mappedBy = "ProductEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<ProductEntity> productEntities;
