@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
-
 //    @Query("update ReviewEntity  u set u.content = :password, u.star = :star  where  u.reviewId = :reviewId")
 //    public ReviewEntity updateReviewContentStar(String content, Integer star, String reviewId);
 

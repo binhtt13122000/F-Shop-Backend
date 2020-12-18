@@ -11,78 +11,70 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-//    @Autowired
-//    private ProductRepository productRepository;
-//    @Override
-//    public List<ProductEntity> getAllProducts() {
-//        return productRepository.findAll();
-//    }
-//
-//    @Override
-//    public List<ProductEntity> findProductsByName(String productName) {
-////        return productRepository.searchProductByName(productName);
-//        return null;
-//    }
-//
-//    @Override
-//    public ProductEntity findProductById(String proId) {
-//        return productRepository.findById(proId).orElse(null);
-//    }
-//
-//    @Override
-//    public List<ProductEntity> findProductByPrice(float priceFrom, float priceTo) {
-////        return productRepository.searchProductByPrice(priceFrom,priceTo);
-//        return null;
-//    }
-//
-//
-//    @Override
-//    public List<ProductEntity> findProductByType(String type) {
-//        return null;
-////        return productRepository.searchProductByType(type);
-//    }
-//
-//    @Override
-//    public List<ProductEntity> getNewProduct(Date date) {
-//        return null;
-////        return productRepository.findNewProduct(date);
-//    }
-//
-//    @Override
-//    public List<ProductEntity> findGoodProduct(Integer star) {
-//        return null;
-////        return productRepository.findGoodProduct(star);
-//    }
-//
-//    @Override
-//    public ProductEntity createNewProduct(ProductEntity productEntity) {
-////        ProductEntity checkExisted = productServiceInterface.findProductById(productEntity.getProId());
-////        if(checkExisted == null) {
-////
-////        }
-////        return productRepository.insertProductWithEntityManager(productEntity);
-//        return null;
-//    }
-//
-//    @Override
-//    public ProductEntity updateProductExisted(String proId, ProductEntity productEntity) {
-////        ProductEntity checkExisted = productServiceInterface.findProductById(productEntity.getProId());
-////        if(checkExisted == null) {
-////
-////        }
-////        return productRepository.updateProduct(productEntity,proId);
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean deleteProductExisted(String proId) {
-//        ProductEntity checkExisted = productRepository.findById(proId).orElse(null);
+    @Autowired
+    private ProductRepository productRepository;
+    @Override
+    public List<ProductEntity> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public List<ProductEntity> findProductsByName(String productName) {
+        return productRepository.findProductEntitiesByProName(productName);
+    }
+
+    @Override
+    public ProductEntity findProductById(String proId) {
+        return productRepository.findById(proId).orElse(null);
+    }
+
+    @Override
+    public List<ProductEntity> findProductByPrice(float priceFrom, float priceTo) {
+        return productRepository.findProductEntitiesByProPrice(priceFrom,priceTo);
+    }
+
+    @Override
+    public List<ProductEntity> findProductByType(String type) {
+        return productRepository.findProductEntitiesByCategoryEntity(type);
+    }
+
+    @Override
+    public List<ProductEntity> getNewProduct(Date date) {
+        return productRepository.findNewProduct(date);
+    }
+
+    @Override
+    public List<ProductEntity> findGoodProduct(Integer star) {
+        return productRepository.findGoodProduct(star);
+    }
+
+    @Override
+    public ProductEntity createNewProduct(ProductEntity productEntity) {
+//        ProductEntity checkExisted = productServiceInterface.findProductById(productEntity.getProId());
 //        if(checkExisted == null) {
-//            return false;
+//
 //        }
-//        else {
-////            productRepository.deleteProductInOrder(proId);
-//            return true;
+        return productRepository.save(productEntity);
+    }
+
+    @Override
+    public ProductEntity updateProductExisted(String proId, ProductEntity productEntity) {
+//        ProductEntity checkExisted = productServiceInterface.findProductById(productEntity.getProId());
+//        if(checkExisted == null) {
+//
 //        }
-//    }
+        return productRepository.save(productEntity);
+    }
+
+    @Override
+    public boolean deleteProductExisted(String proId) {
+        ProductEntity checkExisted = productRepository.findById(proId).orElse(null);
+        if(checkExisted == null) {
+            return false;
+        }
+        else {
+            productRepository.deleteById(proId);
+            return true;
+        }
+    }
 }

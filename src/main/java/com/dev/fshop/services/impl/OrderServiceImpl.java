@@ -11,41 +11,37 @@ import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-//    @Autowired
-//    private OrdersRepository ordersRepository;
-//
-//
-//    @Override
-//    public List<OrdersEntity> findListOrderItemByUserId(String userId) {
-////        return ordersRepository.findListOrderItemByUserId(userId);
-//        return null;
-//    }
-//
-//    @Override
-//    public float viewRevenue() {
-////        return ordersRepository.viewRevenue();
-//        return 1;
-//    }
-//
-//    @Override
-//    public OrdersEntity createNewOrder(OrdersEntity ordersEntity) {
-////        OrderDetailEntity checkExisted = orderDetailReposity.findById(orderDetailEntity.getOrderId()).orElse(null);
-////        if(checkExisted == null) {
-////
-////        }
-////        return ordersRepository.insertOrderWithEntityManager(ordersEntity);
-//        return null;
-//    }
-//
-//    @Override
-//    public OrdersEntity updateOrderExisted(String orderId, Boolean status) {
-//        OrdersEntity checkExisted = ordersRepository.findById(orderId).orElse(null);
+    @Autowired
+    private OrdersReposity ordersReposity;
+
+
+    @Override
+    public List<OrdersEntity> findListOrderItemByUserId(String userId) {
+        return ordersReposity.findOrdersEntityByCustomerEntity(userId);
+    }
+
+    @Override
+    public float viewRevenue() {
+        return ordersReposity.viewRevenue();
+    }
+
+    @Override
+    public OrdersEntity createNewOrder(OrdersEntity ordersEntity) {
+//        OrderDetailEntity checkExisted = orderDetailReposity.findById(orderDetailEntity.getOrderId()).orElse(null);
 //        if(checkExisted == null) {
 //
 //        }
-//        return ordersRepository.updateStatusOrder(orderId,status);
-//        return null;
-//    }
+        return ordersReposity.save(ordersEntity);
+    }
+
+    @Override
+    public OrdersEntity updateOrderExisted(String orderId, Boolean status) {
+        OrdersEntity checkExisted = ordersReposity.findById(orderId).orElse(null);
+        if(checkExisted == null) {
+
+        }
+        return ordersReposity.updateStatusOrder(orderId,status);
+    }
 
 
 }

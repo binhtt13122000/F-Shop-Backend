@@ -9,25 +9,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public class PromotionServiceImpl implements PromotionService {
-//    @Autowired
-//    private PromotionRepository promotionRepository;
-//    @Override
-//    public List<PromotionEntity> getAllPromotions() {
-//        return promotionRepository.findAll();
-//    }
-//
-//    @Override
-//    public PromotionEntity findPromotionByPromotionId(String promotionId) {
-////        return promotionRepository.findPromotionById(promotionId);
-//        return null;
-//    }
-//
-//    @Override
-//    public List<PromotionEntity> getAllPromotionsByUserId(String userId) {
-////        return promotionRepository.getAllPromotionByUserId(userId);
-//        return null;
-//    }
-//
+    @Autowired
+    private PromotionRepository promotionRepository;
+    @Override
+    public List<PromotionEntity> getAllPromotions() {
+        return promotionRepository.findAll();
+    }
+
+    @Override
+    public PromotionEntity findPromotionByPromotionId(String promotionId) {
+        return promotionRepository.findPromotionEntitiesByPromotionID(promotionId);
+    }
+
+    @Override
+    public List<PromotionEntity> getAllPromotionsByUserId(String userId) {
+        return promotionRepository.getPromotionEntitiesByCustomerEntity(userId);
+    }
+
 
 
 }
