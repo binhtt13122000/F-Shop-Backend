@@ -1,8 +1,7 @@
-package com.dev.fshop.entity;
+package com.dev.fshop.entities;
 
 
 import com.dev.fshop.embedded.OrderDetail;
-import com.dev.fshop.embedded.Review;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,9 +12,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
 import javax.persistence.CascadeType;
 import java.util.Collection;
 import java.util.Date;
@@ -45,15 +44,16 @@ public class OrdersEntity {
     @Column(name = "status")
     private boolean status;
 
-    @OneToMany(mappedBy = "OrderItemEntity", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Collection<OrderDetail> orderItemEntities;
 
-    @OneToMany(mappedBy = "ReviewEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ordersEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Review> reviewEntities;
+    private Collection<OrderDetail> orderDetails;
+
+    @OneToMany(mappedBy = "ordersEntity", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<ReviewEntity> reviewEntities;
 
     @ManyToOne
     @JoinColumn(name = "userId")

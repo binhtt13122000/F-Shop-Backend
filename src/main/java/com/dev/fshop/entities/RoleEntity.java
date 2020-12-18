@@ -1,4 +1,5 @@
-package com.dev.fshop.entity;
+package com.dev.fshop.entities;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,20 +15,22 @@ import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import java.util.Collection;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Data
 @Entity
-@Table(name = "Supplier")
-public class SupplierEntity {
-    @Id
-    @Column(name = "supplierId", nullable = false, unique = false)
-    private String supplierId;
-    @Column(name = "supplierName")
-    private String supplierName;
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "Role")
+public class RoleEntity {
 
-    @OneToMany(mappedBy = "ProductEntity", cascade = CascadeType.ALL)
+    @Id
+    @Column(name = "roleId", nullable = false, unique = true)
+    private String roleId;
+    @Column(name = "roleName")
+    private String roleName;
+
+    @OneToMany(mappedBy = "roleEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<ProductEntity> productEntities;
+    private Collection<CustomerEntity> customerEntities;
 }
