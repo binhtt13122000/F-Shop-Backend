@@ -1,8 +1,7 @@
 package com.dev.fshop.entity;
 
 
-import com.dev.fshop.embedded.Comment;
-import com.dev.fshop.embedded.Review;
+import com.dev.fshop.embedded.OrderDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -57,13 +56,18 @@ public class ProductEntity {
     @ToString.Exclude
     private SupplierEntity supplierEntity;
 
+    @OneToMany(mappedBy = "OrderDetail", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
+    @ToString.Exclude // Khoonhg sử dụng trong toString()
+    private Collection<OrderDetail> orderDetails;
+
     @OneToMany(mappedBy = "ReviewEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Review> reviewEntities;
+    private Collection<ReviewEntity> reviewEntities;
 
     @OneToMany(mappedBy = "CommentEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
     @ToString.Exclude // Khoonhg sử dụng trong toString()
-    private Collection<Comment> commentEntities;
+    private Collection<CommentEntity> commentEntities;
 }

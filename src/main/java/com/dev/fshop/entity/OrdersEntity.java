@@ -2,7 +2,6 @@ package com.dev.fshop.entity;
 
 
 import com.dev.fshop.embedded.OrderDetail;
-import com.dev.fshop.embedded.Review;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -53,7 +52,7 @@ public class OrdersEntity {
     @OneToMany(mappedBy = "ReviewEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Review> reviewEntities;
+    private Collection<ReviewEntity> reviewEntities;
 
     @ManyToOne
     @JoinColumn(name = "userId")

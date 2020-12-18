@@ -1,7 +1,6 @@
-package com.dev.fshop.embedded;
+package com.dev.fshop.entity;
 
-
-import com.dev.fshop.entity.OrdersEntity;
+import com.dev.fshop.entity.CustomerEntity;
 import com.dev.fshop.entity.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,21 +20,23 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "Review")
-public class Review {
+@Table(name = "Comment")
+public class CommentEntity {
     @Id
-    @Column(name = "reviewId", nullable = false, unique = true)
-    private String reviewId;
-    @Column(name = "star")
-    private int star;
+    @Column(name = "commentId", nullable = false, unique = true)
+    private String commentId;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
     @Column(name = "content")
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "orderId")
+    @JoinColumn(name = "userId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private OrdersEntity ordersEntity;
+    private CustomerEntity customerEntity;
 
     @ManyToOne
     @JoinColumn(name = "proId")
