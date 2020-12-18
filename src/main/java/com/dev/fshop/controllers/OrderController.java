@@ -17,25 +17,21 @@ public class OrderController {
     private OrderService orderServiceInterface;
 
     @GetMapping(path = "/users/{userId}/orders")
-    @CrossOrigin
     public ResponseEntity<List<OrdersEntity>> findListOrderItemByUserId(@PathVariable String userId) {
         return ResponseEntity.ok().body(orderServiceInterface.findListOrderItemByUserId(userId));
     }
 
     @GetMapping(path = "/orders")
-    @CrossOrigin
     public ResponseEntity<Float> viewRevenue() {
         return ResponseEntity.ok().body(orderServiceInterface.viewRevenue());
     }
 
     @PostMapping(path = "/orders")
-    @CrossOrigin
     public ResponseEntity<OrdersEntity> createNewOrder(@RequestBody OrdersEntity ordersEntity) {
         return ResponseEntity.ok().body(orderServiceInterface.createNewOrder(ordersEntity));
     }
 
     @PutMapping(path = "/orders")
-    @CrossOrigin
     public ResponseEntity<OrdersEntity> updateOrderExisted(
             @RequestParam Optional<String> orderId,
             @RequestParam Optional<Boolean> status) {

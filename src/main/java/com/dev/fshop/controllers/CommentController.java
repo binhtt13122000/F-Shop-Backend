@@ -16,25 +16,21 @@ public class CommentController {
     private CommentService commentServiceInterface;
 
     @GetMapping(path = "/products/{productId}/comments")
-    @CrossOrigin
     public ResponseEntity<List<CommentEntity>> findCommentByProductId(@PathVariable String productId) {
         return ResponseEntity.ok().body(commentServiceInterface.findCommentByProductId(productId));
     }
 
     @PostMapping(path = "/comments")
-    @CrossOrigin
     public ResponseEntity<CommentEntity> createNewComment(@RequestBody CommentEntity comment) {
         return ResponseEntity.ok().body(commentServiceInterface.createNewComment(comment));
     }
 
     @PatchMapping(path = "/comments/{commentId}")
-    @CrossOrigin
     public ResponseEntity<CommentEntity> updateCommentContent(@PathVariable String commentId, @RequestBody CommentEntity comment) {
         return ResponseEntity.ok().body(commentServiceInterface.updateCommentContent(comment, commentId));
     }
 
     @DeleteMapping(path = "/comments/{commentId}")
-    @CrossOrigin
     public boolean deleteCommentByCommentId(@PathVariable String commentId) {
         return commentServiceInterface.deleteComment(commentId);
     }

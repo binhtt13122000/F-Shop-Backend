@@ -16,19 +16,16 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(path = "/users/login")
-    @CrossOrigin
     public ResponseEntity<CustomerEntity> login(@RequestBody CustomerEntity customerEntity){
         return  ResponseEntity.ok().body(userService.loginByUserIdAndPass(customerEntity.getUserId(), customerEntity.getPassword()));
     }
 
     @PostMapping(path = "/users")
-    @CrossOrigin
     public ResponseEntity<CustomerEntity> registerAccount(@RequestBody CustomerEntity customerEntity) {
         return ResponseEntity.ok().body(userService.registerAccountUser(customerEntity));
     }
 
     @GetMapping(path = "/users")
-    @CrossOrigin
     public ResponseEntity<CustomerEntity> findUser(
             @RequestParam Optional<String> userId,
             @RequestParam Optional<String> userName) {
@@ -37,7 +34,6 @@ public class UserController {
 
 
     @PatchMapping(path = "/users")
-    @CrossOrigin
     public ResponseEntity<CustomerEntity> changePassword(HttpServletRequest request) {
         String userId = request.getParameter("userId");
         String newPass = request.getParameter("newPass");
@@ -46,13 +42,11 @@ public class UserController {
     }
 
     @PutMapping(path = "/users/{userId}")
-    @CrossOrigin
     public ResponseEntity<CustomerEntity> updateProfileUser(@PathVariable String userId, @RequestBody CustomerEntity customerEntity) {
         return ResponseEntity.ok().body(userService.updateProfileUser(userId, customerEntity));
     }
 
     @DeleteMapping(path = "/users/{userId}")
-    @CrossOrigin
     public boolean removeAccountUserExisted(@PathVariable String userId) {
         return userService.removeAccountUser(userId);
     }

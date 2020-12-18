@@ -17,26 +17,22 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping(path = "/products")
-    @CrossOrigin
     public ResponseEntity<ProductEntity> createNewProduct(@RequestBody ProductEntity productEntity) {
         return ResponseEntity.ok().body(productService.createNewProduct(productEntity));
     }
 
     @PutMapping(path = "/products/{proId}")
-    @CrossOrigin
     public ResponseEntity<ProductEntity> updateProductExisted(@PathVariable String proId, @RequestBody ProductEntity productEntity) {
         return ResponseEntity.ok().body(productService.updateProductExisted(proId, productEntity));
     }
 
     @DeleteMapping(path = "/products/{proId}")
-    @CrossOrigin
     public boolean deleteProductExisted(@PathVariable String proId) {
         productService.deleteProductExisted(proId);
         return true;
     }
 
     @GetMapping(path = "/products")
-    @CrossOrigin
     public ResponseEntity<List<ProductEntity>> findProducts(
             @RequestParam Optional<Integer> star,
             @RequestParam Optional<Date> createAt,

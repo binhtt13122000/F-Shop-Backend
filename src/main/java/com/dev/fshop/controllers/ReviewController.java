@@ -16,19 +16,16 @@ public class ReviewController {
 
 
     @GetMapping(path = "/products/{productId}/reviews")
-    @CrossOrigin
     public ResponseEntity<List<ReviewEntity>> findReviewByProductId(@PathVariable String productId) {
         return  ResponseEntity.ok().body(reviewService.findReviewByProductId(productId));
     }
 
     @PostMapping(path = "/reviews")
-    @CrossOrigin
     public ResponseEntity<ReviewEntity> createNewReview(@RequestBody ReviewEntity review) {
         return ResponseEntity.ok().body(reviewService.createNewReview(review));
     }
 
     @PutMapping(path = "/reviews")
-    @CrossOrigin
     public ResponseEntity<ReviewEntity> updateReviewContentStar(
             @RequestParam(name = "content")String content,
             @RequestParam(name = "star")Integer star,
@@ -37,7 +34,6 @@ public class ReviewController {
     }
 
     @DeleteMapping(path = "/reviews/{reviewId}")
-    @CrossOrigin
     public boolean deleteReviewByReviewId(@PathVariable String reviewId) {
         return  reviewService.deleteReview(reviewId);
     }
