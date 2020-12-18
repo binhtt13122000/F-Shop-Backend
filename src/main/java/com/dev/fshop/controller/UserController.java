@@ -17,7 +17,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(path = "/users")
+    @GetMapping(path = "/users/login")
     public ResponseEntity<CustomerEntity> login(@RequestBody CustomerEntity customerEntity){
         return  ResponseEntity.ok().body(userService.loginByUserIdAndPass(customerEntity.getUserId(), customerEntity.getPassword()));
     }
