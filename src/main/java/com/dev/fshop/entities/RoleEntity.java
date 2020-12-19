@@ -1,6 +1,8 @@
 package com.dev.fshop.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +22,7 @@ import java.util.Collection;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(name = "Role")
 @Table(name = "Role")
 public class RoleEntity {
 
@@ -32,5 +35,6 @@ public class RoleEntity {
     @OneToMany(mappedBy = "roleEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<CustomerEntity> customerEntities;
 }

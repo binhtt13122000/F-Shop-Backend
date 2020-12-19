@@ -1,5 +1,7 @@
 package com.dev.fshop.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +21,7 @@ import java.util.Collection;
 @Data
 @Entity
 @Table(name = "Supplier")
+@Schema(name = "Supplier")
 public class SupplierEntity {
     @Id
     @Column(name = "supplierId", nullable = false, unique = false)
@@ -29,5 +32,6 @@ public class SupplierEntity {
     @OneToMany(mappedBy = "supplierEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<ProductEntity> productEntities;
 }
