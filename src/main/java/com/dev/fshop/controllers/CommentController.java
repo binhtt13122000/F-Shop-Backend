@@ -24,6 +24,8 @@ public class CommentController {
     @Autowired
     private CommentService commentServiceInterface;
 
+
+    //get comments by product
     @Operation(description = "See comments of product (ALL ROLE)", responses = {
             @ApiResponse(
                     description = "Get Successfully!",
@@ -68,6 +70,7 @@ public class CommentController {
         return ResponseEntity.ok().body(commentServiceInterface.findCommentByProductId(productId));
     }
 
+    //create new Comment
     @Operation(description = "Create new Comment (ALL ROLE)", responses = {
             @ApiResponse(
                     description = "Create Successfully!",
@@ -122,6 +125,7 @@ public class CommentController {
             return ResponseEntity.ok().body(commentServiceInterface.createNewComment(comment));
     }
 
+    //update comment
     @Operation(description = "Edit Comment", responses = {
             @ApiResponse(
                     description = "Edit Successfully!",
@@ -188,6 +192,7 @@ public class CommentController {
         return ResponseEntity.ok().body(commentServiceInterface.updateCommentContent(comment, commentId));
     }
 
+    //delete comment
     @Operation(description = "Delete Comment", responses = {
             @ApiResponse(
                     description = "Delete ",

@@ -76,11 +76,4 @@ public class CommentEntity {
     @Transient
     private String userId;
 
-    //getter
-    public String getProId() {
-        return (productEntity != null) ? productEntity.getProId() : null;
-    }
-    public String getUserId() {
-        return (customerEntity != null) ? customerEntity.getUserId() : null;
-    }
 }
