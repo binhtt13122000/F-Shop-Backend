@@ -148,7 +148,7 @@ public class CommentController {
                             schema = @Schema(implementation = String.class))
             ),
             @ApiResponse(
-                    description = "Create failed!",
+                    description = "Update failed!",
                     responseCode = "400",
                     content = @Content(
                             mediaType = "String",
