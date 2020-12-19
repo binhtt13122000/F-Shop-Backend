@@ -2,6 +2,7 @@ package com.dev.fshop.entities;
 
 
 import com.dev.fshop.embedded.OrderDetail;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,6 +49,7 @@ public class OrdersEntity {
     @OneToMany(mappedBy = "ordersEntity", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<OrderDetail> orderDetails;
 
     @OneToMany(mappedBy = "ordersEntity", cascade = CascadeType.ALL)

@@ -1,4 +1,4 @@
-package com.dev.fshop.controller;
+package com.dev.fshop.controllers;
 
 import com.dev.fshop.entities.ReviewEntity;
 import com.dev.fshop.services.ReviewService;

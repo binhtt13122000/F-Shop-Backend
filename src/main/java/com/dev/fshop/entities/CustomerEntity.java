@@ -1,6 +1,7 @@
 package com.dev.fshop.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,7 +38,7 @@ public class CustomerEntity {
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false, unique = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "gender")
@@ -56,6 +57,7 @@ public class CustomerEntity {
     private  Date lastLogin;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "avatar")
