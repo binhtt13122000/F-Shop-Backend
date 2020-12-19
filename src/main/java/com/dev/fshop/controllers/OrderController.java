@@ -1,6 +1,5 @@
 package com.dev.fshop.controllers;
 
-import com.dev.fshop.embedded.OrderDetail;
 import com.dev.fshop.entities.OrdersEntity;
 import com.dev.fshop.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

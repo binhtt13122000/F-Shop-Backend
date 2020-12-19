@@ -195,7 +195,7 @@ public class CommentController {
     //delete comment
     @Operation(description = "Delete Comment", responses = {
             @ApiResponse(
-                    description = "Delete ",
+                    description = "Delete Successfully",
                     responseCode = "200",
                     content = @Content(
                             mediaType = "String",
