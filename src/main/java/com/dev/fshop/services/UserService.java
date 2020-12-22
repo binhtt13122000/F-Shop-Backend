@@ -5,5 +5,5 @@ import com.dev.fshop.entities.Account;
 import java.util.List;
 
 public interface UserService {
-    Account getUserById(String id);
+    Account getUserByUsername(String id);
 }

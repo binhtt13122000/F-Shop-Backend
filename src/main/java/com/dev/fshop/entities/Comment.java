@@ -19,6 +19,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Date;
 
 
 @NoArgsConstructor
@@ -55,6 +56,17 @@ public class Comment implements Serializable {
     @Size(max = 100)
     @Schema(name = "ngu vậy man!")
     private String content;
+
+    //create time
+    @Column(name = "createTime", nullable = false)
+    @NotBlank
+    @NotNull
+    private Date createTime;
+
+    @Column(name = "status", nullable = false)
+    @NotNull
+    @NotBlank
+    private int status;
 
     //customer entity
     @ManyToOne

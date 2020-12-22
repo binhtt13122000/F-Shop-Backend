@@ -13,8 +13,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public Account getUserById(String userId) {
-        return userRepository.findById(userId).orElse(null);
+    public Account getUserByUsername(String username) {
+        return userRepository.findAccountByUserName(username).orElse(null);
     }
 
 }

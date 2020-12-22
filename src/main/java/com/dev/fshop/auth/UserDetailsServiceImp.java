@@ -14,7 +14,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
     private UserService userService;
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Account account = userService.getUserById(s);
+        Account account = userService.getUserByUsername(s);
         if(account == null){
             throw new UsernameNotFoundException("Username or Password is incorrect!");
         }
