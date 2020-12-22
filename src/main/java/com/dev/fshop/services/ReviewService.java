@@ -1,21 +1,21 @@
 package com.dev.fshop.services;
 
 
-import com.dev.fshop.entities.ReviewEntity;
+import com.dev.fshop.entities.Review;
 
 import java.util.List;
 
 public interface ReviewService {
     //Get methods
-    public ReviewEntity findReviewByReviewId(String reviewId);
+    public Review findReviewByReviewId(String reviewId);
 
-    public List<ReviewEntity> findReviewByProductId(String proId);
+    public List<Review> findReviewByProductId(String proId);
 
     //Post methods
-    public ReviewEntity createNewReview(ReviewEntity reviewEntity);
+    public Review createNewReview(Review review);
 
     //Put methods
-    public ReviewEntity updateReviewContentStar(String content, Integer star, String  reviewId);
+    public Review updateReviewContentStar(String content, Integer star, String  reviewId);
 
     //Delete methods
     public boolean deleteReview(String reviewId);

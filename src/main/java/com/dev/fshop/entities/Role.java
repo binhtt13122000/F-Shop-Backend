@@ -15,6 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Collection;
 
 
@@ -24,17 +28,27 @@ import java.util.Collection;
 @NoArgsConstructor
 @Schema(name = "Role")
 @Table(name = "Role")
-public class RoleEntity {
-
+public class Role implements Serializable {
+    //id
     @Id
-    @Column(name = "roleId", nullable = false, unique = true)
+    @Column(name = "roleId", nullable = false, unique = true, updatable = false)
+    @NotNull
+    @NotBlank
+    @Size(max = 10)
+    @Schema(example = "CUSTOMER")
     private String roleId;
+    //name
     @Column(name = "roleName")
+    @Schema(example = "ROLE_CUSTOMER")
+    @NotBlank
+    @NotNull
+    @Size(max = 50)
     private String roleName;
 
-    @OneToMany(mappedBy = "roleEntity", cascade = CascadeType.ALL)
+    //relation
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private Collection<CustomerEntity> customerEntities;
+    private Collection<Account> accounts;
 }

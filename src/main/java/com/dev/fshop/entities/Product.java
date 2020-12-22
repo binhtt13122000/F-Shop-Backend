@@ -1,7 +1,6 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.embedded.OrderDetail;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -15,15 +14,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.JoinColumn;
-import javax.persistence.CascadeType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Collection;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -32,54 +29,59 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "Product")
 @Schema(name = "Product")
-public class ProductEntity {
-
+public class Product implements Serializable {
+    //proId
     @Id
     @Column(name = "proId", nullable = false, unique = true)
     @JsonIgnore
     private String proId;
-    @Column(name = "proName")
+
+    //proName
+    @Column(name = "proName", nullable = false)
     @NotNull
     @NotBlank
     @Size(max = 50)
+    @Schema(name = "ÁO THUN NAM T249")
     private String proName;
-    @Column(name = "proPrice")
+
+    //proPrice
+    @Column(name = "proPrice", nullable = false)
     @Min(1)
     @NotNull
     @NotBlank
+    @Schema(name = "100000")
     private float proPrice;
-    @Column(name = "proQuantity")
+
+    //realPrice
+    @Column(name = "realPrice", nullable = false)
+    @Min(1)
     @NotNull
     @NotBlank
-    @Min(1)
-    private int proQuantity;
+    @Schema(name = "120000")
+    private float realPrice;
+
+    //description
     @NotNull
     @NotBlank
     @Size(max = 100)
-    @Column(name = "proDescription")
+    @Column(name = "proDescription", nullable = false)
+    @Schema(example = "Áo rất đẹp!")
     private String proDescription;
-    @Column(name = "createAt")
+
+    //create
+    @Column(name = "createAt", nullable = false)
     @NotBlank
     @NotNull
     private Date createAt;
+
+    //updateAt
     @Column(name = "updateAt")
+    @NotBlank
     private Date updateAt;
-    @Column(name = "discount")
-    @NotNull
-    @NotBlank
-    private float discount;
 
-    @Transient
-    @NotNull
-    @NotBlank
-    @Size(max = 40)
-    private String categoryId;
 
-    @Transient
-    @NotNull
-    @NotBlank
-    @Size(max = 40)
-    private String supplierId;
+    @Column(name = "status", nullable = false)
+    private int status;
 
     //relation
     @ManyToOne
@@ -87,33 +89,33 @@ public class ProductEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private CategoryEntity categoryEntity;
+    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "supplierId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private SupplierEntity supplierEntity;
+    private Supplier supplier;
 
+    @Transient
+    @NotBlank
+    @Size(max = 40)
+    @Schema(example = "SUP_0001")
+    private String categoryId;
 
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
-    @ToString.Exclude // Khoonhg sử dụng trong toString()
-    @JsonIgnore
-    private Collection<OrderDetail> orderDetails;
+    @Transient
+    @NotBlank
+    @Size(max = 40)
+    @Schema(example = "TYPE_0001")
+    private String supplierId;
 
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JsonIgnore
-    private Collection<ReviewEntity> reviewEntities;
+    public String getCategoryId() {
+        return categoryId == null ? category.getProTypeId() : categoryId;
+    }
 
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
-    @ToString.Exclude // Khoonhg sử dụng trong toString()
-    @JsonIgnore
-    private Collection<CommentEntity> commentEntities;
-
+    public String getSupplierId() {
+        return supplierId == null ? supplier.getSupplierId() : supplierId;
+    }
 
 }

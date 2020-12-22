@@ -1,6 +1,7 @@
 package com.dev.fshop.entities;
 
 
+import com.dev.fshop.utils.Regex;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -14,122 +15,131 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.JoinColumn;
-import javax.persistence.CascadeType;
 import javax.persistence.Transient;
 import javax.validation.constraints.*;
-import java.util.Collection;
+import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "Customer")
+@Table(name = "Users")
 @Schema(name = "User")
-public class CustomerEntity {
+public class Account implements Serializable {
+    //id
     @Id
-    @NotBlank
-    @NotNull
-    @Size(max = 40)
-    @Column(name = "userId", nullable = false, unique = true)
+    @Column(name = "userId", nullable = false, unique = true, updatable = false)
+    @JsonIgnore
     private String userId;
 
-    @Column(name = "name")
+    //username
+    @Column(name = "userName", nullable = false)
+    @NotNull
+    @NotBlank
+    @Size(max = 40)
+    @Pattern(regexp = Regex.REGEX_USERNAME)
+    @Schema(example = "thanhbinh123")
+    private String userName;
+
+    //fullname
+    @Column(name = "fullname", nullable = false, unique = true, updatable = false)
     @NotNull
     @NotBlank
     @Size(max = 50)
+    @Pattern(regexp = Regex.REGEX_FULLNAME)
+    @Schema(example = "Trương Thanh Bình")
     private String name;
 
-    @Column(name = "birthDate")
+    //birthDate
     @NotBlank
-    @NotNull
+    @Column(name = "birthDate")
+    @Schema(example = "2000-12-13")
     private Date birthDate;
 
+    //phone number
     @Column(name = "phoneNumber")
     @NotBlank
-    @NotNull
     @Size(max = 15)
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false, unique = true)
+    //email
+    @Column(name = "email", nullable = false, unique = true, updatable = false)
     @NotBlank
     @NotNull
     @Email
     @Size(max = 50)
     private String email;
 
-    @Column(name = "gender")
+    //gender
+    @Column(name = "gender", nullable = false)
     @NotBlank
     @NotNull
+    @Schema(example = "true")
     private boolean gender;
 
+    //country
     @Column(name = "country")
     @NotBlank
-    @NotNull
     @Size(max = 50)
     private String country;
 
+    //address
     @Column(name = "address")
-    @NotNull
     @NotBlank
     @Size(max = 50)
     private String address;
 
-    @Column(name = "registeredAt")
+    //registerAt
+    @Column(name = "registeredAt", nullable = false)
     @NotNull
     @NotBlank
+    @Schema(example = "2020-12-01")
     private Date registeredAt;
 
+
+    //last login
     @Column(name = "lastLogin")
-    @NotNull
     @NotBlank
+    @Schema(example = "2020-12-13")
     private  Date lastLogin;
 
-    @Column(name = "password")
+    //password
+    @Column(name = "password", nullable = false)
+    @Size(min = 10, max = 20)
+    @NotNull
+    @NotBlank
     @JsonIgnore
     private String password;
 
+
+    //avatar
     @Column(name = "avatar")
+    @NotBlank
+    @JsonIgnore
     private String avatar;
 
+    //status
     @Column(name = "status")
     @NotNull
     @NotBlank
+    @Schema(example = "true")
     private boolean status;
 
+    //role
     @Transient
-    @NotNull
     @NotBlank
-    @Min(1)
-    @Max(3)
-    private int roleId;
+    private String roleId;
 
-    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
-    @ToString.Exclude // Khoonhg sử dụng trong toString()
-    @JsonIgnore
-    private Collection<CommentEntity> commentEntities;
-
-
-    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JsonIgnore
-    private Collection<OrdersEntity> ordersEntities;
-
-
-    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JsonIgnore
-    private Collection<PromotionEntity> promotionEntities;
+    public String getRoleId() {
+        return role != null ? role.getRoleId() : null;
+    }
 
     @ManyToOne
     @JoinColumn(name = "roleId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private RoleEntity roleEntity;
+    private Role role;
 }

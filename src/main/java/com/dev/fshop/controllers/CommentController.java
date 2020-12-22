@@ -1,6 +1,6 @@
 package com.dev.fshop.controllers;
 
-import com.dev.fshop.entities.CommentEntity;
+import com.dev.fshop.entities.Comment;
 import com.dev.fshop.services.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +32,7 @@ public class CommentController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = CommentEntity.class)))
+                            array = @ArraySchema(schema = @Schema(implementation = Comment.class)))
             ),
             @ApiResponse(
                     description = "Access deny!",
@@ -66,7 +66,7 @@ public class CommentController {
             )
     })
     @GetMapping(path = "/products/{productId}/comments")
-    public ResponseEntity<List<CommentEntity>> findCommentByProductId(@PathVariable String productId) {
+    public ResponseEntity<List<Comment>> findCommentByProductId(@PathVariable String productId) {
         return ResponseEntity.ok().body(commentServiceInterface.findCommentByProductId(productId));
     }
 
@@ -120,8 +120,8 @@ public class CommentController {
             @Parameter(
                     description = "Comment model to create.",
                     required = true,
-                    schema = @Schema(implementation = CommentEntity.class)
-            ) CommentEntity comment) {
+                    schema = @Schema(implementation = Comment.class)
+            ) Comment comment) {
             return ResponseEntity.ok().body(commentServiceInterface.createNewComment(comment));
     }
 
@@ -179,15 +179,15 @@ public class CommentController {
             )
     })
     @PatchMapping(path = "/comments/{commentId}")
-    public ResponseEntity<CommentEntity> updateCommentContent(
+    public ResponseEntity<Comment> updateCommentContent(
             @PathVariable String commentId,
             @RequestBody
             @Valid
             @Parameter(
                     description = "Comment model to update.",
                     required = true,
-                    schema = @Schema(implementation = CommentEntity.class)
-            ) CommentEntity comment,
+                    schema = @Schema(implementation = Comment.class)
+            ) Comment comment,
             Authentication authentication) {
         return ResponseEntity.ok().body(commentServiceInterface.updateCommentContent(comment, commentId));
     }

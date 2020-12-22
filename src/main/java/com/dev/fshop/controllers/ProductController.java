@@ -1,7 +1,6 @@
 package com.dev.fshop.controllers;
 
-import com.dev.fshop.entities.CommentEntity;
-import com.dev.fshop.entities.ProductEntity;
+import com.dev.fshop.entities.Product;
 import com.dev.fshop.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -73,15 +72,15 @@ public class ProductController {
             )
     })
     @PostMapping(path = "/products")
-    public ResponseEntity<ProductEntity> createNewProduct(
+    public ResponseEntity<Product> createNewProduct(
             @RequestBody
             @Valid
             @Parameter(
                     description = "Product model to create.",
                     required = true,
-                    schema = @Schema(implementation = ProductEntity.class)
-            ) ProductEntity productEntity) {
-        return ResponseEntity.ok().body(productService.createNewProduct(productEntity));
+                    schema = @Schema(implementation = Product.class)
+            ) Product product) {
+        return ResponseEntity.ok().body(productService.createNewProduct(product));
     }
 
     //update comment
@@ -139,16 +138,16 @@ public class ProductController {
             )
     })
     @PutMapping(path = "/products/{proId}")
-    public ResponseEntity<ProductEntity> updateProductExisted(
+    public ResponseEntity<Product> updateProductExisted(
             @PathVariable String proId,
             @RequestBody
             @Valid
             @Parameter(
                     description = "Product model to update.",
                     required = true,
-                    schema = @Schema(implementation = ProductEntity.class)
-            ) ProductEntity productEntity) {
-        return ResponseEntity.ok().body(productService.updateProductExisted(proId, productEntity));
+                    schema = @Schema(implementation = Product.class)
+            ) Product product) {
+        return ResponseEntity.ok().body(productService.updateProductExisted(proId, product));
     }
 
     //delete product
@@ -208,7 +207,7 @@ public class ProductController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = ProductEntity.class)))
+                            array = @ArraySchema(schema = @Schema(implementation = Product.class)))
             ),
             @ApiResponse(
                     description = "Access deny!",
@@ -232,7 +231,7 @@ public class ProductController {
             )
     })
     @GetMapping(path = "/products")
-    public ResponseEntity<List<ProductEntity>> findProducts(
+    public ResponseEntity<List<Product>> findProducts(
             @RequestParam Optional<Integer> star,
             @RequestParam Optional<Date> createAt,
             @RequestParam Optional<String> type,

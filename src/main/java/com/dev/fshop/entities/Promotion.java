@@ -19,8 +19,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Max;
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
@@ -28,28 +27,32 @@ import javax.validation.constraints.Max;
 @Entity
 @Table(name = "Promotion")
 @Schema(name = "Promotion")
-public class PromotionEntity {
+public class Promotion implements Serializable {
 
+    //promotion id
     @Id
     @JsonIgnore
     @Column(name = "promotionID", nullable = false, unique = true)
     private String promotionID;
 
-    @Column(name = "promotionName")
+    @Column(name = "promotionName", nullable = false)
     @NotNull
     @NotBlank
     @Size(max = 50)
+    @Schema(example = "GIẢM GIÁ 10%")
     private String promotionName;
 
 
-    @Column(name = "promo")
+    @Column(name = "promo", nullable = false)
     @NotNull
     @NotBlank
-    @Min(10)
-    @Max(80)
+    @Schema(example = "20")
     private float promo;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
+    @NotNull
+    @NotBlank
+    @Schema(example = "1")
     private boolean status;
 
     @ManyToOne
@@ -57,8 +60,12 @@ public class PromotionEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private CustomerEntity customerEntity;
+    private Account account;
 
     @Transient
     private String userId;
+
+    public String getUserId() {
+        return account != null ? account.getUserId() : null;
+    }
 }

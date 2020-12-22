@@ -1,28 +1,28 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.entities.ProductEntity;
+import com.dev.fshop.entities.Product;
 
 import java.util.Date;
 import java.util.List;
 
 public interface ProductService {
     //Get Methods
-    public List<ProductEntity> getAllProducts();
-    public List<ProductEntity> findProductsByName(String productName);
-    public ProductEntity findProductById(String proId);
-    public List<ProductEntity> findProductByPrice(float priceFrom, float priceTo);
-    public List<ProductEntity> findProductByType(String type);
-    public List<ProductEntity> getNewProduct(Date date);
-    public List<ProductEntity> findGoodProduct(Integer star);
+    public List<Product> getAllProducts();
+    public List<Product> findProductsByName(String productName);
+    public Product findProductById(String proId);
+    public List<Product> findProductByPrice(float priceFrom, float priceTo);
+    public List<Product> findProductByType(String type);
+    public List<Product> getNewProduct(Date date);
+    public List<Product> findGoodProduct(Integer star);
 
 
 
     //Post Methods
-    public ProductEntity createNewProduct(ProductEntity productEntity);
+    public Product createNewProduct(Product product);
 
 
     //Put Methods
-    public ProductEntity updateProductExisted(String proId, ProductEntity productEntity);
+    public Product updateProductExisted(String proId, Product product);
 
 
     //Delete Methods

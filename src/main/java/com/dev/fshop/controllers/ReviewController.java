@@ -1,7 +1,6 @@
 package com.dev.fshop.controllers;
 
-import com.dev.fshop.entities.CommentEntity;
-import com.dev.fshop.entities.ReviewEntity;
+import com.dev.fshop.entities.Review;
 import com.dev.fshop.services.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,7 +33,7 @@ public class ReviewController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = ReviewEntity.class)))
+                            array = @ArraySchema(schema = @Schema(implementation = Review.class)))
             ),
             @ApiResponse(
                     description = "Access deny!",
@@ -68,7 +67,7 @@ public class ReviewController {
             )
     })
     @GetMapping(path = "/products/{productId}/reviews")
-    public ResponseEntity<List<ReviewEntity>> findReviewByProductId(@PathVariable String productId) {
+    public ResponseEntity<List<Review>> findReviewByProductId(@PathVariable String productId) {
         return  ResponseEntity.ok().body(reviewService.findReviewByProductId(productId));
     }
 
@@ -117,14 +116,14 @@ public class ReviewController {
             )
     })
     @PostMapping(path = "/reviews")
-    public ResponseEntity<ReviewEntity> createNewReview(
+    public ResponseEntity<Review> createNewReview(
             @RequestBody
             @Valid
             @Parameter(
                     description = "Review model to create.",
                     required = true,
-                    schema = @Schema(implementation = ReviewEntity.class)
-            ) ReviewEntity review
+                    schema = @Schema(implementation = Review.class)
+            ) Review review
     ) {
         return ResponseEntity.ok().body(reviewService.createNewReview(review));
     }
@@ -183,7 +182,7 @@ public class ReviewController {
             )
     })
     @PutMapping(path = "/reviews")
-    public ResponseEntity<ReviewEntity> updateReviewContentStar(
+    public ResponseEntity<Review> updateReviewContentStar(
             @RequestParam(name = "reviewId") String reviewId,
             Authentication authentication,
             @RequestBody
@@ -191,8 +190,8 @@ public class ReviewController {
             @Parameter(
                     description = "Comment model to update.",
                     required = true,
-                    schema = @Schema(implementation = ReviewEntity.class)
-            ) ReviewEntity review) {
+                    schema = @Schema(implementation = Review.class)
+            ) Review review) {
         return null;
     }
 

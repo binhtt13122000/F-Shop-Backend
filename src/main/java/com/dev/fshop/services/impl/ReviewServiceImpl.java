@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entities.ReviewEntity;
+import com.dev.fshop.entities.Review;
 import com.dev.fshop.repositories.ReviewRepository;
 import com.dev.fshop.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,27 +14,29 @@ public class ReviewServiceImpl implements ReviewService {
     private ReviewRepository reviewRepository;
 
     @Override
-    public ReviewEntity findReviewByReviewId(String  reviewId) {
+    public Review findReviewByReviewId(String  reviewId) {
         return  reviewRepository.findById(reviewId).orElse(null);
     }
 
     @Override
-    public List<ReviewEntity> findReviewByProductId(String proId) {
-        return reviewRepository.findReviewEntitiesByProductEntity(proId);
+    public List<Review> findReviewByProductId(String proId) {
+//        return reviewRepository.findReviewEntitiesByProductEntity(proId);
+        return null;
+
     }
 
 
     @Override
-    public ReviewEntity createNewReview(ReviewEntity reviewEntity) {
+    public Review createNewReview(Review review) {
 //        ReviewEntity checkExisted = reviewRepository.findById(reviewEntity.getReviewId()).orElse(null);
 //        if(checkExisted == null) {
 //
 //        }
-        return reviewRepository.save(reviewEntity);
+        return reviewRepository.save(review);
     }
 
     @Override
-    public ReviewEntity updateReviewContentStar(String content, Integer star, String reviewId) {
+    public Review updateReviewContentStar(String content, Integer star, String reviewId) {
         //        ReviewEntity checkExisted = reviewRepository.findById(reviewEntity.getReviewId()).orElse(null);
 //        if(checkExisted == null) {
 //
@@ -44,7 +46,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public boolean deleteReview(String reviewId) {
-        ReviewEntity checkExisted = reviewRepository.findById(reviewId).orElse(null);
+        Review checkExisted = reviewRepository.findById(reviewId).orElse(null);
         if(checkExisted == null) {
             return false;
         }else {
