@@ -182,7 +182,7 @@ public class ReviewController {
             ),
     })
     @PutMapping("/reviews/{reviewId}/update")
-    public ResponseEntity updateReview(@PathVariable("reviewId") String reviewId){
+    public ResponseEntity updateReview(@PathVariable("reviewId") String reviewId, @RequestBody Review review){
         return null;
     }
 
@@ -238,7 +238,7 @@ public class ReviewController {
             ),
     })
     @PutMapping("/reviews/{reviewId}/delete")
-    public ResponseEntity deleteReview(@PathVariable("reviewÌd") String reviewÌd){
+    public ResponseEntity deleteReview(@PathVariable("reviewId") String reviewÌd){
         return null;
     }
 

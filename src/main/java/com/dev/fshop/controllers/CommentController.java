@@ -169,7 +169,7 @@ public class CommentController {
             ),
     })
     @PutMapping("/comments/{commentId}/update")
-    public ResponseEntity updateComment(@PathVariable("commentId") String commentId){
+    public ResponseEntity updateComment(@PathVariable("commentId") String commentId, @RequestBody Comment comment){
         return null;
     }
 
