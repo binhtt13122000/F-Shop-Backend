@@ -221,7 +221,7 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}")
-    public ResponseEntity updateProfile(@PathVariable String username){
+    public ResponseEntity updateProfile(@PathVariable String username, @RequestBody Account account){
         return null;
     }
 
@@ -276,7 +276,7 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}/change_role")
-    public ResponseEntity changeRole(@PathVariable String username, @RequestBody Account account){
+    public ResponseEntity changeRole(@PathVariable String username){
         return null;
     }
 
