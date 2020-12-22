@@ -1,6 +1,9 @@
 package com.dev.fshop.entities;
 
 
+import com.dev.fshop.supporters.Discount;
+import com.dev.fshop.supporters.ProductDetail;
+import com.dev.fshop.supporters.ProductImage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -9,19 +12,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -117,5 +115,15 @@ public class Product implements Serializable {
     public String getSupplierId() {
         return supplierId == null ? supplier.getSupplierId() : supplierId;
     }
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductDetail> productDetails;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Discount> discounts;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductImage> productImages;
+
 
 }

@@ -88,18 +88,6 @@ public class CommentController {
                     )
             ),
             @ApiResponse(
-                    description = "Access denied!",
-                    responseCode = "403",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "Access denied!",
-                                    value = "Access denied!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
                     description = "Product is not available!",
                     responseCode = "404",
                     content = @Content(
