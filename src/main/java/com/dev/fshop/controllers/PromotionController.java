@@ -20,53 +20,5 @@ import java.util.List;
 @RequestMapping(path = "/v1/api")
 @Tag(name = "Promotion")
 public class PromotionController {
-    @Autowired
-    private PromotionService promotionService;
-
-    //get promotion by user
-    @Operation(description = "See promotions of user (ALL ROLE)", responses = {
-            @ApiResponse(
-                    description = "Get Successfully!",
-                    responseCode = "200",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Comment.class)))
-            ),
-            @ApiResponse(
-                    description = "Access deny!",
-                    responseCode = "403",
-                    content = @Content(
-                            mediaType = "String",
-                            examples = @ExampleObject(
-                                    description = "Display when user is not authorized!",
-                                    value = "Access deny!"),
-                            schema = @Schema(implementation = String.class))
-            ),
-            @ApiResponse(
-                    description = "Not found!",
-                    responseCode = "404",
-                    content = @Content(
-                            mediaType = "String",
-                            examples = @ExampleObject(
-                                    description = "Display when this user is not found!",
-                                    value = "User is not found!"),
-                            schema = @Schema(implementation = String.class))
-            ),
-            @ApiResponse(
-                    description = "Server throw Exception!",
-                    responseCode = "500",
-                    content = @Content(
-                            mediaType = "String",
-                            examples = @ExampleObject(
-                                    description = "Server throw Exception!",
-                                    value = "Server throw Exception!"),
-                            schema = @Schema(implementation = String.class))
-            )
-    })
-    @GetMapping(path = "/promotions")
-    public ResponseEntity<List<Promotion>> getAllPromotionsByUserId(@RequestParam(name = "userId") String userId) {
-        return  ResponseEntity.ok().body(promotionService.getAllPromotionsByUserId(userId));
-    }
-
 
 }

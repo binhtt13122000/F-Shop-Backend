@@ -6,17 +6,5 @@ import com.dev.fshop.entities.Review;
 import java.util.List;
 
 public interface ReviewService {
-    //Get methods
-    public Review findReviewByReviewId(String reviewId);
 
-    public List<Review> findReviewByProductId(String proId);
-
-    //Post methods
-    public Review createNewReview(Review review);
-
-    //Put methods
-    public Review updateReviewContentStar(String content, Integer star, String  reviewId);
-
-    //Delete methods
-    public boolean deleteReview(String reviewId);
 }

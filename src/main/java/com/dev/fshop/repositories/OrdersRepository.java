@@ -1,10 +1,12 @@
 package com.dev.fshop.repositories;
 
 
-import com.dev.fshop.entities.Product;
+import com.dev.fshop.entities.Orders;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
 @Repository
-public interface ProductRepository extends JpaRepository<Product, String>{
+public interface OrdersRepository extends JpaRepository<Orders, String> {
+
 }
