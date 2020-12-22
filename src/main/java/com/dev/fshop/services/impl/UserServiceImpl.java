@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entities.CustomerEntity;
+import com.dev.fshop.entities.Account;
 import com.dev.fshop.repositories.UserRepository;
 import com.dev.fshop.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,37 +13,41 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Override
-    public CustomerEntity loginByUserIdAndPass(String userId, String password) {
-        return userRepository.checkLoginByIdPassword(userId, password);
+    public Account loginByUserIdAndPass(String userId, String password) {
+//        return userRepository.checkLoginByIdPassword(userId, password);
+        return null;
+
     }
 
     @Override
-    public List<CustomerEntity> searchCustomersByName(String userName) {
-        return  userRepository.findByName(userName);
+    public List<Account> searchCustomersByName(String userName) {
+        return null;
+
+//        return  userRepository.findByName(userName);
     }
 
     @Override
-    public List<CustomerEntity> getAllUsers() {
+    public List<Account> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public CustomerEntity getUserById(String userId) {
+    public Account getUserById(String userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
     @Override
-    public CustomerEntity registerAccountUser(CustomerEntity customerEntity) {
+    public Account registerAccountUser(Account account) {
 //        CustomerEntity checkExisted = userRepository.findById(customerEntity.getUserId()).orElse(null);
 //        if(checkExisted == null) {
 //
 //        }
-        return  userRepository.save(customerEntity);
+        return  userRepository.save(account);
     }
 
     @Override
-    public CustomerEntity changePassword(String userId, String newPassword, String oldPassword) {
-                CustomerEntity checkExisted = userRepository.findById(userId).orElse(null);
+    public Account changePassword(String userId, String newPassword, String oldPassword) {
+                Account checkExisted = userRepository.findById(userId).orElse(null);
 //        if(checkExisted == null) {
 //
 //        }else {
@@ -53,21 +57,23 @@ public class UserServiceImpl implements UserService {
 //
 //            }
 //        }
-        return userRepository.updatePassword(userId, newPassword);
+//        return userRepository.updatePassword(userId, newPassword);
+        return null;
+
     }
 
     @Override
-    public CustomerEntity updateProfileUser(String userId, CustomerEntity customerEntity) {
+    public Account updateProfileUser(String userId, Account account) {
         //        CustomerEntity checkExisted = userRepository.findById(customerEntity.getUserId()).orElse(null);
 //        if(checkExisted == null) {
 //
 //        }
-        return userRepository.save(customerEntity);
+        return userRepository.save(account);
     }
 
     @Override
     public boolean removeAccountUser(String userId) {
-                CustomerEntity checkExisted = userRepository.findById(userId).orElse(null);
+                Account checkExisted = userRepository.findById(userId).orElse(null);
         if(checkExisted == null) {
             return false;
         }else {

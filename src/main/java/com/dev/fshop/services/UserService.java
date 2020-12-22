@@ -1,23 +1,22 @@
 package com.dev.fshop.services;
 
-import com.dev.fshop.entities.CustomerEntity;
-import org.springframework.data.jpa.repository.Query;
+import com.dev.fshop.entities.Account;
 
 import java.util.List;
 
 public interface UserService {
     //Get Methods
-    public CustomerEntity loginByUserIdAndPass(String userId, String password);
-    public List<CustomerEntity> searchCustomersByName(String userName);
-    public List<CustomerEntity> getAllUsers();
-    public CustomerEntity getUserById(String userId);
+    public Account loginByUserIdAndPass(String userId, String password);
+    public List<Account> searchCustomersByName(String userName);
+    public List<Account> getAllUsers();
+    public Account getUserById(String userId);
 
     //Post Methods
-    public CustomerEntity registerAccountUser(CustomerEntity customerEntity);
+    public Account registerAccountUser(Account account);
 
     //Put Methods
-    public CustomerEntity changePassword(String userId, String newPassword, String oldPassword);
-    public CustomerEntity updateProfileUser(String userId, CustomerEntity customerEntity);
+    public Account changePassword(String userId, String newPassword, String oldPassword);
+    public Account updateProfileUser(String userId, Account account);
 
 
     //Delete Methods

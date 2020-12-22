@@ -16,10 +16,9 @@ import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
+import java.io.Serializable;
+import java.util.Date;
 
 
 @NoArgsConstructor
@@ -28,37 +27,70 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "Review")
 @Schema(name = "Review")
-public class ReviewEntity {
+public class Review implements Serializable {
+    //id
     @Id
     @JsonIgnore
     @Column(name = "reviewId", nullable = false, unique = true)
     private String reviewId;
-    @Column(name = "star")
+
+    //star
+    @Column(name = "star", nullable = false)
     @NotNull
     @NotBlank
     @Min(1)
     @Max(5)
+    @Schema(example = "3")
     private int star;
+
+    //content
     @Column(name = "content")
+    @NotBlank
+    @Schema(example = "đẹp")
     private String content;
+
+    //createTime
+    @Column(name = "createTime", nullable = false)
+    @NotNull
+    @NotBlank
+    private Date createTime;
+
+    //status
+    @Column(name = "status", nullable = false)
+    @NotNull
+    @NotBlank
+    @Schema(example = "1")
+    private int status;
 
     @ManyToOne
     @JoinColumn(name = "orderId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private OrdersEntity ordersEntity;
+    private Orders orders;
 
     @ManyToOne
     @JoinColumn(name = "proId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private ProductEntity productEntity;
+    private Product product;
 
     @Transient
+    @NotBlank
+    @Size(max = 40)
     private String orderId;
 
-    @Transient String proId;
+    @Transient
+    @NotBlank
+    @Size(max = 40)
+    private String proId;
 
+    public String getOrderId() {
+        return orderId == null ? orders.getOrderId() : orderId;
+    }
+
+    public String getProId() {
+        return proId == null ? product.getProId() : proId;
+    }
 }

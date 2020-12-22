@@ -1,6 +1,6 @@
 package com.dev.fshop.auth;
 
-import com.dev.fshop.entities.CustomerEntity;
+import com.dev.fshop.entities.Account;
 import com.dev.fshop.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +14,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
     private UserService userService;
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        CustomerEntity account = userService.getUserById(s);
+        Account account = userService.getUserById(s);
         if(account == null){
             throw new UsernameNotFoundException("Username or Password is incorrect!");
         }

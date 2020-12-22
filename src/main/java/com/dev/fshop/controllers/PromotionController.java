@@ -1,7 +1,7 @@
 package com.dev.fshop.controllers;
 
-import com.dev.fshop.entities.CommentEntity;
-import com.dev.fshop.entities.PromotionEntity;
+import com.dev.fshop.entities.Comment;
+import com.dev.fshop.entities.Promotion;
 import com.dev.fshop.services.PromotionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -30,7 +30,7 @@ public class PromotionController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = CommentEntity.class)))
+                            array = @ArraySchema(schema = @Schema(implementation = Comment.class)))
             ),
             @ApiResponse(
                     description = "Access deny!",
@@ -64,7 +64,7 @@ public class PromotionController {
             )
     })
     @GetMapping(path = "/promotions")
-    public ResponseEntity<List<PromotionEntity>> getAllPromotionsByUserId(@RequestParam(name = "userId") String userId) {
+    public ResponseEntity<List<Promotion>> getAllPromotionsByUserId(@RequestParam(name = "userId") String userId) {
         return  ResponseEntity.ok().body(promotionService.getAllPromotionsByUserId(userId));
     }
 

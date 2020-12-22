@@ -14,6 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Collection;
 
 @NoArgsConstructor
@@ -22,16 +26,27 @@ import java.util.Collection;
 @Entity
 @Table(name = "Supplier")
 @Schema(name = "Supplier")
-public class SupplierEntity {
+public class Supplier implements Serializable {
+    //id
     @Id
-    @Column(name = "supplierId", nullable = false, unique = false)
+    @Column(name = "supplierId", nullable = false, unique = true, updatable = false)
+    @NotNull
+    @NotBlank
+    @Schema(example = "SUP_0001")
+    @Size(max = 40)
     private String supplierId;
-    @Column(name = "supplierName")
+    //name
+    @Column(name = "supplierName", nullable = false)
+    @Schema(example = "GUCCI")
+    @NotNull
+    @NotBlank
+    @Size(max = 50)
     private String supplierName;
 
-    @OneToMany(mappedBy = "supplierEntity", cascade = CascadeType.ALL)
+    //relation
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private Collection<ProductEntity> productEntities;
+    private Collection<Product> products;
 }

@@ -1,6 +1,6 @@
 package com.dev.fshop.controllers;
 
-import com.dev.fshop.entities.CustomerEntity;
+import com.dev.fshop.entities.Account;
 import com.dev.fshop.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,7 +47,7 @@ public class UserController {
             ),
     })
     @PostMapping(path = "/users/login")
-    public ResponseEntity<CustomerEntity> login(HttpServletRequest request){
+    public ResponseEntity<Account> login(HttpServletRequest request){
         return null;
     }
 
@@ -85,15 +85,15 @@ public class UserController {
             )
     })
     @PostMapping(path = "/users")
-    public ResponseEntity<CustomerEntity> registerAccount(
+    public ResponseEntity<Account> registerAccount(
             @RequestBody
             @Valid
             @Parameter(
                     description = "Comment model to create.",
                     required = true,
-                    schema = @Schema(implementation = CustomerEntity.class)
-            ) CustomerEntity customerEntity) {
-        return ResponseEntity.ok().body(userService.registerAccountUser(customerEntity));
+                    schema = @Schema(implementation = Account.class)
+            ) Account account) {
+        return ResponseEntity.ok().body(userService.registerAccountUser(account));
     }
 
     @Operation(description = "Find user", responses = {
@@ -102,7 +102,7 @@ public class UserController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = CustomerEntity.class)))
+                            array = @ArraySchema(schema = @Schema(implementation = Account.class)))
             ),
             @ApiResponse(
                     description = "Access deny!",
@@ -136,7 +136,7 @@ public class UserController {
             )
     })
     @GetMapping(path = "/users")
-    public ResponseEntity<CustomerEntity> findUser(
+    public ResponseEntity<Account> findUser(
             @RequestParam Optional<String> userId,
             @RequestParam Optional<String> userName) {
         return null;
@@ -185,7 +185,7 @@ public class UserController {
             )
     })
     @PatchMapping(path = "/users")
-    public ResponseEntity<CustomerEntity> changePassword(HttpServletRequest request, Authentication authentication) {
+    public ResponseEntity<Account> changePassword(HttpServletRequest request, Authentication authentication) {
         String userId = request.getParameter("userId");
         String newPass = request.getParameter("newPass");
         String oldPass = request.getParameter("oldPass");
@@ -235,8 +235,8 @@ public class UserController {
             )
     })
     @PutMapping(path = "/users/{userId}")
-    public ResponseEntity<CustomerEntity> updateProfileUser(@PathVariable String userId, @RequestBody CustomerEntity customerEntity) {
-        return ResponseEntity.ok().body(userService.updateProfileUser(userId, customerEntity));
+    public ResponseEntity<Account> updateProfileUser(@PathVariable String userId, @RequestBody Account account) {
+        return ResponseEntity.ok().body(userService.updateProfileUser(userId, account));
     }
 
     @Operation(description = "Delete User", responses = {

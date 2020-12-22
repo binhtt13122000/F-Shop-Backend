@@ -1,6 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entities.CommentEntity;
+import com.dev.fshop.entities.Comment;
 import com.dev.fshop.repositories.CommentRepository;
 import com.dev.fshop.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +13,19 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
 
     @Override
-    public List<CommentEntity> findCommentByProductId(String productId){
-        return commentRepository.findCommentEntitiesByProductEntity(productId);
+    public List<Comment> findCommentByProductId(String productId){
+//        return commentRepository.findCommentEntitiesByProductEntity(productId);
+        return null;
+
     }
 
     @Override
-    public CommentEntity createNewComment(CommentEntity comment) {
+    public Comment createNewComment(Comment comment) {
         return commentRepository.save(comment);
     }
 
     @Override
-    public CommentEntity updateCommentContent(CommentEntity comment, String commentId) {
+    public Comment updateCommentContent(Comment comment, String commentId) {
 //        CommentEntity checkExisted = commentRepository.findById(commentId).orElse(null);
 //        if(checkExisted == null) {
 //
