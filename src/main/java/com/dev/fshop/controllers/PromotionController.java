@@ -111,7 +111,7 @@ public class PromotionController {
             ),
     })
     @PostMapping("/users/{username}/promotions")
-    public ResponseEntity createPromotion(@PathVariable String username){
+    public ResponseEntity createPromotion(@PathVariable String username, @RequestBody Promotion promotion){
         return null;
     }
 
@@ -166,7 +166,7 @@ public class PromotionController {
             ),
     })
     @PutMapping("/users/{username}/promotions")
-    public ResponseEntity updatePromotion(@PathVariable String username){
+    public ResponseEntity updatePromotion(@PathVariable String username, @RequestBody Promotion promotion){
         return null;
     }
 }
