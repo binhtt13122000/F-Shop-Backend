@@ -35,20 +35,14 @@ public class Role implements Serializable {
     @NotNull
     @NotBlank
     @Size(max = 10)
-    @Schema(example = "CUSTOMER")
+    @Schema(example = "ROL_1")
     private String roleId;
     //name
     @Column(name = "roleName")
-    @Schema(example = "ROLE_CUSTOMER")
+    @Schema(example = "CUSTOMER")
     @NotBlank
     @NotNull
     @Size(max = 50)
     private String roleName;
 
-    //relation
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JsonIgnore
-    private Collection<Account> accounts;
 }

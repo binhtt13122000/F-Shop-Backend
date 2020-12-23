@@ -42,7 +42,7 @@ public class Account implements Serializable {
     private String userId;
 
     //username
-    @Column(name = "userName", nullable = false)
+    @Column(name = "userName", nullable = false, unique = true)
     @NotNull
     @NotBlank
     @Size(max = 40)

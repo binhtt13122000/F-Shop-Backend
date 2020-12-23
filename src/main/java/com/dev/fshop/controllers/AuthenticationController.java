@@ -63,7 +63,7 @@ public class AuthenticationController {
                     )
             )
     })
-    @PostMapping(path = "/login")
+    @PostMapping(path = "/users/login")
     public ResponseEntity login(@RequestBody AuthenticateRequest request) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));

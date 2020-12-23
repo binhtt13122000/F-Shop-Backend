@@ -9,26 +9,33 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
+
 @Data
 class ChangePasswordRequest {
     private String oldPass;
     private String newPass;
 }
+
 @RestController
 @RequestMapping(path = "/v1/api")
 @Tag(name = "User")
 public class UserController {
+    @Autowired
+    private UserService userService;
+
     @Operation(description = "get users", responses = {
             @ApiResponse(
                     description = "get users successfully!",
@@ -68,9 +75,10 @@ public class UserController {
             @RequestParam Optional<String> q,
             @RequestParam Optional<String> email,
             @RequestParam Optional<String> role
-    ){
+    ) {
         return null;
     }
+
 
     @Operation(description = "Create new user", responses = {
             @ApiResponse(
@@ -99,8 +107,13 @@ public class UserController {
             ),
     })
     @PostMapping("/users/register")
-    public ResponseEntity register(@RequestBody Account account){
-        return null;
+    public ResponseEntity register(@RequestBody Account account) {
+        System.out.println("Account: " + account);
+        userService.addUser(account, "ROL_1");
+//        if(errors.hasErrors()){
+//            return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
+//        }
+        return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
     }
 
     @Operation(description = "Create new staff", responses = {
@@ -130,9 +143,10 @@ public class UserController {
             ),
     })
     @PostMapping("/users")
-    public ResponseEntity addStaff(@RequestBody Account account){
+    public ResponseEntity addStaff(@RequestBody Account account) {
         return null;
     }
+
     @Operation(description = "change password", responses = {
             @ApiResponse(
                     description = "change password successfully!",
@@ -184,7 +198,7 @@ public class UserController {
             ),
     })
     @PostMapping("/users/{username}/change_password")
-    public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request){
+    public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
         return null;
     }
 
@@ -239,7 +253,7 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}")
-    public ResponseEntity updateProfile(@PathVariable String username, @RequestBody Account account){
+    public ResponseEntity updateProfile(@PathVariable String username, @RequestBody Account account) {
         return null;
     }
 
@@ -294,7 +308,7 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}/change_role")
-    public ResponseEntity changeRole(@PathVariable String username){
+    public ResponseEntity changeRole(@PathVariable String username) {
         return null;
     }
 
@@ -349,7 +363,7 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}/ban_account")
-    public ResponseEntity banAccount(@PathVariable String username){
+    public ResponseEntity banAccount(@PathVariable String username) {
         return null;
     }
 
@@ -404,7 +418,7 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}/active_account")
-    public ResponseEntity activeAccount(@PathVariable String username){
+    public ResponseEntity activeAccount(@PathVariable String username) {
         return null;
     }
 
@@ -443,7 +457,7 @@ public class UserController {
             ),
     })
     @GetMapping("/users/{username}")
-    public ResponseEntity getByUsername(@PathVariable String username){
+    public ResponseEntity getByUsername(@PathVariable String username) {
         return null;
     }
 }
