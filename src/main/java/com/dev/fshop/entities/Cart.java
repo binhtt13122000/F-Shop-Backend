@@ -1,6 +1,6 @@
 package com.dev.fshop.entities;
 
-import com.dev.fshop.generator.entites.UserIdPrefixedSequenceCartIdGenerator;
+import com.dev.fshop.generator.entities.UserIdPrefixedSequenceCartIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -29,7 +29,7 @@ public class Cart implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_cart")
     @GenericGenerator(
             name = "sequence_cart",
-            strategy = "com.dev.fshop.generator.enti.UserIdPrefixedSequenceCartIdGenerator",
+            strategy = "com.dev.fshop.generator.entities.UserIdPrefixedSequenceCartIdGenerator",
             parameters = {
                     @Parameter(name = UserIdPrefixedSequenceCartIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = UserIdPrefixedSequenceCartIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

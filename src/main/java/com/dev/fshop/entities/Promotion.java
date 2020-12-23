@@ -1,7 +1,7 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.generator.entites.UserIdPrefixedSequencePromotionIdGenerator;
+import com.dev.fshop.generator.entities.UserIdPrefixedSequencePromotionIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -32,7 +32,7 @@ public class Promotion implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_prmotion")
     @GenericGenerator(
             name = "sequence_promotion",
-            strategy = "com.dev.fshop.generator.enti.UserIdPrefixedSequencePromotionIdGenerator",
+            strategy = "com.dev.fshop.generator.entities.UserIdPrefixedSequencePromotionIdGenerator",
             parameters = {
                     @Parameter(name = UserIdPrefixedSequencePromotionIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = UserIdPrefixedSequencePromotionIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

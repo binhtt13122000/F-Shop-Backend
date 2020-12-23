@@ -1,7 +1,7 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.generator.entites.ProductIdPrefixedSequenceReviewIdGenerator;
+import com.dev.fshop.generator.entities.ProductIdPrefixedSequenceReviewIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,7 @@ public class Review implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_review")
     @GenericGenerator(
             name = "sequence_review",
-            strategy = "com.dev.fshop.generator.enti.ProIdPrefixedSequenceReviewIdGenerator",
+            strategy = "com.dev.fshop.generator.entities.ProIdPrefixedSequenceReviewIdGenerator",
             parameters = {
                     @Parameter(name = ProductIdPrefixedSequenceReviewIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = ProductIdPrefixedSequenceReviewIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

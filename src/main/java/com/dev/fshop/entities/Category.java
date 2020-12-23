@@ -1,7 +1,7 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.generator.entites.StringPrefixedSequenceIdGenerator;
+import com.dev.fshop.generator.entities.StringPrefixedSequenceIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -35,7 +35,7 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_category")
     @GenericGenerator(
             name = "sequence_category",
-            strategy = "com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator",
+            strategy = "com.dev.fshop.generator.entities.StringPrefixedSequenceIdGenerator",
             parameters = {
                     @Parameter(name = StringPrefixedSequenceIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = StringPrefixedSequenceIdGenerator.VALUE_PREFIX_PARAMETER, value = "TYPE_"),

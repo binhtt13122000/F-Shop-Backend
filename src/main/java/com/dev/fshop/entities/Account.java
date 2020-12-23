@@ -1,7 +1,7 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.generator.entites.StringPrefixedSequenceIdGenerator;
+import com.dev.fshop.generator.entities.StringPrefixedSequenceIdGenerator;
 import com.dev.fshop.utils.Regex;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,7 +32,7 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_user")
     @GenericGenerator(
             name = "sequence_user",
-            strategy = "com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator",
+            strategy = "com.dev.fshop.generator.entities.StringPrefixedSequenceIdGenerator",
             parameters = {
                     @Parameter(name = StringPrefixedSequenceIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = StringPrefixedSequenceIdGenerator.VALUE_PREFIX_PARAMETER, value = "USER_"),

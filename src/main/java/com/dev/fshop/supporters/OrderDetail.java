@@ -27,7 +27,7 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_orderDetail")
     @GenericGenerator(
             name = "sequence_orderDetail",
-            strategy = "com.dev.fshop.generator.suppo.UserIdPrefixedSequenceOrderDetailIdGenerator",
+            strategy = "com.dev.fshop.generator.supporters.UserIdPrefixedSequenceOrderDetailIdGenerator",
             parameters = {
                     @org.hibernate.annotations.Parameter(name = UserIdPrefixedSequenceOrderDetailIdGenerator.INCREMENT_PARAM, value = "1"),
                     @org.hibernate.annotations.Parameter(name = UserIdPrefixedSequenceOrderDetailIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

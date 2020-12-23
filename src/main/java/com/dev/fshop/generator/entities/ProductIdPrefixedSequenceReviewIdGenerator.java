@@ -1,6 +1,6 @@
-package com.dev.fshop.generator.entites;
+package com.dev.fshop.generator.entities;
 
-import com.dev.fshop.entities.Comment;
+import com.dev.fshop.entities.Review;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -12,7 +12,7 @@ import org.hibernate.type.Type;
 import java.io.Serializable;
 import java.util.Properties;
 
-public class UserIdPrefixedSequenceCommentIdGenerator extends SequenceStyleGenerator {
+public class ProductIdPrefixedSequenceReviewIdGenerator extends SequenceStyleGenerator {
     public static final String CODE_NUMBER_SEPARATOR_PARAMETER = "codeNumberSeparator";
     public static final String CODE_NUMBER_SEPARATOR_DEFAULT = "_";
     private String codeNumberSeparator;
@@ -37,6 +37,6 @@ public class UserIdPrefixedSequenceCommentIdGenerator extends SequenceStyleGener
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((Comment) object).getUserId(), super.generate(session, object));
+        return String.format(format, ((Review) object).getProId(), super.generate(session, object));
     }
 }

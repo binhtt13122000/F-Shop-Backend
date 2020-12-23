@@ -1,7 +1,7 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.generator.entites.UserIdPrefixedSequenceOrderIdGenerator;
+import com.dev.fshop.generator.entities.UserIdPrefixedSequenceOrderIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,7 @@ public class Orders implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_order")
     @GenericGenerator(
             name = "sequence_order",
-            strategy = "com.dev.fshop.generator.enti.UserIdPrefixedSequenceOrderIdGenerator",
+            strategy = "com.dev.fshop.generator.entities.UserIdPrefixedSequenceOrderIdGenerator",
             parameters = {
                     @Parameter(name = UserIdPrefixedSequenceOrderIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = UserIdPrefixedSequenceOrderIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

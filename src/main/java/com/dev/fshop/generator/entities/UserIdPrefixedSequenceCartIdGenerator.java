@@ -1,4 +1,4 @@
-package com.dev.fshop.generator.entites;
+package com.dev.fshop.generator.entities;
 
 import com.dev.fshop.entities.Cart;
 import org.hibernate.HibernateException;

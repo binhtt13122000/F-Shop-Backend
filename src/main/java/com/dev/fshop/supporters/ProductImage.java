@@ -26,7 +26,7 @@ public class ProductImage implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_proImage")
     @GenericGenerator(
             name = "sequence_proImage",
-            strategy = "com.dev.fshop.generator.suppo.ProIdPrefixedSequenceProImageIdGenerator",
+            strategy = "com.dev.fshop.generator.supporters.ProIdPrefixedSequenceProImageIdGenerator",
             parameters = {
                     @Parameter(name = ProductIdPrefixedSequenceProductImageIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = ProductIdPrefixedSequenceProductImageIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

@@ -1,6 +1,6 @@
 package com.dev.fshop.entities;
 
-import com.dev.fshop.generator.entites.UserIdPrefixedSequenceCommentIdGenerator;
+import com.dev.fshop.generator.entities.UserIdPrefixedSequenceCommentIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,7 @@ public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_comment")
     @GenericGenerator(
             name = "sequence_comment",
-            strategy = "com.dev.fshop.generator.enti.UserIdPrefixedSequenceCommentIdGenerator",
+            strategy = "com.dev.fshop.generator.entities.UserIdPrefixedSequenceCommentIdGenerator",
             parameters = {
                     @Parameter(name = UserIdPrefixedSequenceCommentIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = UserIdPrefixedSequenceCommentIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
