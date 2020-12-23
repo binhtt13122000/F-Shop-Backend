@@ -1,6 +1,9 @@
 package com.dev.fshop.entities;
 
 
+import com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator;
+import com.dev.fshop.generator.enti.UserIdPrefixedSequenceOrderIdGenerator;
+import com.dev.fshop.generator.enti.UserIdPrefixedSequencePromotionIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -8,14 +11,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -32,6 +31,17 @@ public class Promotion implements Serializable {
     //promotion id
     @Id
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_prmotion")
+    @GenericGenerator(
+            name = "sequence_promotion",
+            strategy = "com.dev.fshop.generator.enti.UserIdPrefixedSequencePromotionIdGenerator",
+            parameters = {
+                    @Parameter(name = UserIdPrefixedSequencePromotionIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = UserIdPrefixedSequencePromotionIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @Parameter(name = UserIdPrefixedSequencePromotionIdGenerator.VALUE_PREFIX_PARAMETER, value = "PROMO_"),
+                    @Parameter(name = UserIdPrefixedSequencePromotionIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     @Column(name = "promotionID", nullable = false, unique = true)
     private String promotionID;
 

@@ -1,9 +1,12 @@
 package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.generator.enti.UserIdPrefixedSequenceCartIdGenerator;
+import com.dev.fshop.generator.suppo.ProIdPrefixedSequenceProDetailIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -21,6 +24,17 @@ public class ProductDetail implements Serializable {
     @Id
     @Column(name = "proItemId", nullable = false)
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_proDetail")
+    @GenericGenerator(
+            name = "sequence_proDetail",
+            strategy = "com.dev.fshop.generator.suppo.ProIdPrefixedSequenceProDetailIdGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceProDetailIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceProDetailIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceProDetailIdGenerator.VALUE_PREFIX_PARAMETER, value = "PRO_DETAIL_"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceProDetailIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     private String proItemId;
     @Column(name = "proSize", nullable = false)
     @NotNull

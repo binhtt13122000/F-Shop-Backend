@@ -1,6 +1,7 @@
 package com.dev.fshop.entities;
 
 
+import com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator;
 import com.dev.fshop.supporters.Discount;
 import com.dev.fshop.supporters.ProductDetail;
 import com.dev.fshop.supporters.ProductImage;
@@ -11,6 +12,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -32,6 +35,16 @@ public class Product implements Serializable {
     @Id
     @Column(name = "proId", nullable = false, unique = true)
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_product")
+    @GenericGenerator(
+            name = "sequence_product",
+            strategy = "com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator",
+            parameters = {
+                    @Parameter(name = StringPrefixedSequenceIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = StringPrefixedSequenceIdGenerator.VALUE_PREFIX_PARAMETER, value = "PRO_"),
+                    @Parameter(name = StringPrefixedSequenceIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     private String proId;
 
     //proName

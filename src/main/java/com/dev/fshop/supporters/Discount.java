@@ -1,9 +1,12 @@
 package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.generator.enti.UserIdPrefixedSequenceCartIdGenerator;
+import com.dev.fshop.generator.suppo.ProIdPrefixedSequenceDiscountIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -19,6 +22,17 @@ public class Discount implements Serializable {
     @Id
     @Column(name = "dícountId", nullable = false, unique = true, updatable = false)
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_discount")
+    @GenericGenerator(
+            name = "sequence_discount",
+            strategy = "com.dev.fshop.generator.suppo.ProIdPrefixedSequenceDiscountIdGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceDiscountIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceDiscountIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceDiscountIdGenerator.VALUE_PREFIX_PARAMETER, value = "DISCOUNT_"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceDiscountIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     private String discountId;
     @Column(name = "discount", nullable = false)
     @Max(10)
