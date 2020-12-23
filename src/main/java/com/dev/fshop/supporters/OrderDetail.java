@@ -14,13 +14,14 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table(name = "OrderDetail")
-public class OrderDetail {
+public class OrderDetail implements Serializable {
     @Id
     @Column(name = "orderItemId", nullable = false, unique = true)
     @JsonIgnore

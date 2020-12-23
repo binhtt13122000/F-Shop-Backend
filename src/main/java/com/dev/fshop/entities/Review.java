@@ -31,7 +31,7 @@ public class Review implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_review")
     @GenericGenerator(
             name = "sequence_review",
-            strategy = "com.dev.fshop.generator.entities.ProIdPrefixedSequenceReviewIdGenerator",
+            strategy = "com.dev.fshop.generator.entities.ProductIdPrefixedSequenceReviewIdGenerator",
             parameters = {
                     @Parameter(name = ProductIdPrefixedSequenceReviewIdGenerator.INCREMENT_PARAM, value = "1"),
                     @Parameter(name = ProductIdPrefixedSequenceReviewIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

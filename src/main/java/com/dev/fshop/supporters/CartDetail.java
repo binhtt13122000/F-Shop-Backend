@@ -27,7 +27,7 @@ public class CartDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_cartDetail")
     @GenericGenerator(
             name = "sequence_cartDetail",
-            strategy = "com.dev.fshop.generator.supporters.ProIdPrefixedSequenceCartDetailGenerator",
+            strategy = "com.dev.fshop.generator.supporters.ProductIdPrefixedSequenceCartDetailGenerator",
             parameters = {
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceCartDetailGenerator.INCREMENT_PARAM, value = "1"),
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceCartDetailGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

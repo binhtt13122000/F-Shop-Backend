@@ -86,18 +86,6 @@ public class UserController {
                     )
             ),
             @ApiResponse(
-                    description = "Role is not available!",
-                    responseCode = "404",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "Product is not available!",
-                                    value = "Product is not available!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
                     description = "Create failed!",
                     responseCode = "400",
                     content = @Content(
@@ -115,6 +103,36 @@ public class UserController {
         return null;
     }
 
+    @Operation(description = "Create new staff", responses = {
+            @ApiResponse(
+                    description = "Create new staff successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Create new staff successfully!",
+                                    value = "Create new staff successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Create failed!",
+                    responseCode = "400",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Create failed!",
+                                    value = "Create failed!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+    })
+    @PostMapping("/users")
+    public ResponseEntity addStaff(@RequestBody Account account){
+        return null;
+    }
     @Operation(description = "change password", responses = {
             @ApiResponse(
                     description = "change password successfully!",

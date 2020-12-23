@@ -25,7 +25,7 @@ public class ProductDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_proDetail")
     @GenericGenerator(
             name = "sequence_proDetail",
-            strategy = "com.dev.fshop.generator.supporters.ProIdPrefixedSequenceProDetailIdGenerator",
+            strategy = "com.dev.fshop.generator.supporters.ProductIdPrefixedSequenceProductDetailIdGenerator",
             parameters = {
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceProductDetailIdGenerator.INCREMENT_PARAM, value = "1"),
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceProductDetailIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),

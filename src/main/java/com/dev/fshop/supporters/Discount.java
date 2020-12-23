@@ -19,12 +19,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class Discount implements Serializable {
     @Id
-    @Column(name = "dícountId", nullable = false, unique = true, updatable = false)
+    @Column(name = "discountId", nullable = false, unique = true, updatable = false)
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_discount")
     @GenericGenerator(
             name = "sequence_discount",
-            strategy = "com.dev.fshop.generator.supporters.ProIdPrefixedSequenceDiscountIdGenerator",
+            strategy = "com.dev.fshop.generator.supporters.ProductIdPrefixedSequenceDiscountIdGenerator",
             parameters = {
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceDiscountIdGenerator.INCREMENT_PARAM, value = "1"),
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceDiscountIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
