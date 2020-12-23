@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface UserService {
     Account getUserByUsername(String id);
+    Account register(Account account);
 }

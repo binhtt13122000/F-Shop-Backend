@@ -1,5 +1,7 @@
 package com.dev.fshop.entities;
 
+import com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator;
+import com.dev.fshop.generator.enti.UserIdPrefixedSequenceCommentIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -7,14 +9,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -31,6 +29,17 @@ import java.util.Date;
 public class Comment implements Serializable {
     @Id
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_comment")
+    @GenericGenerator(
+            name = "sequence_comment",
+            strategy = "com.dev.fshop.generator.enti.UserIdPrefixedSequenceCommentIdGenerator",
+            parameters = {
+                    @Parameter(name = UserIdPrefixedSequenceCommentIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = UserIdPrefixedSequenceCommentIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @Parameter(name = UserIdPrefixedSequenceCommentIdGenerator.VALUE_PREFIX_PARAMETER, value = "CMT_"),
+                    @Parameter(name = UserIdPrefixedSequenceCommentIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     @Column(name = "commentId", nullable = false, unique = true)
     private String commentId;
 

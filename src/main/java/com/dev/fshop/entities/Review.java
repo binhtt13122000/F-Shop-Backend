@@ -1,6 +1,9 @@
 package com.dev.fshop.entities;
 
 
+import com.dev.fshop.generator.enti.ProIdPrefixedSequenceReviewIdGenerator;
+import com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator;
+import com.dev.fshop.generator.enti.UserIdPrefixedSequencePromotionIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -8,14 +11,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -31,6 +30,17 @@ public class Review implements Serializable {
     //id
     @Id
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_review")
+    @GenericGenerator(
+            name = "sequence_review",
+            strategy = "com.dev.fshop.generator.enti.ProIdPrefixedSequenceReviewIdGenerator",
+            parameters = {
+                    @Parameter(name = ProIdPrefixedSequenceReviewIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = ProIdPrefixedSequenceReviewIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @Parameter(name = ProIdPrefixedSequenceReviewIdGenerator.VALUE_PREFIX_PARAMETER, value = "REVIEW_"),
+                    @Parameter(name = ProIdPrefixedSequenceReviewIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     @Column(name = "reviewId", nullable = false, unique = true)
     private String reviewId;
 

@@ -1,11 +1,12 @@
 package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Cart;
-import com.dev.fshop.entities.Orders;
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.generator.suppo.ProIdPrefixedSequenceCartDetailGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -23,6 +24,17 @@ public class CartDetail implements Serializable {
     @Id
     @Column(name = "cartItemId", nullable = false)
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_cartDetail")
+    @GenericGenerator(
+            name = "sequence_cartDetail",
+            strategy = "com.dev.fshop.generator.suppo.ProIdPrefixedSequenceCartDetailGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceCartDetailGenerator.INCREMENT_PARAM, value = "1"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceCartDetailGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceCartDetailGenerator.VALUE_PREFIX_PARAMETER, value = "CART_DETAILS_"),
+                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceCartDetailGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     private String cartItemId;
 
     @Column(name = "cartSize", nullable = false)

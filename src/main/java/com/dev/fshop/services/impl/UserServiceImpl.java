@@ -17,4 +17,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAccountByUserName(username).orElse(null);
     }
 
+    @Override
+    public Account register(Account account) {
+        return userRepository.save(account);
+    }
+
 }

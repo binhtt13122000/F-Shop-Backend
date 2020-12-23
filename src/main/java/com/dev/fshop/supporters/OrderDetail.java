@@ -3,9 +3,11 @@ package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Orders;
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.generator.suppo.UserIdPrefixedSequenceOrderDetailIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -22,6 +24,17 @@ public class OrderDetail {
     @Id
     @Column(name = "orderItemId", nullable = false, unique = true)
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_orderDetail")
+    @GenericGenerator(
+            name = "sequence_orderDetail",
+            strategy = "com.dev.fshop.generator.suppo.UserIdPrefixedSequenceOrderDetailIdGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = UserIdPrefixedSequenceOrderDetailIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @org.hibernate.annotations.Parameter(name = UserIdPrefixedSequenceOrderDetailIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @org.hibernate.annotations.Parameter(name = UserIdPrefixedSequenceOrderDetailIdGenerator.VALUE_PREFIX_PARAMETER, value = "ORDER_DETAIL_"),
+                    @org.hibernate.annotations.Parameter(name = UserIdPrefixedSequenceOrderDetailIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     private String orderItemId;
 
     //quantity

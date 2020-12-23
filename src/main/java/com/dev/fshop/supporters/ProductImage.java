@@ -1,8 +1,11 @@
 package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.generator.suppo.ProIdPrefixedSequenceProImageIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -20,6 +23,17 @@ public class ProductImage implements Serializable {
     @Id
     @Column(name = "imageId", nullable = false)
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_proImage")
+    @GenericGenerator(
+            name = "sequence_proImage",
+            strategy = "com.dev.fshop.generator.suppo.ProIdPrefixedSequenceProImageIdGenerator",
+            parameters = {
+                    @Parameter(name = ProIdPrefixedSequenceProImageIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = ProIdPrefixedSequenceProImageIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @Parameter(name = ProIdPrefixedSequenceProImageIdGenerator.VALUE_PREFIX_PARAMETER, value = "PRO_IMAGE_"),
+                    @Parameter(name = ProIdPrefixedSequenceProImageIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+            }
+    )
     private String imageId;
     @Column(name = "createTime", nullable = false)
     @NotNull
