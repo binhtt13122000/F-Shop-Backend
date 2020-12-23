@@ -1,7 +1,6 @@
-package com.dev.fshop.generator.suppo;
+package com.dev.fshop.generator.entites;
 
-import com.dev.fshop.supporters.OrderDetail;
-import com.dev.fshop.supporters.ProductImage;
+import com.dev.fshop.entities.Promotion;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -13,7 +12,7 @@ import org.hibernate.type.Type;
 import java.io.Serializable;
 import java.util.Properties;
 
-public class ProIdPrefixedSequenceProImageIdGenerator extends SequenceStyleGenerator {
+public class UserIdPrefixedSequencePromotionIdGenerator extends SequenceStyleGenerator {
     public static final String CODE_NUMBER_SEPARATOR_PARAMETER = "codeNumberSeparator";
     public static final String CODE_NUMBER_SEPARATOR_DEFAULT = "_";
     private String codeNumberSeparator;
@@ -38,6 +37,6 @@ public class ProIdPrefixedSequenceProImageIdGenerator extends SequenceStyleGener
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((ProductImage) object).getProId(), super.generate(session, object));
+        return String.format(format, ((Promotion) object).getUserId(), super.generate(session, object));
     }
 }

@@ -1,6 +1,5 @@
-package com.dev.fshop.generator.enti;
+package com.dev.fshop.generator.entites;
 
-import com.dev.fshop.entities.Comment;
 import com.dev.fshop.entities.Review;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
@@ -13,7 +12,7 @@ import org.hibernate.type.Type;
 import java.io.Serializable;
 import java.util.Properties;
 
-public class ProIdPrefixedSequenceReviewIdGenerator extends SequenceStyleGenerator {
+public class ProductIdPrefixedSequenceReviewIdGenerator extends SequenceStyleGenerator {
     public static final String CODE_NUMBER_SEPARATOR_PARAMETER = "codeNumberSeparator";
     public static final String CODE_NUMBER_SEPARATOR_DEFAULT = "_";
     private String codeNumberSeparator;

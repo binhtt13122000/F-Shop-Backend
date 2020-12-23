@@ -1,7 +1,7 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator;
+import com.dev.fshop.generator.entites.StringPrefixedSequenceIdGenerator;
 import com.dev.fshop.supporters.Discount;
 import com.dev.fshop.supporters.ProductDetail;
 import com.dev.fshop.supporters.ProductImage;

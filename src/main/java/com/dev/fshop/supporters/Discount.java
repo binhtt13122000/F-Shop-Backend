@@ -1,8 +1,7 @@
 package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Product;
-import com.dev.fshop.generator.enti.UserIdPrefixedSequenceCartIdGenerator;
-import com.dev.fshop.generator.suppo.ProIdPrefixedSequenceDiscountIdGenerator;
+import com.dev.fshop.generator.supporters.ProductIdPrefixedSequenceDiscountIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -27,10 +26,10 @@ public class Discount implements Serializable {
             name = "sequence_discount",
             strategy = "com.dev.fshop.generator.suppo.ProIdPrefixedSequenceDiscountIdGenerator",
             parameters = {
-                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceDiscountIdGenerator.INCREMENT_PARAM, value = "1"),
-                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceDiscountIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
-                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceDiscountIdGenerator.VALUE_PREFIX_PARAMETER, value = "DISCOUNT_"),
-                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceDiscountIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+                    @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceDiscountIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceDiscountIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceDiscountIdGenerator.VALUE_PREFIX_PARAMETER, value = "DISCOUNT_"),
+                    @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceDiscountIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
     private String discountId;

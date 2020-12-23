@@ -1,7 +1,7 @@
 package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Product;
-import com.dev.fshop.generator.suppo.ProIdPrefixedSequenceProImageIdGenerator;
+import com.dev.fshop.generator.supporters.ProductIdPrefixedSequenceProductImageIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,10 +28,10 @@ public class ProductImage implements Serializable {
             name = "sequence_proImage",
             strategy = "com.dev.fshop.generator.suppo.ProIdPrefixedSequenceProImageIdGenerator",
             parameters = {
-                    @Parameter(name = ProIdPrefixedSequenceProImageIdGenerator.INCREMENT_PARAM, value = "1"),
-                    @Parameter(name = ProIdPrefixedSequenceProImageIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
-                    @Parameter(name = ProIdPrefixedSequenceProImageIdGenerator.VALUE_PREFIX_PARAMETER, value = "PRO_IMAGE_"),
-                    @Parameter(name = ProIdPrefixedSequenceProImageIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+                    @Parameter(name = ProductIdPrefixedSequenceProductImageIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = ProductIdPrefixedSequenceProductImageIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @Parameter(name = ProductIdPrefixedSequenceProductImageIdGenerator.VALUE_PREFIX_PARAMETER, value = "PRO_IMAGE_"),
+                    @Parameter(name = ProductIdPrefixedSequenceProductImageIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
     private String imageId;

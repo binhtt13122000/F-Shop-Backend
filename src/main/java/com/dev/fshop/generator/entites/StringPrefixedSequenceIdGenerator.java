@@ -1,4 +1,4 @@
-package com.dev.fshop.generator.enti;
+package com.dev.fshop.generator.entites;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;

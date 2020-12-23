@@ -1,6 +1,6 @@
-package com.dev.fshop.generator.suppo;
+package com.dev.fshop.generator.supporters;
 
-import com.dev.fshop.supporters.CartDetail;
+import com.dev.fshop.supporters.Discount;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -12,7 +12,7 @@ import org.hibernate.type.Type;
 import java.io.Serializable;
 import java.util.Properties;
 
-public class ProIdPrefixedSequenceCartDetailGenerator extends SequenceStyleGenerator {
+public class ProductIdPrefixedSequenceDiscountIdGenerator extends SequenceStyleGenerator {
     public static final String CODE_NUMBER_SEPARATOR_PARAMETER = "codeNumberSeparator";
     public static final String CODE_NUMBER_SEPARATOR_DEFAULT = "_";
     private String codeNumberSeparator;
@@ -37,7 +37,6 @@ public class ProIdPrefixedSequenceCartDetailGenerator extends SequenceStyleGener
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        String createPrefix = ((CartDetail)object).getCartId() + "_" + ((CartDetail) object).getProId();
-        return String.format(format, createPrefix , super.generate(session, object));
+        return String.format(format, ((Discount) object).getProId(), super.generate(session, object));
     }
 }

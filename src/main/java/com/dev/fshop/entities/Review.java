@@ -1,9 +1,7 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.generator.enti.ProIdPrefixedSequenceReviewIdGenerator;
-import com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator;
-import com.dev.fshop.generator.enti.UserIdPrefixedSequencePromotionIdGenerator;
+import com.dev.fshop.generator.entites.ProductIdPrefixedSequenceReviewIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -35,10 +33,10 @@ public class Review implements Serializable {
             name = "sequence_review",
             strategy = "com.dev.fshop.generator.enti.ProIdPrefixedSequenceReviewIdGenerator",
             parameters = {
-                    @Parameter(name = ProIdPrefixedSequenceReviewIdGenerator.INCREMENT_PARAM, value = "1"),
-                    @Parameter(name = ProIdPrefixedSequenceReviewIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
-                    @Parameter(name = ProIdPrefixedSequenceReviewIdGenerator.VALUE_PREFIX_PARAMETER, value = "REVIEW_"),
-                    @Parameter(name = ProIdPrefixedSequenceReviewIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+                    @Parameter(name = ProductIdPrefixedSequenceReviewIdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = ProductIdPrefixedSequenceReviewIdGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @Parameter(name = ProductIdPrefixedSequenceReviewIdGenerator.VALUE_PREFIX_PARAMETER, value = "REVIEW_"),
+                    @Parameter(name = ProductIdPrefixedSequenceReviewIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
     @Column(name = "reviewId", nullable = false, unique = true)

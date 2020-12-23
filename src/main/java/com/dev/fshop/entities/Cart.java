@@ -1,6 +1,6 @@
 package com.dev.fshop.entities;
 
-import com.dev.fshop.generator.enti.UserIdPrefixedSequenceCartIdGenerator;
+import com.dev.fshop.generator.entites.UserIdPrefixedSequenceCartIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;

@@ -2,7 +2,7 @@ package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Cart;
 import com.dev.fshop.entities.Product;
-import com.dev.fshop.generator.suppo.ProIdPrefixedSequenceCartDetailGenerator;
+import com.dev.fshop.generator.supporters.ProductIdPrefixedSequenceCartDetailGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -29,10 +29,10 @@ public class CartDetail implements Serializable {
             name = "sequence_cartDetail",
             strategy = "com.dev.fshop.generator.suppo.ProIdPrefixedSequenceCartDetailGenerator",
             parameters = {
-                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceCartDetailGenerator.INCREMENT_PARAM, value = "1"),
-                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceCartDetailGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
-                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceCartDetailGenerator.VALUE_PREFIX_PARAMETER, value = "CART_DETAILS_"),
-                    @org.hibernate.annotations.Parameter(name = ProIdPrefixedSequenceCartDetailGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
+                    @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceCartDetailGenerator.INCREMENT_PARAM, value = "1"),
+                    @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceCartDetailGenerator.CODE_NUMBER_SEPARATOR_PARAMETER, value = "_"),
+                    @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceCartDetailGenerator.VALUE_PREFIX_PARAMETER, value = "CART_DETAILS_"),
+                    @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceCartDetailGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
     private String cartItemId;

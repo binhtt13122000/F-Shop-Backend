@@ -1,7 +1,7 @@
 package com.dev.fshop.entities;
 
 
-import com.dev.fshop.generator.enti.StringPrefixedSequenceIdGenerator;
+import com.dev.fshop.generator.entites.StringPrefixedSequenceIdGenerator;
 import com.dev.fshop.utils.Regex;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -3,7 +3,7 @@ package com.dev.fshop.supporters;
 
 import com.dev.fshop.entities.Orders;
 import com.dev.fshop.entities.Product;
-import com.dev.fshop.generator.suppo.UserIdPrefixedSequenceOrderDetailIdGenerator;
+import com.dev.fshop.generator.supporters.UserIdPrefixedSequenceOrderDetailIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;

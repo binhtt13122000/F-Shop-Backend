@@ -1,4 +1,4 @@
-package com.dev.fshop.generator.suppo;
+package com.dev.fshop.generator.supporters;
 
 import com.dev.fshop.supporters.ProductDetail;
 import org.hibernate.HibernateException;
@@ -12,7 +12,7 @@ import org.hibernate.type.Type;
 import java.io.Serializable;
 import java.util.Properties;
 
-public class ProIdPrefixedSequenceProDetailIdGenerator extends SequenceStyleGenerator {
+public class ProductIdPrefixedSequenceProductDetailIdGenerator extends SequenceStyleGenerator {
     public static final String CODE_NUMBER_SEPARATOR_PARAMETER = "codeNumberSeparator";
     public static final String CODE_NUMBER_SEPARATOR_DEFAULT = "_";
     private String codeNumberSeparator;
