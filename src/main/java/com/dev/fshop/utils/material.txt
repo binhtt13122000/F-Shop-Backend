@@ -1,0 +1,5 @@
+//access field
+@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+--> field chỉ có thể đọc từ JSON mà không thể parse ra Json. (De-Serialization)
+READ_ONLY ngược lại (Serialization)
+

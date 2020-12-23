@@ -7,6 +7,7 @@ import com.dev.fshop.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,17 +22,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Account addUser(Account account, String roleId) {
         account.setRole(new Role(roleId, null));
-        account.setPassword(account.getUserName());
         account.setStatus(true);
-        System.out.println(account.getUserName());
-        System.out.println("email");
-        System.out.println(account.getEmail());
+        account.setRegisteredAt(new Date());
         return userRepository.save(account);
     }
 
     @Override
-    public boolean validateWhenAddUser(Account account) {
-        return false;
+    public String validateWhenAddUser(Account account) {
+        return null;
     }
 
 }

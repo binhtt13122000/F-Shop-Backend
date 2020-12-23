@@ -1,10 +1,8 @@
 package com.dev.fshop.controllers;
 
 import com.dev.fshop.entities.Account;
-import com.dev.fshop.entities.Comment;
 import com.dev.fshop.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -15,11 +13,9 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -107,12 +103,8 @@ public class UserController {
             ),
     })
     @PostMapping("/users/register")
-    public ResponseEntity register(@RequestBody Account account) {
-        System.out.println("Account: " + account);
+    public ResponseEntity register(@Valid @RequestBody Account account) {
         userService.addUser(account, "ROL_1");
-//        if(errors.hasErrors()){
-//            return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
-//        }
         return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
     }
 
