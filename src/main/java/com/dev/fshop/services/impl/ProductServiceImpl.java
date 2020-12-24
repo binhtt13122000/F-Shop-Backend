@@ -11,5 +11,11 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+    @Autowired
+    private ProductRepository productRepository;
 
+    @Override
+    public Product getProductByProId(String proId) {
+        return productRepository.findById(proId).orElse(null);
+    }
 }

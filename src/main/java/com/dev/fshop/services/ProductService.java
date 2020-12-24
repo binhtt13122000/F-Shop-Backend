@@ -6,5 +6,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface ProductService {
-
+    public Product getProductByProId(String proId);
 }

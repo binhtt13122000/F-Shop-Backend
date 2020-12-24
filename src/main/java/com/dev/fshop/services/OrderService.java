@@ -6,5 +6,5 @@ import com.dev.fshop.entities.Orders;
 import java.util.List;
 
 public interface OrderService {
-
+    public Orders findOrderByOrderId(String orderId);
 }

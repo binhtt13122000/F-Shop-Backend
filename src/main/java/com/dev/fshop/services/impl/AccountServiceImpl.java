@@ -20,6 +20,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public Account getUserByUsername(String username) {
         return userRepository.findAccountByUserName(username);
     }
@@ -50,6 +51,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean changePassword(Account account) {
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
         return userRepository.save(account) != null? true: false;
     }
 
