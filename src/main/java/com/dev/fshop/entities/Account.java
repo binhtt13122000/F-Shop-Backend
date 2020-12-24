@@ -95,7 +95,6 @@ public class Account implements Serializable {
     private Date lastLogin;
 
     @Column(name = "password", nullable = false)
-    @Size(min = 10, max = 20, message = "Password must have between 10 and 20 characters!")
     @NotNull(message = "password is not null")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;

@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,13 +29,18 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImp userDetailsService;
 
-    @Bean
+    @Bean(name = "passwordEncoder")
     public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2Y);
     }
 
     @Bean
@@ -55,7 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         configuration.setAllowedOrigins(origin);
 
-        List<String> method = new ArrayList<String>();
+        List<String> method = new ArrayList<>();
         method.add("GET");
         method.add("POST");
         method.add("PUT");

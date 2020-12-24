@@ -21,14 +21,15 @@ public class AccountServiceImpl implements AccountService {
     private PasswordEncoder passwordEncoder;
 
     public Account getUserByUsername(String username) {
-        return userRepository.findAccountByUserName(username).orElse(null);
+        return userRepository.findAccountByUserName(username);
     }
 
     @Override
     public Account addUser(Account account, String roleId) {
         account.setRole(new Role(roleId, null));
         account.setStatus(true);
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        String password = account.getPassword();
+        account.setPassword(passwordEncoder.encode(password));
         account.setRegisteredAt(new Date());
         return userRepository.save(account);
     }
