@@ -3,15 +3,15 @@ package com.dev.fshop.services.impl;
 import com.dev.fshop.entities.Account;
 import com.dev.fshop.entities.Role;
 import com.dev.fshop.repositories.UserRepository;
-import com.dev.fshop.services.UserService;
+import com.dev.fshop.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class AccountServiceImpl implements AccountService {
     @Autowired
     private UserRepository userRepository;
 
@@ -32,4 +32,17 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public boolean fieldValueExists(Object value, String fieldName) throws UnsupportedOperationException {
+
+        if (!fieldName.equals("userName")) {
+            throw new UnsupportedOperationException("Field name not supported");
+        }
+
+        if (value == null) {
+            return false;
+        }
+
+        return userRepository.existsAccountByUserName(value.toString());
+    }
 }

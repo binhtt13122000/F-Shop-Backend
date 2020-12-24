@@ -2,7 +2,9 @@ package com.dev.fshop.entities;
 
 
 import com.dev.fshop.generator.entities.StringPrefixedSequenceIdGenerator;
+import com.dev.fshop.services.AccountService;
 import com.dev.fshop.utils.Regex;
+import com.dev.fshop.validation.Unique;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,6 +42,7 @@ public class Account implements Serializable {
     private String userId;
 
     @Column(name = "userName", nullable = false, unique = true)
+    @Unique(service = AccountService.class, fieldName = "userName")
     @NotNull(message = "userName is not null!")
     @Size(max = 40, min = 10, message = "Username must have between 10 and 40 characters!")
     @Pattern(regexp = Regex.REGEX_USERNAME, message = "Username does not contain special character!")
@@ -58,11 +61,11 @@ public class Account implements Serializable {
     private Date birthDate;
 
     @Column(name = "phoneNumber")
-    @Size(max = 15)
+    @Pattern(regexp = Regex.REGEX_PHONE, message = "Phone is not valid!")
     private String phoneNumber;
 
     @Column(name = "email", nullable = false, unique = true, updatable = false)
-    @NotNull(message = "Email is not null")
+    @NotNull(message = "Email is not null!")
     @Email(message = "Email is not valid!")
     @Size(max = 50, min = 10, message = "Email must have between 10 and 40 characters!")
     private String email;

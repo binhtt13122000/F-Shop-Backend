@@ -1,7 +1,7 @@
 package com.dev.fshop.controllers;
 
 import com.dev.fshop.entities.Account;
-import com.dev.fshop.services.UserService;
+import com.dev.fshop.services.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +13,6 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,7 +29,7 @@ class ChangePasswordRequest {
 @Tag(name = "User")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private AccountService accountService;
 
     @Operation(description = "get users", responses = {
             @ApiResponse(
@@ -104,7 +103,7 @@ public class UserController {
     })
     @PostMapping("/users/register")
     public ResponseEntity register(@Valid @RequestBody Account account) {
-        userService.addUser(account, "ROL_1");
+        accountService.addUser(account, "ROL_1");
         return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
     }
 
