@@ -5,8 +5,8 @@ READ_ONLY ngược lại (Serialization)
 
 ------------------------------------
 
-@Unique(service = AccountService.class, fieldName = "userName", message = "Value is taken")
+@Unique(className = "Account", fieldName = "userName", message = "Value is taken")
 message can change,
 fieldName is name field,
-service, 1 interface extends FieldValueExists
-Override method fieldValueExists (hiện thực code ở đây)
+className is class name
+cần thêm code thì vô UniqueServiceImp chỉnh sửa

@@ -1,12 +1,8 @@
 package com.dev.fshop.services;
 
 import com.dev.fshop.entities.Account;
-import com.dev.fshop.validation.FieldValueExists;
 
-import java.util.List;
-
-public interface AccountService extends FieldValueExists {
+public interface AccountService {
     Account getUserByUsername(String id);
     Account addUser(Account account, String roleId);
-    String validateWhenAddUser(Account account);
 }

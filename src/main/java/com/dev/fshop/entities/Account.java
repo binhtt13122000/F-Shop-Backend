@@ -42,7 +42,7 @@ public class Account implements Serializable {
     private String userId;
 
     @Column(name = "userName", nullable = false, unique = true)
-    @Unique(service = AccountService.class, fieldName = "userName")
+    @Unique(fieldName = "userName", className = "Account")
     @NotNull(message = "userName is not null!")
     @Size(max = 40, min = 10, message = "Username must have between 10 and 40 characters!")
     @Pattern(regexp = Regex.REGEX_USERNAME, message = "Username does not contain special character!")
@@ -65,7 +65,7 @@ public class Account implements Serializable {
     private String phoneNumber;
 
     @Column(name = "email", nullable = false, unique = true, updatable = false)
-    @Unique(service = AccountService.class, fieldName = "email")
+    @Unique(fieldName = "email", className = "Account")
     @NotNull(message = "Email is not null!")
     @Email(message = "Email is not valid!")
     @Size(max = 50, min = 10, message = "Email must have between 10 and 40 characters!")

@@ -17,7 +17,6 @@ public @interface Unique {
     String message() default "This value is taken!";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
-    Class<? extends FieldValueExists> service();
-    String serviceQualifier() default "";
-    String fieldName();
+    String fieldName() default "";
+    String className() default "";
 }
