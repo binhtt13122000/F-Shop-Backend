@@ -3,26 +3,28 @@ package com.dev.fshop.auth;
 import com.dev.fshop.entities.Account;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
     private Account account;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singleton(new SimpleGrantedAuthority(account.getRole().getRoleName()));
     }
 
     @Override
     public String getPassword() {
-        return account.getUserName();
+        return account.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return account.getPassword();
+        return account.getUserName();
     }
 
     @Override

@@ -13,8 +13,9 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -103,8 +104,12 @@ public class UserController {
     })
     @PostMapping("/users/register")
     public ResponseEntity register(@Valid @RequestBody Account account) {
-        accountService.addUser(account, "ROL_1");
-        return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
+        Account checkExisted = accountService.getUserByUsername(account.getUserName());
+        if (checkExisted == null) {
+            accountService.addUser(account, "ROL_1");
+            return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
+        }
+        return new ResponseEntity("Something is wrong! Check again.", HttpStatus.BAD_REQUEST);
     }
 
     @Operation(description = "Create new staff", responses = {
@@ -134,8 +139,13 @@ public class UserController {
             ),
     })
     @PostMapping("/users")
-    public ResponseEntity addStaff(@RequestBody Account account) {
-        return null;
+    public ResponseEntity addStaff(@Valid @RequestBody Account account) {
+        Account checkExisted = accountService.getUserByUsername(account.getUserName());
+        if (checkExisted == null) {
+            accountService.addUser(account, "ROL_2");
+            return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
+        }
+        return new ResponseEntity("Something is wrong!Check again.", HttpStatus.BAD_REQUEST);
     }
 
     @Operation(description = "change password", responses = {
@@ -190,7 +200,25 @@ public class UserController {
     })
     @PostMapping("/users/{username}/change_password")
     public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
-        return null;
+        Account checkAccount = accountService.getUserByUsername(username);
+        if (checkAccount != null) {
+            try {
+                if (!request.getNewPass().equals(request.getOldPass())) {
+                    checkAccount.setPassword(request.getNewPass());
+                    boolean checkChangePassword = accountService.changePassword(checkAccount);
+                    if (checkChangePassword) {
+                        return new ResponseEntity("Change Password successful", HttpStatus.OK);
+                    }
+                    return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
+                } else {
+                    return new ResponseEntity("New Password must be not match with Old Password", HttpStatus.BAD_REQUEST);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
+            }
+
+        }
+        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "update profile", responses = {
@@ -244,63 +272,17 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}")
-    public ResponseEntity updateProfile(@PathVariable String username, @RequestBody Account account) {
-        return null;
-    }
+    public ResponseEntity updateProfile(@PathVariable String username,@Valid @RequestBody Account account) {
+        Account checkAccount = accountService.getUserByUsername(username);
+        if (checkAccount != null) {
+            try {
+                return new ResponseEntity(accountService.updateProfile(account), HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
+            }
 
-    @Operation(description = "change role", responses = {
-            @ApiResponse(
-                    description = "change role successfully!",
-                    responseCode = "200",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "change role successfully!",
-                                    value = "change role successfully!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
-                    description = "Access denied!",
-                    responseCode = "403",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "Access denied!",
-                                    value = "Access denied!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
-                    description = "Not found!",
-                    responseCode = "404",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "Not found!",
-                                    value = "Not found!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
-                    description = "change role failed!",
-                    responseCode = "400",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "change role failed!",
-                                    value = "change role failed!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-    })
-    @PutMapping("/users/{username}/change_role")
-    public ResponseEntity changeRole(@PathVariable String username) {
-        return null;
+        }
+        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "ban account", responses = {
@@ -355,7 +337,17 @@ public class UserController {
     })
     @PutMapping("/users/{username}/ban_account")
     public ResponseEntity banAccount(@PathVariable String username) {
-        return null;
+        Account account = accountService.getUserByUsername(username);
+        if (account != null) {
+            try {
+                account.setStatus(false);
+                return new ResponseEntity(accountService.banAccount(account), HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
+            }
+
+        }
+        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "active account", responses = {
@@ -409,8 +401,19 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}/active_account")
-    public ResponseEntity activeAccount(@PathVariable String username) {
-        return null;
+    public ResponseEntity activeAccount(@PathVariable String username, Authentication authentication) {
+        Account account = accountService.getUserByUsername(username);
+        if (account != null) {
+            try {
+                account.setStatus(true);
+                accountService.activeAccount(account);
+                return new ResponseEntity("Active account successful", HttpStatus.OK);
+            }catch (Exception e) {
+                return new ResponseEntity("Active account failed", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
+
     }
 
     @Operation(description = "get user by username", responses = {
@@ -448,7 +451,11 @@ public class UserController {
             ),
     })
     @GetMapping("/users/{username}")
-    public ResponseEntity getByUsername(@PathVariable String username) {
-        return null;
+    public ResponseEntity getByUsername(@PathVariable String username, Authentication authentication) {
+        Account account = accountService.getUserByUsername(username);
+        if (account != null) {
+            return new ResponseEntity(accountService.getUserByUsername(username), HttpStatus.OK);
+        }
+        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
     }
 }

@@ -21,7 +21,7 @@ public class AccountServiceImpl implements AccountService {
     private PasswordEncoder passwordEncoder;
 
     public Account getUserByUsername(String username) {
-        return userRepository.findAccountByUserName(username).orElse(null);
+        return userRepository.findAccountByUserName(username);
     }
 
     @Override
@@ -32,5 +32,26 @@ public class AccountServiceImpl implements AccountService {
         account.setRegisteredAt(new Date());
         return userRepository.save(account);
     }
+
+    @Override
+    public Account activeAccount(Account account) {
+        return userRepository.save(account);
+    }
+
+    @Override
+    public Account banAccount(Account account) {
+        return userRepository.save(account);
+    }
+
+    @Override
+    public Account updateProfile(Account account) {
+        return userRepository.save(account);
+    }
+
+    @Override
+    public boolean changePassword(Account account) {
+        return userRepository.save(account) != null? true: false;
+    }
+
 
 }
