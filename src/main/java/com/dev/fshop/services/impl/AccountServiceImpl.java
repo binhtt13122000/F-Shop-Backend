@@ -35,14 +35,20 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean fieldValueExists(Object value, String fieldName) throws UnsupportedOperationException {
 
-        if (!fieldName.equals("userName")) {
-            throw new UnsupportedOperationException("Field name not supported");
-        }
-
+//        if (!fieldName.equals("userName") && !fieldName.equals("email")) {
+//            throw new UnsupportedOperationException("Field name not supported");
+//        }
         if (value == null) {
             return false;
         }
 
-        return userRepository.existsAccountByUserName(value.toString());
+        switch (fieldName) {
+            case "userName":
+                return userRepository.existsAccountByUserName(value.toString());
+            case "email":
+                return userRepository.existsAccountByEmail(value.toString());
+            default:
+                throw new UnsupportedOperationException("Field name not supported");
+        }
     }
 }

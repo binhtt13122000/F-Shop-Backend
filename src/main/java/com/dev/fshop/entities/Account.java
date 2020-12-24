@@ -65,6 +65,7 @@ public class Account implements Serializable {
     private String phoneNumber;
 
     @Column(name = "email", nullable = false, unique = true, updatable = false)
+    @Unique(service = AccountService.class, fieldName = "email")
     @NotNull(message = "Email is not null!")
     @Email(message = "Email is not valid!")
     @Size(max = 50, min = 10, message = "Email must have between 10 and 40 characters!")

@@ -3,3 +3,10 @@
 --> field chỉ có thể đọc từ JSON mà không thể parse ra Json. (De-Serialization)
 READ_ONLY ngược lại (Serialization)
 
+------------------------------------
+
+@Unique(service = AccountService.class, fieldName = "userName", message = "Value is taken")
+message can change,
+fieldName is name field,
+service, 1 interface extends FieldValueExists
+Override method fieldValueExists (hiện thực code ở đây)
