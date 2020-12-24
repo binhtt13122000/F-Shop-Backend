@@ -18,4 +18,24 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductByProId(String proId) {
         return productRepository.findById(proId).orElse(null);
     }
+
+    @Override
+    public List<Product> getProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public Product updateProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public boolean addQuantity(Product product, Integer quantity) {
+        return false;
+    }
+
+    @Override
+    public Product createNewProduct(Product product) {
+        return productRepository.save(product);
+    }
 }
