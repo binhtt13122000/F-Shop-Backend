@@ -85,15 +85,11 @@ public class ReviewController {
     })
     @GetMapping("/products/{productId}/reviews")
     public ResponseEntity getReviewsByProduct(@PathVariable("productId") String productId) {
-        Product checkProductExisted = productService.getProductByProId(productId);
-        if (checkProductExisted != null) {
-            List<Review> reviewList = reviewService.findReviewsByProductId(productId);
-            if (!reviewList.isEmpty() && reviewList != null) {
-                return new ResponseEntity(reviewList, HttpStatus.OK);
-            }
-            return new ResponseEntity("Can not find list reviews by product id", HttpStatus.NOT_FOUND);
+        List<Review> reviewList = reviewService.findReviewsByProductId(productId);
+        if (!reviewList.isEmpty() && reviewList != null) {
+            return new ResponseEntity(reviewList, HttpStatus.OK);
         }
-        return new ResponseEntity("Product is not available", HttpStatus.NOT_FOUND);
+        return new ResponseEntity("Can not find list reviews by product id", HttpStatus.NOT_FOUND);
     }
 
     //create
@@ -152,7 +148,7 @@ public class ReviewController {
         Product product = productService.getProductByProId(productId);
         if (product != null) {
             Orders orders = orderService.findOrderByOrderId(review.getOrderId());
-            if(orders != null) {
+            if (orders != null) {
                 List<Review> reviewList = reviewService.findReviewsByProductId(productId);
                 if (!reviewList.isEmpty() && reviewList != null) {
                     return new ResponseEntity(reviewList, HttpStatus.OK);
@@ -218,11 +214,11 @@ public class ReviewController {
     @PutMapping("/reviews/{reviewId}/update")
     public ResponseEntity updateReview(@PathVariable("reviewId") String reviewId, @RequestBody Review review) {
         Review checkExisted = reviewService.findReviewByReviewId(reviewId);
-        if(checkExisted != null) {
+        if (checkExisted != null) {
             try {
                 reviewService.updateReview(review);
                 return new ResponseEntity("Update review successful", HttpStatus.OK);
-            }catch (Exception e){
+            } catch (Exception e) {
                 return new ResponseEntity("Update review failed", HttpStatus.BAD_REQUEST);
             }
         }
@@ -283,11 +279,11 @@ public class ReviewController {
     @PutMapping("/reviews/{reviewId}/delete")
     public ResponseEntity deleteReview(@PathVariable("reviewId") String reviewÌd) {
         Review checkExisted = reviewService.findReviewByReviewId(reviewÌd);
-        if(checkExisted != null) {
+        if (checkExisted != null) {
             try {
                 reviewService.deleteReview(reviewÌd);
                 return new ResponseEntity("Delete review successful", HttpStatus.OK);
-            }catch (Exception e){
+            } catch (Exception e) {
                 return new ResponseEntity("Delete review failed", HttpStatus.BAD_REQUEST);
             }
         }
@@ -347,14 +343,14 @@ public class ReviewController {
     @PutMapping("/reviews/{reviewId}/confirm")
     public ResponseEntity confirmReview(@PathVariable("reviewId") String reviewId) {
         Review checkExisted = reviewService.findReviewByReviewId(reviewId);
-        if(checkExisted != null) {
+        if (checkExisted != null) {
             try {
                 boolean checkConfirm = reviewService.confirmReview(checkExisted);
                 if (checkConfirm) {
                     return new ResponseEntity("Confirm review successful", HttpStatus.OK);
                 }
                 return new ResponseEntity("Confirm review failed", HttpStatus.BAD_REQUEST);
-            }catch (Exception e){
+            } catch (Exception e) {
                 return new ResponseEntity("Confirm review failed", HttpStatus.BAD_REQUEST);
             }
         }

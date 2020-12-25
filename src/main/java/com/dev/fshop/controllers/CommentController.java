@@ -80,8 +80,6 @@ public class CommentController {
     })
     @GetMapping("/products/{productId}/comments")
     public ResponseEntity getCommentByProduct(@PathVariable("productId") String productId) {
-        Product product = productService.getProductByProId(productId);
-        if (product != null) {
             try {
                 List<Comment> commentList = commentService.getCommentsByProductId(productId);
                 if (!commentList.isEmpty() && commentList != null) {
@@ -91,8 +89,6 @@ public class CommentController {
             } catch (Exception e) {
                 return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
             }
-        }
-        return new ResponseEntity("Product is not available!", HttpStatus.NOT_FOUND);
     }
 
     //create
@@ -136,16 +132,12 @@ public class CommentController {
     })
     @PostMapping("/products/{productId}/comments")
     public ResponseEntity postComment(@PathVariable("productId") String productId, @RequestBody Comment comment) {
-        Product product = productService.getProductByProId(productId);
-        if (product == null) {
             try {
                 commentService.createNewComment(comment);
                 return new ResponseEntity("Post comment successful", HttpStatus.OK);
             }catch (Exception e) {
                 return new ResponseEntity("Post comment failed.", HttpStatus.BAD_REQUEST);
             }
-        }
-        return new ResponseEntity("Product is not available!", HttpStatus.NOT_FOUND);
     }
 
     //update
