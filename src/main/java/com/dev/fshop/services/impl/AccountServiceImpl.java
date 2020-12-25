@@ -36,13 +36,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account changeStatusAccount(Account account, boolean status) {
-        account.setStatus(status);
-        return userRepository.save(account);
-    }
-
-
-    @Override
     public Account updateProfile(Account currentAccount, Account newAccount) {
         currentAccount.setStatus(newAccount.isStatus());
         currentAccount.setName(newAccount.getName());
@@ -58,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean changePassword(Account account, String hashPassword) {
         account.setPassword(hashPassword);
-        return userRepository.save(account) != null? true: false;
+        return userRepository.save(account) != null ? true : false;
     }
 
     @Override
@@ -71,5 +64,9 @@ public class AccountServiceImpl implements AccountService {
         return userRepository.searchAccountsByParameter(q);
     }
 
-
+    @Override
+    public Account changeStatusAccount(Account account, boolean status) {
+        account.setStatus(status);
+        return  userRepository.save(account);
+    }
 }
