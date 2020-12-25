@@ -14,16 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Data
 class ChangePasswordRequest {
-    private String oldPass;
-    private String newPass;
+    private String oldPassword;
+    private String newPassword;
+    private String confirmPassword;
 }
 
 @RestController
@@ -105,6 +111,7 @@ public class UserController {
     })
     @PostMapping("/users/register")
     public ResponseEntity register(@Valid @RequestBody Account account) {
+
         accountService.addUser(account, "ROL_1");
         return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
     }
@@ -191,25 +198,31 @@ public class UserController {
                     )
             ),
     })
+
+    //change password
+    //check newPass với confirm Pass phải equal,oldPass encode -> trùng với cái pass trong hệ thống, đúng => change password
     @PostMapping("/users/{username}/change_password")
     public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
-        Account checkAccount = accountService.getUserByUsername(username);
-        try {
-            if (!request.getNewPass().equals(request.getOldPass())) {
-                checkAccount.setPassword(request.getNewPass());
-                boolean checkChangePassword = accountService.changePassword(checkAccount);
-                if (checkChangePassword) {
-                    return new ResponseEntity("Change Password successful", HttpStatus.OK);
-                }
-                return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
-            } else {
-                return new ResponseEntity("New Password must be not match with Old Password", HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
-        }
+//        Account checkAccount = accountService.getUserByUsername(username);
+//        try {
+//            if (!request.getNewPass().equals(request.getOldPass())) {
+//                checkAccount.setPassword(request.getNewPass());
+//                boolean checkChangePassword = accountService.changePassword(checkAccount);
+//                if (checkChangePassword) {
+//                    return new ResponseEntity("Change Password successful", HttpStatus.OK);
+//                }
+//                return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
+//            } else {
+//                return new ResponseEntity("New Password must be not match with Old Password", HttpStatus.BAD_REQUEST);
+//            }
+//        } catch (Exception e) {
+//            return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
+//        }
+        //viết lại
+        return null;
     }
 
+    //bỏ try catch
     @Operation(description = "update profile", responses = {
             @ApiResponse(
                     description = "update profile successfully!",
@@ -262,11 +275,22 @@ public class UserController {
     })
     @PutMapping("/users/{username}")
     public ResponseEntity updateProfile(@PathVariable String username, @Valid @RequestBody Account account) {
-        try {
-            return new ResponseEntity(accountService.updateProfile(account), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
+        //save: 2 việc, update với add;
+        //m add 1 đối tượng mới vào:
+        //Nó ko có Id thì nó tạo mới
+        //Nếu nó có Id thì
+//        try {
+//            return new ResponseEntity(accountService.updateProfile(account), HttpStatus.OK);
+//        } catch (Exception e) {
+//            //?
+//            return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
+//        }
+        Account currentAccount = accountService.getUserByUsername(username);
+        if(currentAccount == null){
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
         }
+        accountService.updateProfile(account, currentAccount);
+        return  null;
     }
 
     @Operation(description = "ban account", responses = {
@@ -428,10 +452,21 @@ public class UserController {
     })
     @GetMapping("/users/{username}")
     public ResponseEntity getByUsername(@PathVariable String username, Authentication authentication) {
+        System.out.println("a");
+        System.out.println(isAdmin(authentication));
         Account account = accountService.getUserByUsername(username);
         if (account != null) {
             return new ResponseEntity(accountService.getUserByUsername(username), HttpStatus.OK);
         }
-        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
+        return new ResponseEntity("Username can not found.", HttpStatus.NOT_FOUND);
+    }
+
+    public static boolean isMySelf(String username, Authentication authentication){
+        return username.equals(authentication.getName());
+    }
+
+    public static String isAdmin(Authentication authentication){
+        List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        return roles.get(0);
     }
 }

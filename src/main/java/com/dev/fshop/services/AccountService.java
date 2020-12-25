@@ -7,6 +7,6 @@ public interface AccountService {
     Account addUser(Account account, String roleId);
     Account activeAccount(Account account);
     Account banAccount(Account account);
-    Account updateProfile(Account account);
+    Account updateProfile(Account currentAccount, Account newAccount);
     boolean changePassword(Account account);
 }

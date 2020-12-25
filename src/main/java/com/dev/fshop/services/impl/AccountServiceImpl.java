@@ -36,17 +36,22 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account activeAccount(Account account) {
+        account.setStatus(true);
         return userRepository.save(account);
     }
 
     @Override
     public Account banAccount(Account account) {
+        account.setStatus(false);
         return userRepository.save(account);
     }
 
     @Override
-    public Account updateProfile(Account account) {
-        return userRepository.save(account);
+    public Account updateProfile(Account currentAccount, Account newAccount) {
+        currentAccount.setStatus(newAccount.isStatus());
+        currentAccount.setPassword(newAccount.getPassword());
+        userRepository.save(currentAccount);
+        return currentAccount;
     }
 
     @Override
