@@ -2,7 +2,9 @@ package com.dev.fshop.controllers;
 
 import com.dev.fshop.entities.Account;
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.services.ProductDetailService;
 import com.dev.fshop.services.ProductService;
+import com.dev.fshop.supporters.ProductDetail;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -29,6 +31,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductDetailService productDetailService;
 
     @Operation(description = "get products", responses = {
             @ApiResponse(
@@ -205,9 +210,23 @@ public class ProductController {
                     )
             ),
     })
-    @PutMapping("/products/{productId}/{quantity}")
-    public ResponseEntity addQuantity(@PathVariable String productId, @PathVariable Integer quantity){
-        return null;
+    @PutMapping("/products/{productId}/{productSize}/{quantity}")
+    public ResponseEntity addQuantity(@PathVariable String productId, @PathVariable String productSize, @PathVariable Integer quantity){
+        ProductDetail productDetail = productDetailService.getProductDetailByProIdAndProSize(productId, productSize);
+        if(productDetail != null) {
+            try {
+                if(quantity <= 0) {
+                    return new ResponseEntity("Quantity must be greater than 0", HttpStatus.BAD_REQUEST);
+                }else {
+                    productDetail.setProQuantity(productDetail.getProQuantity() + quantity);
+                    productDetailService.addQuantity(productDetail);
+                    return new ResponseEntity("Add quantity product successful.", HttpStatus.OK);
+                }
+            }catch (Exception e) {
+                return new ResponseEntity("Add quantity product failed!", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("Product Detail with product id and product size is not available", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "Create new product", responses = {

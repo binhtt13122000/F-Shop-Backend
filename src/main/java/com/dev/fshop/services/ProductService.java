@@ -10,6 +10,5 @@ public interface ProductService {
     public Product getProductByProId(String proId);
     public List<Product> getProducts();
     public Product updateProduct(Product product);
-    public boolean addQuantity(Product product, Integer quantity);
     public Product createNewProduct(Product product);
 }

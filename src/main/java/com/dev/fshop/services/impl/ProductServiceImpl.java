@@ -29,10 +29,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
-    @Override
-    public boolean addQuantity(Product product, Integer quantity) {
-        return false;
-    }
 
     @Override
     public Product createNewProduct(Product product) {
