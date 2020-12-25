@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -104,12 +105,8 @@ public class UserController {
     })
     @PostMapping("/users/register")
     public ResponseEntity register(@Valid @RequestBody Account account) {
-        Account checkExisted = accountService.getUserByUsername(account.getUserName());
-        if (checkExisted == null) {
-            accountService.addUser(account, "ROL_1");
-            return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
-        }
-        return new ResponseEntity("Something is wrong! Check again.", HttpStatus.BAD_REQUEST);
+        accountService.addUser(account, "ROL_1");
+        return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
     }
 
     @Operation(description = "Create new staff", responses = {
@@ -140,12 +137,8 @@ public class UserController {
     })
     @PostMapping("/users")
     public ResponseEntity addStaff(@Valid @RequestBody Account account) {
-        Account checkExisted = accountService.getUserByUsername(account.getUserName());
-        if (checkExisted == null) {
-            accountService.addUser(account, "ROL_2");
-            return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
-        }
-        return new ResponseEntity("Something is wrong!Check again.", HttpStatus.BAD_REQUEST);
+        accountService.addUser(account, "ROL_2");
+        return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
     }
 
     @Operation(description = "change password", responses = {
@@ -201,24 +194,20 @@ public class UserController {
     @PostMapping("/users/{username}/change_password")
     public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
         Account checkAccount = accountService.getUserByUsername(username);
-        if (checkAccount != null) {
-            try {
-                if (!request.getNewPass().equals(request.getOldPass())) {
-                    checkAccount.setPassword(request.getNewPass());
-                    boolean checkChangePassword = accountService.changePassword(checkAccount);
-                    if (checkChangePassword) {
-                        return new ResponseEntity("Change Password successful", HttpStatus.OK);
-                    }
-                    return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
-                } else {
-                    return new ResponseEntity("New Password must be not match with Old Password", HttpStatus.BAD_REQUEST);
+        try {
+            if (!request.getNewPass().equals(request.getOldPass())) {
+                checkAccount.setPassword(request.getNewPass());
+                boolean checkChangePassword = accountService.changePassword(checkAccount);
+                if (checkChangePassword) {
+                    return new ResponseEntity("Change Password successful", HttpStatus.OK);
                 }
-            } catch (Exception e) {
                 return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity("New Password must be not match with Old Password", HttpStatus.BAD_REQUEST);
             }
-
+        } catch (Exception e) {
+            return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "update profile", responses = {
@@ -272,17 +261,12 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}")
-    public ResponseEntity updateProfile(@PathVariable String username,@Valid @RequestBody Account account) {
-        Account checkAccount = accountService.getUserByUsername(username);
-        if (checkAccount != null) {
-            try {
-                return new ResponseEntity(accountService.updateProfile(account), HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
-            }
-
+    public ResponseEntity updateProfile(@PathVariable String username, @Valid @RequestBody Account account) {
+        try {
+            return new ResponseEntity(accountService.updateProfile(account), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "ban account", responses = {
@@ -338,16 +322,12 @@ public class UserController {
     @PutMapping("/users/{username}/ban_account")
     public ResponseEntity banAccount(@PathVariable String username) {
         Account account = accountService.getUserByUsername(username);
-        if (account != null) {
-            try {
-                account.setStatus(false);
-                return new ResponseEntity(accountService.banAccount(account), HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
-            }
-
+        try {
+            account.setStatus(false);
+            return new ResponseEntity(accountService.banAccount(account), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "active account", responses = {
@@ -403,17 +383,13 @@ public class UserController {
     @PutMapping("/users/{username}/active_account")
     public ResponseEntity activeAccount(@PathVariable String username, Authentication authentication) {
         Account account = accountService.getUserByUsername(username);
-        if (account != null) {
-            try {
-                account.setStatus(true);
-                accountService.activeAccount(account);
-                return new ResponseEntity("Active account successful", HttpStatus.OK);
-            }catch (Exception e) {
-                return new ResponseEntity("Active account failed", HttpStatus.BAD_REQUEST);
-            }
+        try {
+            account.setStatus(true);
+            accountService.activeAccount(account);
+            return new ResponseEntity("Active account successful", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity("Active account failed", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(new UsernameNotFoundException("Username can not found."), HttpStatus.NOT_FOUND);
-
     }
 
     @Operation(description = "get user by username", responses = {
