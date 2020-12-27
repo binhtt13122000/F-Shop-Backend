@@ -2,6 +2,7 @@ package com.dev.fshop.controllers;
 
 import com.dev.fshop.entities.Account;
 import com.dev.fshop.services.AccountService;
+import com.dev.fshop.utils.AuthenticatedRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,16 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Data
 class ChangePasswordRequest {
@@ -77,9 +75,27 @@ public class UserController {
     public ResponseEntity getUsers(
             @RequestParam Optional<String> q,
             @RequestParam Optional<String> email,
-            @RequestParam Optional<String> role
+            @RequestParam Optional<String> role, Authentication authentication
     ) {
-        return null;
+        if(AuthenticatedRole.isAdmin(authentication)) {
+            if (q.isPresent()) {
+                List<Account> accountList = accountService.searchAccountsByParameter("%" + q.orElse(null) + "%");
+                if (accountList != null && !accountList.isEmpty()) {
+                    return new ResponseEntity(accountList, HttpStatus.OK);
+                }else {
+                    return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                List<Account> accountList = accountService.searchAccountsByParameters(email.orElse(null), role.orElse(null));
+                if (accountList != null && !accountList.isEmpty()) {
+                    return new ResponseEntity(accountList, HttpStatus.OK);
+                }else {
+                    return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                }
+            }
+        }else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
 
@@ -111,7 +127,6 @@ public class UserController {
     })
     @PostMapping("/users/register")
     public ResponseEntity register(@Valid @RequestBody Account account) {
-
         accountService.addUser(account, "ROL_1");
         return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
     }
@@ -145,7 +160,7 @@ public class UserController {
     @PostMapping("/users")
     public ResponseEntity addStaff(@Valid @RequestBody Account account) {
         accountService.addUser(account, "ROL_2");
-        return new ResponseEntity("Create new user successfully!", HttpStatus.OK);
+        return new ResponseEntity("Create new staff successfully!", HttpStatus.OK);
     }
 
     @Operation(description = "change password", responses = {
@@ -198,31 +213,38 @@ public class UserController {
                     )
             ),
     })
-
-    //change password
-    //check newPass với confirm Pass phải equal,oldPass encode -> trùng với cái pass trong hệ thống, đúng => change password
     @PostMapping("/users/{username}/change_password")
-    public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
-//        Account checkAccount = accountService.getUserByUsername(username);
-//        try {
-//            if (!request.getNewPass().equals(request.getOldPass())) {
-//                checkAccount.setPassword(request.getNewPass());
-//                boolean checkChangePassword = accountService.changePassword(checkAccount);
-//                if (checkChangePassword) {
-//                    return new ResponseEntity("Change Password successful", HttpStatus.OK);
-//                }
-//                return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
-//            } else {
-//                return new ResponseEntity("New Password must be not match with Old Password", HttpStatus.BAD_REQUEST);
-//            }
-//        } catch (Exception e) {
-//            return new ResponseEntity("Change Password failed", HttpStatus.BAD_REQUEST);
-//        }
-        //viết lại
-        return null;
+    public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request, Authentication authentication) {
+        if (AuthenticatedRole.isMySelf(username, authentication)) {
+            Account checkAccount = accountService.getUserByUsername(username);
+            if (checkAccount != null) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                if (encoder.matches(request.getOldPassword(), checkAccount.getPassword())) {
+                    if (request.getNewPassword().matches(request.getConfirmPassword())) {
+                        if (!request.getNewPassword().matches(request.getOldPassword())) {
+                            String hashPass = BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt());
+                            boolean checkChangePassword = accountService.changePassword(checkAccount, hashPass);
+                            if (checkChangePassword) {
+                                return new ResponseEntity("change password successfully!", HttpStatus.OK);
+                            }
+                            return new ResponseEntity("Change failed!", HttpStatus.BAD_REQUEST);
+                        } else {
+                            return new ResponseEntity("New Password must be not match with Old Password", HttpStatus.BAD_REQUEST);
+                        }
+                    } else {
+                        return new ResponseEntity("Change failed!Confirm password does not match.", HttpStatus.BAD_REQUEST);
+                    }
+                } else {
+                    return new ResponseEntity("Change failed!", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity("Not found!", HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
-    //bỏ try catch
     @Operation(description = "update profile", responses = {
             @ApiResponse(
                     description = "update profile successfully!",
@@ -274,23 +296,18 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}")
-    public ResponseEntity updateProfile(@PathVariable String username, @Valid @RequestBody Account account) {
-        //save: 2 việc, update với add;
-        //m add 1 đối tượng mới vào:
-        //Nó ko có Id thì nó tạo mới
-        //Nếu nó có Id thì
-//        try {
-//            return new ResponseEntity(accountService.updateProfile(account), HttpStatus.OK);
-//        } catch (Exception e) {
-//            //?
-//            return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
-//        }
-        Account currentAccount = accountService.getUserByUsername(username);
-        if(currentAccount == null){
-            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+    public ResponseEntity updateProfile(@PathVariable String username,@RequestBody Account account, Authentication authentication) {
+        if (AuthenticatedRole.isMySelf(username, authentication)) {
+            Account currentAccount = accountService.getUserByUsername(username);
+            if (currentAccount != null) {
+                accountService.updateProfile(currentAccount, account);
+                return new ResponseEntity("update profile successfully!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        accountService.updateProfile(account, currentAccount);
-        return  null;
     }
 
     @Operation(description = "ban account", responses = {
@@ -344,13 +361,17 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}/ban_account")
-    public ResponseEntity banAccount(@PathVariable String username) {
-        Account account = accountService.getUserByUsername(username);
-        try {
-            account.setStatus(false);
-            return new ResponseEntity(accountService.banAccount(account), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity("Ban account failed", HttpStatus.BAD_REQUEST);
+    public ResponseEntity banAccount(@PathVariable String username, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                accountService.changeStatusAccount(account, false);
+                return new ResponseEntity("ban account successfully!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
 
@@ -406,13 +427,16 @@ public class UserController {
     })
     @PutMapping("/users/{username}/active_account")
     public ResponseEntity activeAccount(@PathVariable String username, Authentication authentication) {
-        Account account = accountService.getUserByUsername(username);
-        try {
-            account.setStatus(true);
-            accountService.activeAccount(account);
-            return new ResponseEntity("Active account successful", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity("Active account failed", HttpStatus.BAD_REQUEST);
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                accountService.changeStatusAccount(account, true);
+                return new ResponseEntity("Active account successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
 
@@ -452,21 +476,20 @@ public class UserController {
     })
     @GetMapping("/users/{username}")
     public ResponseEntity getByUsername(@PathVariable String username, Authentication authentication) {
-        System.out.println("a");
-        System.out.println(isAdmin(authentication));
-        Account account = accountService.getUserByUsername(username);
-        if (account != null) {
-            return new ResponseEntity(accountService.getUserByUsername(username), HttpStatus.OK);
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                return new ResponseEntity(accountService.getUserByUsername(username), HttpStatus.OK);
+            }
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+        } else if (AuthenticatedRole.isMySelf(username, authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                return new ResponseEntity(accountService.getUserByUsername(username), HttpStatus.OK);
+            }
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Username can not found.", HttpStatus.NOT_FOUND);
-    }
-
-    public static boolean isMySelf(String username, Authentication authentication){
-        return username.equals(authentication.getName());
-    }
-
-    public static String isAdmin(Authentication authentication){
-        List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        return roles.get(0);
     }
 }

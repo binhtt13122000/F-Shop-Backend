@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -36,30 +37,37 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account activeAccount(Account account) {
-        account.setStatus(true);
-        return userRepository.save(account);
-    }
-
-    @Override
-    public Account banAccount(Account account) {
-        account.setStatus(false);
-        return userRepository.save(account);
-    }
-
-    @Override
     public Account updateProfile(Account currentAccount, Account newAccount) {
         currentAccount.setStatus(newAccount.isStatus());
-        currentAccount.setPassword(newAccount.getPassword());
-        userRepository.save(currentAccount);
-        return currentAccount;
+        currentAccount.setName(newAccount.getName());
+        currentAccount.setBirthDate(newAccount.getBirthDate());
+        currentAccount.setPhoneNumber(newAccount.getPhoneNumber());
+        currentAccount.setGender(newAccount.isGender());
+        currentAccount.setCountry(newAccount.getCountry());
+        currentAccount.setAddress(newAccount.getAddress());
+        currentAccount.setAvatar(newAccount.getAvatar());
+        return userRepository.save(currentAccount);
     }
 
     @Override
-    public boolean changePassword(Account account) {
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
-        return userRepository.save(account) != null? true: false;
+    public boolean changePassword(Account account, String hashPassword) {
+        account.setPassword(hashPassword);
+        return userRepository.save(account) != null ? true : false;
     }
 
+    @Override
+    public List<Account> searchAccountsByParameters(String email, String role) {
+        return userRepository.searchAccountsByParameters(email, role);
+    }
 
+    @Override
+    public List<Account> searchAccountsByParameter(String q) {
+        return userRepository.searchAccountsByParameter(q);
+    }
+
+    @Override
+    public Account changeStatusAccount(Account account, boolean status) {
+        account.setStatus(status);
+        return  userRepository.save(account);
+    }
 }
