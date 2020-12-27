@@ -1,7 +1,9 @@
 package com.dev.fshop.controllers;
 
 import com.dev.fshop.entities.Comment;
+import com.dev.fshop.entities.Product;
 import com.dev.fshop.services.CommentService;
+import com.dev.fshop.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,16 +13,24 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
 @RestController
 @RequestMapping(path = "/v1/api")
 @Tag(name = "Comment")
 public class CommentController {
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private CommentService commentService;
 
     @Operation(description = "get comments by product", responses = {
             @ApiResponse(
@@ -69,8 +79,16 @@ public class CommentController {
             ),
     })
     @GetMapping("/products/{productId}/comments")
-    public ResponseEntity getCommentByProduct(@PathVariable("productId") String productId){
-        return null;
+    public ResponseEntity getCommentByProduct(@PathVariable("productId") String productId) {
+            try {
+                List<Comment> commentList = commentService.getCommentsByProductId(productId);
+                if (!commentList.isEmpty() && commentList != null) {
+                    return new ResponseEntity(commentList, HttpStatus.OK);
+                }
+                return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
+            } catch (Exception e) {
+                return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
+            }
     }
 
     //create
@@ -113,8 +131,13 @@ public class CommentController {
             ),
     })
     @PostMapping("/products/{productId}/comments")
-    public ResponseEntity postComment(@PathVariable("productId") String productId, @RequestBody Comment comment){
-        return null;
+    public ResponseEntity postComment(@PathVariable("productId") String productId, @RequestBody Comment comment) {
+            try {
+                commentService.createNewComment(comment);
+                return new ResponseEntity("Post comment successful", HttpStatus.OK);
+            }catch (Exception e) {
+                return new ResponseEntity("Post comment failed.", HttpStatus.BAD_REQUEST);
+            }
     }
 
     //update
@@ -169,8 +192,16 @@ public class CommentController {
             ),
     })
     @PutMapping("/comments/{commentId}/update")
-    public ResponseEntity updateComment(@PathVariable("commentId") String commentId, @RequestBody Comment comment){
-        return null;
+    public ResponseEntity updateComment(@PathVariable("commentId") String commentId, @RequestBody Comment comment) {
+        Comment checkExisted = commentService.getCommentByCommentId(commentId);
+        if(checkExisted != null) {
+            try {
+                return new ResponseEntity(commentService.updateComment(comment), HttpStatus.OK);
+            }catch (Exception e) {
+                return new ResponseEntity("Update comment failed", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
     }
 
     //delete
@@ -225,8 +256,16 @@ public class CommentController {
             ),
     })
     @PutMapping("/comment/{commentId}/delete")
-    public ResponseEntity deleteComment(@PathVariable("commentId") String commentId){
-        return null;
+    public ResponseEntity deleteComment(@PathVariable("commentId") String commentId) {
+        Comment comment = commentService.getCommentByCommentId(commentId);
+        if(comment != null) {
+            boolean check = commentService.deleteComment(commentId);
+            if (check) {
+                return new ResponseEntity("Delete Comment successful", HttpStatus.OK);
+            }
+            return new ResponseEntity("Delete Comment failed", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "confirm comment", responses = {
@@ -280,8 +319,16 @@ public class CommentController {
             ),
     })
     @PutMapping("/comments/{commentId}/confirm")
-    public ResponseEntity confirmComment(@PathVariable("commentId") String commentId){
-        return null;
+    public ResponseEntity confirmComment(@PathVariable("commentId") String commentId) {
+        Comment checkExisted = commentService.getCommentByCommentId(commentId);
+        if(checkExisted != null) {
+            try {
+                return new ResponseEntity(commentService.updateComment(checkExisted), HttpStatus.OK);
+            }catch (Exception e) {
+                return new ResponseEntity("Confirm comment failed", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("CommentId is not found", HttpStatus.NOT_FOUND);
     }
 
 }

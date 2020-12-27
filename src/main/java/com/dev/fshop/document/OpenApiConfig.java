@@ -16,7 +16,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         List<Server> servers = new ArrayList<>();
-        servers.add(new Server().url("http://localhost:8081"));
+        servers.add(new Server().url("http://localhost:8082"));
         return new OpenAPI()
                 .servers(servers)
                 .info(new Info().title("F-Shop API")

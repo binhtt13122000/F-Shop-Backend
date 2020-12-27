@@ -10,4 +10,21 @@ import java.util.List;
 @Service
 public class PromotionServiceImpl implements PromotionService {
 
+    @Autowired
+    private PromotionRepository promotionRepository;
+
+    @Override
+    public List<Promotion> getPromotionsByUserId(String userId) {
+        return promotionRepository.findPromotionsByAccount_UserId(userId);
+    }
+
+    @Override
+    public Promotion createPromotion(Promotion promotion) {
+        return promotionRepository.save(promotion);
+    }
+
+    @Override
+    public Promotion updatePromotion(Promotion promotion) {
+        return promotionRepository.save(promotion);
+    }
 }

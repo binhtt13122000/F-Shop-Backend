@@ -2,7 +2,9 @@ package com.dev.fshop.controllers;
 
 import com.dev.fshop.entities.Account;
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.services.ProductDetailService;
 import com.dev.fshop.services.ProductService;
+import com.dev.fshop.supporters.ProductDetail;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +28,13 @@ import java.util.Optional;
 @RequestMapping(path = "/v1/api")
 @Tag(name = "Product")
 public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private ProductDetailService productDetailService;
+
     @Operation(description = "get products", responses = {
             @ApiResponse(
                     description = "get products successfully!",
@@ -49,7 +59,11 @@ public class ProductController {
     })
     @GetMapping("/products")
     public ResponseEntity getProducts(){
-        return null;
+        List<Product> productList = productService.getProducts();
+        if(!productList.isEmpty() && productList != null) {
+            return new ResponseEntity(productList, HttpStatus.OK);
+        }
+        return new ResponseEntity("Not found products", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "get product by id", responses = {
@@ -76,7 +90,11 @@ public class ProductController {
     })
     @GetMapping("/products/{productId}")
     public ResponseEntity getProductById(@PathVariable String productId){
-        return null;
+        Product product = productService.getProductByProId(productId);
+        if(product != null) {
+            return new ResponseEntity(product,HttpStatus.OK);
+        }
+        return new ResponseEntity("Product is not available", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "update product", responses = {
@@ -131,7 +149,15 @@ public class ProductController {
     })
     @PutMapping("/products/{productId}")
     public ResponseEntity updateProduct(@PathVariable String productId, @RequestBody Product product){
-        return null;
+        Product checkExisted = productService.getProductByProId(productId);
+        if(checkExisted != null) {
+            try {
+                return new ResponseEntity(productService.updateProduct(product), HttpStatus.OK);
+            }catch (Exception e) {
+                return new ResponseEntity("Update Product failed", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("Product is not available", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "add quantity", responses = {
@@ -184,9 +210,23 @@ public class ProductController {
                     )
             ),
     })
-    @PutMapping("/products/{productId}/{quantity}")
-    public ResponseEntity addQuantity(@PathVariable String productId, @PathVariable String quantity){
-        return null;
+    @PutMapping("/products/{productId}/{productSize}/{quantity}")
+    public ResponseEntity addQuantity(@PathVariable String productId, @PathVariable String productSize, @PathVariable Integer quantity){
+        ProductDetail productDetail = productDetailService.getProductDetailByProIdAndProSize(productId, productSize);
+        if(productDetail != null) {
+            try {
+                if(quantity <= 0) {
+                    return new ResponseEntity("Quantity must be greater than 0", HttpStatus.BAD_REQUEST);
+                }else {
+                    productDetail.setProQuantity(productDetail.getProQuantity() + quantity);
+                    productDetailService.addQuantity(productDetail);
+                    return new ResponseEntity("Add quantity product successful.", HttpStatus.OK);
+                }
+            }catch (Exception e) {
+                return new ResponseEntity("Add quantity product failed!", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("Product Detail with product id and product size is not available", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "Create new product", responses = {
@@ -241,7 +281,15 @@ public class ProductController {
     })
     @PostMapping("/products")
     public ResponseEntity createProduct(@RequestBody Product product){
-        return null;
+        Product checkExisted = productService.getProductByProId(product.getProId());
+        if(checkExisted == null) {
+            try {
+                return new ResponseEntity(productService.createNewProduct(product), HttpStatus.OK);
+            }catch (Exception e) {
+                return new ResponseEntity("Update Product failed", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("Product is existed", HttpStatus.NOT_FOUND);
     }
 
 

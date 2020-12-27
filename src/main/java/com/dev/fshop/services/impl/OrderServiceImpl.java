@@ -11,5 +11,11 @@ import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    @Autowired
+    private OrdersRepository ordersRepository;
 
+    @Override
+    public Orders findOrderByOrderId(String orderId) {
+        return ordersRepository.findById(orderId).orElse(null);
+    }
 }

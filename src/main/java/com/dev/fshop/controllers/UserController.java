@@ -2,6 +2,7 @@ package com.dev.fshop.controllers;
 
 import com.dev.fshop.entities.Account;
 import com.dev.fshop.services.AccountService;
+import com.dev.fshop.utils.AuthenticatedRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,15 +14,20 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Data
 class ChangePasswordRequest {
-    private String oldPass;
-    private String newPass;
+    private String oldPassword;
+    private String newPassword;
+    private String confirmPassword;
 }
 
 @RestController
@@ -69,9 +75,27 @@ public class UserController {
     public ResponseEntity getUsers(
             @RequestParam Optional<String> q,
             @RequestParam Optional<String> email,
-            @RequestParam Optional<String> role
+            @RequestParam Optional<String> role, Authentication authentication
     ) {
-        return null;
+        if(AuthenticatedRole.isAdmin(authentication)) {
+            if (q.isPresent()) {
+                List<Account> accountList = accountService.searchAccountsByParameter("%" + q.orElse(null) + "%");
+                if (accountList != null && !accountList.isEmpty()) {
+                    return new ResponseEntity(accountList, HttpStatus.OK);
+                }else {
+                    return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                List<Account> accountList = accountService.searchAccountsByParameters(email.orElse(null), role.orElse(null));
+                if (accountList != null && !accountList.isEmpty()) {
+                    return new ResponseEntity(accountList, HttpStatus.OK);
+                }else {
+                    return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                }
+            }
+        }else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
 
@@ -134,8 +158,9 @@ public class UserController {
             ),
     })
     @PostMapping("/users")
-    public ResponseEntity addStaff(@RequestBody Account account) {
-        return null;
+    public ResponseEntity addStaff(@Valid @RequestBody Account account) {
+        accountService.addUser(account, "ROL_2");
+        return new ResponseEntity("Create new staff successfully!", HttpStatus.OK);
     }
 
     @Operation(description = "change password", responses = {
@@ -189,8 +214,35 @@ public class UserController {
             ),
     })
     @PostMapping("/users/{username}/change_password")
-    public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
-        return null;
+    public ResponseEntity changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request, Authentication authentication) {
+        if (AuthenticatedRole.isMySelf(username, authentication)) {
+            Account checkAccount = accountService.getUserByUsername(username);
+            if (checkAccount != null) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                if (encoder.matches(request.getOldPassword(), checkAccount.getPassword())) {
+                    if (request.getNewPassword().matches(request.getConfirmPassword())) {
+                        if (!request.getNewPassword().matches(request.getOldPassword())) {
+                            String hashPass = BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt());
+                            boolean checkChangePassword = accountService.changePassword(checkAccount, hashPass);
+                            if (checkChangePassword) {
+                                return new ResponseEntity("change password successfully!", HttpStatus.OK);
+                            }
+                            return new ResponseEntity("Change failed!", HttpStatus.BAD_REQUEST);
+                        } else {
+                            return new ResponseEntity("New Password must be not match with Old Password", HttpStatus.BAD_REQUEST);
+                        }
+                    } else {
+                        return new ResponseEntity("Change failed!Confirm password does not match.", HttpStatus.BAD_REQUEST);
+                    }
+                } else {
+                    return new ResponseEntity("Change failed!", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity("Not found!", HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
     @Operation(description = "update profile", responses = {
@@ -244,63 +296,18 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}")
-    public ResponseEntity updateProfile(@PathVariable String username, @RequestBody Account account) {
-        return null;
-    }
-
-    @Operation(description = "change role", responses = {
-            @ApiResponse(
-                    description = "change role successfully!",
-                    responseCode = "200",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "change role successfully!",
-                                    value = "change role successfully!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
-                    description = "Access denied!",
-                    responseCode = "403",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "Access denied!",
-                                    value = "Access denied!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
-                    description = "Not found!",
-                    responseCode = "404",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "Not found!",
-                                    value = "Not found!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
-                    description = "change role failed!",
-                    responseCode = "400",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "change role failed!",
-                                    value = "change role failed!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-    })
-    @PutMapping("/users/{username}/change_role")
-    public ResponseEntity changeRole(@PathVariable String username) {
-        return null;
+    public ResponseEntity updateProfile(@PathVariable String username,@RequestBody Account account, Authentication authentication) {
+        if (AuthenticatedRole.isMySelf(username, authentication)) {
+            Account currentAccount = accountService.getUserByUsername(username);
+            if (currentAccount != null) {
+                accountService.updateProfile(currentAccount, account);
+                return new ResponseEntity("update profile successfully!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
     @Operation(description = "ban account", responses = {
@@ -354,8 +361,18 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}/ban_account")
-    public ResponseEntity banAccount(@PathVariable String username) {
-        return null;
+    public ResponseEntity banAccount(@PathVariable String username, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                accountService.changeStatusAccount(account, false);
+                return new ResponseEntity("ban account successfully!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
     @Operation(description = "active account", responses = {
@@ -409,8 +426,18 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}/active_account")
-    public ResponseEntity activeAccount(@PathVariable String username) {
-        return null;
+    public ResponseEntity activeAccount(@PathVariable String username, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                accountService.changeStatusAccount(account, true);
+                return new ResponseEntity("Active account successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
     @Operation(description = "get user by username", responses = {
@@ -448,7 +475,21 @@ public class UserController {
             ),
     })
     @GetMapping("/users/{username}")
-    public ResponseEntity getByUsername(@PathVariable String username) {
-        return null;
+    public ResponseEntity getByUsername(@PathVariable String username, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                return new ResponseEntity(accountService.getUserByUsername(username), HttpStatus.OK);
+            }
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+        } else if (AuthenticatedRole.isMySelf(username, authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                return new ResponseEntity(accountService.getUserByUsername(username), HttpStatus.OK);
+            }
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 }

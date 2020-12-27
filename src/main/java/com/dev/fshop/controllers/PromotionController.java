@@ -1,7 +1,9 @@
 package com.dev.fshop.controllers;
 
+import com.dev.fshop.entities.Account;
 import com.dev.fshop.entities.Comment;
 import com.dev.fshop.entities.Promotion;
+import com.dev.fshop.services.AccountService;
 import com.dev.fshop.services.PromotionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,12 @@ import java.util.List;
 @RequestMapping(path = "/v1/api")
 @Tag(name = "Promotion")
 public class PromotionController {
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private PromotionService promotionService;
 
     @Operation(description = "get promotion by user", responses = {
             @ApiResponse(
@@ -69,7 +78,20 @@ public class PromotionController {
     })
     @GetMapping("/users/{username}/promotions")
     public ResponseEntity findPromotionByAccount(@PathVariable String username){
-        return null;
+        Account account = accountService.getUserByUsername(username);
+        if(account != null) {
+            try {
+                List<Promotion> promotionList = promotionService.getPromotionsByUserId(account.getUserId());
+                if(promotionList != null && !promotionList.isEmpty()) {
+                    return new ResponseEntity(promotionList, HttpStatus.OK);
+                }else {
+                    return new ResponseEntity("Promotion can not found", HttpStatus.NOT_FOUND);
+                }
+            }catch (Exception e) {
+                return  new ResponseEntity("Promotion can not found", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("User is not available", HttpStatus.BAD_REQUEST);
     }
 
     @Operation(description = "Create new promotion", responses = {
@@ -112,7 +134,16 @@ public class PromotionController {
     })
     @PostMapping("/users/{username}/promotions")
     public ResponseEntity createPromotion(@PathVariable String username, @RequestBody Promotion promotion){
-        return null;
+        Account account = accountService.getUserByUsername(username);
+        if(account != null) {
+            try {
+                promotionService.createPromotion(promotion);
+                return new ResponseEntity("Create new promotion successfully!", HttpStatus.OK);
+            }catch (Exception e) {
+                return new ResponseEntity("Create promotion failed", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("Account is not available", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "update promotion", responses = {
@@ -167,6 +198,15 @@ public class PromotionController {
     })
     @PutMapping("/users/{username}/promotions")
     public ResponseEntity updatePromotion(@PathVariable String username, @RequestBody Promotion promotion){
-        return null;
+        Account account = accountService.getUserByUsername(username);
+        if(account != null) {
+            try {
+                promotionService.updatePromotion(promotion);
+                return new ResponseEntity("Update promotion successfully!", HttpStatus.OK);
+            }catch (Exception e) {
+                return new ResponseEntity("Update Promotion failed!", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("Account is not available", HttpStatus.NOT_FOUND);
     }
 }
