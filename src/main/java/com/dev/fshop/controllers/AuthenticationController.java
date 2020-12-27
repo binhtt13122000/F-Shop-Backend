@@ -19,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @Data
@@ -36,6 +37,8 @@ public class AuthenticationController {
     private JwtUtils jwtUtils;
     @Autowired
     private UserDetailsServiceImp userDetailService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Operation(description = "Login", responses = {
             @ApiResponse(
@@ -64,7 +67,7 @@ public class AuthenticationController {
             )
     })
     @PostMapping(path = "/users/login")
-    public ResponseEntity login(@RequestBody AuthenticateRequest request) throws Exception {
+    public ResponseEntity login(@RequestBody AuthenticateRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             UserDetails user = userDetailService.loadUserByUsername(request.getUsername());
@@ -75,6 +78,7 @@ public class AuthenticationController {
                     cookieToken + "; HttpOnly; SameSite=None; Max-Age=864000");
             return new ResponseEntity("Login Successfully!",headers, HttpStatus.OK);
         } catch (BadCredentialsException e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity("Username or Password is incorrect", HttpStatus.UNAUTHORIZED);
         }
     }
