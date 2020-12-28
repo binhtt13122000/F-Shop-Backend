@@ -34,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
         String password = account.getPassword();
         account.setPassword(passwordEncoder.encode(password));
         account.setRegisteredAt(new Date());
-//        return userRepository.save(account);
+        userRepository.save(account);
         return "Create new user successfully!";
     }
 
