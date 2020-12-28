@@ -11,6 +11,8 @@ import java.util.Collections;
 
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
+    private static final long serialVersionUID = 1L;
+
     private Account account;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
