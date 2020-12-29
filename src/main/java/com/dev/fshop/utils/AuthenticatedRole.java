@@ -19,7 +19,6 @@ public class AuthenticatedRole {
     }
 
     public static boolean isAdmin(Authentication authentication) {
-        String role = null;
         List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         if(roles.get(0).equals(ADMIN))
             return true;

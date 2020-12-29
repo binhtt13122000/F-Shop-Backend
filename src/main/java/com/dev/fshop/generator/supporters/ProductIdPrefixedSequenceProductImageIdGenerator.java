@@ -37,6 +37,6 @@ public class ProductIdPrefixedSequenceProductImageIdGenerator extends SequenceSt
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((ProductImage) object).getProId(), super.generate(session, object));
+        return String.format("%1$s", ((ProductImage) object).getProId()) + "_" + valuePrefix + String.format(numberFormat, super.generate(session, object));
     }
 }

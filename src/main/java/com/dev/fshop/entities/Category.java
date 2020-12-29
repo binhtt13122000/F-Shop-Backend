@@ -54,10 +54,10 @@ public class Category implements Serializable {
 
 
     //relation
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JsonIgnore
-    private Collection<Product> products;
+//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @JsonIgnore
+//    private Collection<Product> products;
 
 }

@@ -59,7 +59,6 @@ public class Product implements Serializable {
     @Column(name = "proPrice", nullable = false)
     @Min(1)
     @NotNull
-    @NotBlank
     @Schema(name = "100000")
     private float proPrice;
 
@@ -67,7 +66,6 @@ public class Product implements Serializable {
     @Column(name = "realPrice", nullable = false)
     @Min(1)
     @NotNull
-    @NotBlank
     @Schema(name = "120000")
     private float realPrice;
 
@@ -81,13 +79,11 @@ public class Product implements Serializable {
 
     //create
     @Column(name = "createAt", nullable = false)
-    @NotBlank
     @NotNull
     private Date createAt;
 
     //updateAt
     @Column(name = "updateAt")
-    @NotBlank
     private Date updateAt;
 
 
@@ -110,13 +106,11 @@ public class Product implements Serializable {
     private Supplier supplier;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     @Schema(example = "SUP_0001")
     private String categoryId;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     @Schema(example = "TYPE_0001")
     private String supplierId;
@@ -137,6 +131,4 @@ public class Product implements Serializable {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductImage> productImages;
-
-
 }
