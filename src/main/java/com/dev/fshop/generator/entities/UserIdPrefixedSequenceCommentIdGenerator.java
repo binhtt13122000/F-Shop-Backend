@@ -1,6 +1,7 @@
 package com.dev.fshop.generator.entities;
 
 import com.dev.fshop.entities.Comment;
+import com.dev.fshop.supporters.ProductDetail;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -37,6 +38,6 @@ public class UserIdPrefixedSequenceCommentIdGenerator extends SequenceStyleGener
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((Comment) object).getUserId(), super.generate(session, object));
+        return String.format("%1$s", ((Comment) object).getUserId())  + "_" + valuePrefix +  String.format(numberFormat, super.generate(session, object));
     }
 }

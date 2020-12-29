@@ -1,6 +1,7 @@
 package com.dev.fshop.generator.entities;
 
 import com.dev.fshop.entities.Review;
+import com.dev.fshop.supporters.ProductDetail;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -37,6 +38,6 @@ public class ProductIdPrefixedSequenceReviewIdGenerator extends SequenceStyleGen
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((Review) object).getProId(), super.generate(session, object));
+        return String.format("%1$s", ((Review) object).getProId())  + "_" + valuePrefix + String.format(numberFormat, super.generate(session, object));
     }
 }

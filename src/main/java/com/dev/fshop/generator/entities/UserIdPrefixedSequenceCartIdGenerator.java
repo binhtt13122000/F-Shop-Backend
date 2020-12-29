@@ -1,6 +1,7 @@
 package com.dev.fshop.generator.entities;
 
 import com.dev.fshop.entities.Cart;
+import com.dev.fshop.supporters.ProductDetail;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -38,6 +39,6 @@ public class UserIdPrefixedSequenceCartIdGenerator extends SequenceStyleGenerato
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((Cart) object).getUserId(), super.generate(session, object));
+        return String.format("%1$s", ((Cart) object).getUserId())  + "_" + valuePrefix +  String.format(numberFormat, super.generate(session, object));
     }
 }
