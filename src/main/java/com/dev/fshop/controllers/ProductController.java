@@ -252,10 +252,8 @@ public class ProductController {
                 if (productDetail != null) {
                     productDetailService.addQuantity(productDetail, quantity);
                     return new ResponseEntity("add quantity successfully!", HttpStatus.OK);
-                }else {
-                    productDetailService.createNewProductDetail(checkProductExisted, productSize, quantity);
-                    return new ResponseEntity("add quantity successfully!", HttpStatus.OK);
                 }
+                return new ResponseEntity("add quantity failed!", HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity("product is not available!", HttpStatus.NOT_FOUND);
         } else {
