@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -70,19 +71,70 @@ public class ProductController {
             ),
     })
     @GetMapping("/products")
-    public ResponseEntity getProducts(Authentication authentication) {
-        if(AuthenticatedRole.isAdmin(authentication)) {
-            List<Product> productList = productService.getProducts(true);
-            if (!productList.isEmpty() && productList != null) {
-                return new ResponseEntity(productList, HttpStatus.OK);
+    public ResponseEntity getProducts(
+            @RequestParam Optional<String> q,
+            @RequestParam Optional<String> productName,
+            @RequestParam Optional<String> categoryName,
+            @RequestParam Optional<Float> realPriceFrom,
+            @RequestParam Optional<Float> realPriceTo,
+            @RequestParam(required = false) @DateTimeFormat(pattern="MMddyyyy") Date dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(pattern="MMddyyyy") Date dateTo,
+            Authentication authentication) {
+        if (q.isPresent()) {
+            if (AuthenticatedRole.isAdmin(authentication)) {
+                List<Product> productList = productService.searchProductsByParameterQ(true, "%" + q.orElse(null) + "%");
+                if (productList != null && !productList.isEmpty()) {
+                    return new ResponseEntity(productList, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                List<Product> productList = productService.searchProductsByParameterQ(false, "%" + q.orElse(null) + "%");
+                if (!productList.isEmpty() && productList != null) {
+                    return new ResponseEntity(productList, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                }
             }
-            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
-        }else {
-            List<Product> productList = productService.getProducts(false);
-            if (!productList.isEmpty() && productList != null) {
-                return new ResponseEntity(productList, HttpStatus.OK);
+        } else {
+            if (!productName.isPresent() && !categoryName.isPresent() && !realPriceFrom.isPresent() && !realPriceTo.isPresent()
+            && dateFrom == null && dateTo == null) {
+                if (AuthenticatedRole.isAdmin(authentication)) {
+                    List<Product> productList = productService.getProducts(true);
+                    if (productList != null && !productList.isEmpty()) {
+                        return new ResponseEntity(productList, HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                    }
+                } else {
+                    List<Product> productList = productService.getProducts(false);
+                    if (productList != null && !productList.isEmpty()) {
+                        return new ResponseEntity(productList, HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                    }
+                }
+            } else {
+                if (AuthenticatedRole.isAdmin(authentication)) {
+                    List<Product> productList = productService.searchProductsByParameters(true, productName.orElse(null),
+                            categoryName.orElse(null), realPriceFrom.orElse(null), realPriceTo.orElse(null),
+                            dateFrom, dateTo);
+                    if (productList != null && !productList.isEmpty()) {
+                        return new ResponseEntity(productList, HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                    }
+                } else {
+                    List<Product> productList = productService.searchProductsByParameters(false, productName.orElse(null),
+                            categoryName.orElse(null), realPriceFrom.orElse(null), realPriceTo.orElse(null),
+                            dateFrom, dateTo);
+                    if (productList != null && !productList.isEmpty()) {
+                        return new ResponseEntity(productList, HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                    }
+                }
             }
-            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -247,7 +299,7 @@ public class ProductController {
     public ResponseEntity addQuantity(@PathVariable String productId, @PathVariable String productSize, @PathVariable Integer quantity, Authentication authentication) {
         if (AuthenticatedRole.isAdmin(authentication)) {
             Product checkProductExisted = productService.getProductByProId(productId);
-            if(checkProductExisted != null) {
+            if (checkProductExisted != null) {
                 ProductDetail productDetail = productDetailService.getProductDetailByProIdAndProSize(productId, productSize);
                 if (productDetail != null) {
                     productDetailService.addQuantity(productDetail, quantity);

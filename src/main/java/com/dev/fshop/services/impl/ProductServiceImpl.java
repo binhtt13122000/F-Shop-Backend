@@ -52,4 +52,29 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
+    @Override
+    public List<Product> searchProductsByParameterQ(boolean isAdmin, String q) {
+        if(isAdmin) {
+            return productRepository.searchProductsByParameterQWithAdmin(q);
+        }
+        else {
+            return productRepository.searchProductsByParameterQWithUser(1, q);
+        }
+    }
+
+    @Override
+    public List<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom, Float realPriceTo, Date dateFrom, Date dateTo) {
+        if(productName != null) {
+            productName = "%" + productName + "%";
+        }
+        if(categoryName != null) {
+            categoryName = "%" + categoryName + "%";
+        }
+        if(isAdmin) {
+            return productRepository.searchProductsByParametersWithAdmin(productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
+        }else {
+            return productRepository.searchProductsByParametersWithUser(1, productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
+        }
+    }
+
 }
