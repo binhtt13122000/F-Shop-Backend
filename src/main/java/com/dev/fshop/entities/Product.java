@@ -97,14 +97,14 @@ public class Product implements Serializable {
     private Supplier supplier;
 
     @Transient
-    @Size(max = 40, message = "categoryId must be at most 40 characters!")
-    @NotNull(message = "Category is not null!")
+    @Size(max = 40, min = 1,message = "categoryId must be at most 40 characters!")
+    @NotNull(message = "CategoryId is not null!")
     @ExistIn(message = "Category is not exist!", fieldName = "categoryId", className = "Product")
     @Schema(example = "SUP_0001")
     private String categoryId;
 
     @Transient
-    @Size(max = 40, message = "categoryId must be at most 40 characters!")
+    @Size(max = 40, min = 1, message = "categoryId must be at most 40 characters!")
     @NotNull(message = "SupplierId is not null!")
     @ExistIn(message = "Supplier is not exist!", fieldName = "supplierId", className = "Product")
     @Schema(example = "TYPE_0001")

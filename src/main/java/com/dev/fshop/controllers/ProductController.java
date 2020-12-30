@@ -41,12 +41,6 @@ public class ProductController {
     @Autowired
     private ProductDetailService productDetailService;
 
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private SupplierService supplierService;
-
     @Operation(description = "get products", responses = {
             @ApiResponse(
                     description = "get products successfully!",
@@ -110,15 +104,15 @@ public class ProductController {
             ),
     })
     @GetMapping("/products/{productId}")
-    public ResponseEntity getProductById(@PathVariable String productId, Authentication authentication) {
-        System.out.println(authentication.getAuthorities());
-        Product product = productService.getProductByProId(productId);
+    public ResponseEntity getProductById(@PathVariable String productId) {
+        Product product = productService.getProductByProductId(productId);
         if (product != null) {
             return new ResponseEntity(product, HttpStatus.OK);
         }
         return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
     }
 
+    //xong
     @Operation(description = "update product", responses = {
             @ApiResponse(
                     description = "update product successfully!",
@@ -145,13 +139,13 @@ public class ProductController {
                     )
             ),
             @ApiResponse(
-                    description = "Supplier or Category or Product is not available!",
+                    description = "ProductID is not found!",
                     responseCode = "404",
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
-                                    description = "Supplier or Category or Product is not available!",
-                                    value = "Supplier or Category or Product is not available!"
+                                    description = "ProductID is not found!",
+                                    value = "ProductID is not found!"
                             ),
                             schema = @Schema(implementation = String.class)
                     )
@@ -170,31 +164,21 @@ public class ProductController {
             ),
     })
     @PutMapping("/products/{productId}")
-    public ResponseEntity updateProduct(@PathVariable String productId, @RequestBody Product product, Authentication authentication) {
+    public ResponseEntity updateProduct(@PathVariable String productId, @Valid @RequestBody Product product, Authentication authentication) {
         if (AuthenticatedRole.isAdmin(authentication)) {
-            Product currentProduct = productService.getProductByProId(productId);
+            Product currentProduct = productService.getProductByProductId(productId);
             if (currentProduct != null) {
-                Category checkCategoryExisted = categoryService.findCategoryByCategoryId(product.getCategoryId());
-                if (checkCategoryExisted != null) {
-                    Supplier checkSupplierExisted = supplierService.findSupplierBySupplierId(product.getSupplierId());
-                    if (checkSupplierExisted != null) {
-                        product.setCategory(checkCategoryExisted);
-                        product.setSupplier(checkSupplierExisted);
-                        productService.updateProduct(currentProduct, product);
-                        return new ResponseEntity("update product successfully!", HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity("Supplier is not available!", HttpStatus.NOT_FOUND);
-                    }
-                } else {
-                    return new ResponseEntity("Category is not available!", HttpStatus.NOT_FOUND);
-                }
+                System.out.println(currentProduct);
+                productService.updateProduct(currentProduct, product);
+                return new ResponseEntity("update product successfully!", HttpStatus.OK);
             }
-            return new ResponseEntity("Product is not available!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("ProductID is not found!", HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
 
+    //chưa
     @Operation(description = "add quantity", responses = {
             @ApiResponse(
                     description = "add quantity successfully!",
@@ -248,7 +232,7 @@ public class ProductController {
     @PutMapping("/products/{productId}/{productSize}/{quantity}")
     public ResponseEntity addQuantity(@PathVariable String productId, @PathVariable String productSize, @PathVariable Integer quantity, Authentication authentication) {
         if (AuthenticatedRole.isAdmin(authentication)) {
-            Product checkProductExisted = productService.getProductByProId(productId);
+            Product checkProductExisted = productService.getProductByProductId(productId);
             if(checkProductExisted != null) {
                 ProductDetail productDetail = productDetailService.getProductDetailByProIdAndProSize(productId, productSize);
                 if (productDetail != null) {
@@ -263,6 +247,7 @@ public class ProductController {
         }
     }
 
+    //ok
     @Operation(description = "Create new product", responses = {
             @ApiResponse(
                     description = "Create new product successfully!",

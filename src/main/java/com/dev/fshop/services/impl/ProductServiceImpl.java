@@ -21,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Override
-    public Product getProductByProId(String proId) {
+    public Product getProductByProductId(String proId) {
         return productRepository.findById(proId).orElse(null);
     }
 
@@ -37,14 +37,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Product currentProduct, Product newProduct) {
-        System.out.println(newProduct.getCategory().getProTypeId());
         currentProduct.setProductPrice(newProduct.getProductPrice());
         currentProduct.setProductDescription(newProduct.getProductDescription());
         currentProduct.setProductName(newProduct.getProductName());
         currentProduct.setRealPrice(newProduct.getRealPrice());
         currentProduct.setUpdateAt(new Date());
-        currentProduct.setCategory(newProduct.getCategory());
-        currentProduct.setSupplier(newProduct.getSupplier());
+        currentProduct.setCategory(new Category(newProduct.getCategoryId(), null));
+        currentProduct.setSupplier(new Supplier(newProduct.getSupplierId(), null));
+        currentProduct.setCategoryId(newProduct.getCategoryId());
+        currentProduct.setSupplierId(newProduct.getSupplierId());
+        System.out.println(currentProduct);
         return productRepository.save(currentProduct);
     }
 
