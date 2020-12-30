@@ -14,5 +14,4 @@ public interface ProductService {
     public List<Product> searchProductsByParameterQ(boolean isAdmin, String q);
     public List<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom, Float realPriceTo,
                                                     Date dateFrom, Date dateTo);
-
 }

@@ -13,26 +13,26 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, String>{
     public List<Product> getProductsByStatus(int status);
 
-    @Query("select u from Product u where (:q is null or u.productName like :q) or (:q is null or u.category.proTypeName like :q)")
+    @Query("select u from Product u where (:q is null or u.proName like :q) or (:q is null or u.category.proTypeName like :q)")
     public List<Product> searchProductsByParameterQWithAdmin(String q);
 
-    @Query("select u from Product u where ((:q is null or u.productName like :q) or (:q is null or u.category.proTypeName like :q)) and u.status = :status")
+    @Query("select u from Product u where ((:q is null or u.proName like :q) or (:q is null or u.category.proTypeName like :q)) and u.status = :status")
     public List<Product> searchProductsByParameterQWithUser(int status, String q);
 
-    @Query("select u from Product  u where (:productName is null or u.productName like :productName) and (:categoryName is null or u.category.proTypeName like :categoryName)" +
+    @Query("select u from Product  u where (:productName is null or u.proName like :productName) and (:categoryName is null or u.category.proTypeName like :categoryName)" +
             " and ((:realPriceFrom is null and :realPriceTo is null) or (:realPriceFrom is not null and :realPriceTo is not null and u.realPrice >= :realPriceFrom and" +
             " u.realPrice <= :realPriceTo)) and ((:dateFrom is null and :dateTo is null) or (:dateFrom is not null and :dateTo is not null and " +
             "u.createAt between :dateFrom and :dateTo)) and u.status = :status")
     public List<Product> searchProductsByParametersWithUser(int status, String productName, String categoryName,
-                                                            Float realPriceFrom, Float realPriceTo,
-                                                            Date dateFrom, Date dateTo);
+                                                    Float realPriceFrom, Float realPriceTo,
+                                                    Date dateFrom, Date dateTo);
 
-    @Query("select u from Product  u where (:productName is null or u.productName like :productName) and (:categoryName is null or u.category.proTypeName like :categoryName)" +
+    @Query("select u from Product  u where (:productName is null or u.proName like :productName) and (:categoryName is null or u.category.proTypeName like :categoryName)" +
             " and ((:realPriceFrom is null and :realPriceTo is null) or (:realPriceFrom is not null and :realPriceTo is not null and u.realPrice >= :realPriceFrom and" +
             " u.realPrice <= :realPriceTo)) and ((:dateFrom is null and :dateTo is null) or (:dateFrom is not null and :dateTo is not null and " +
             " u.createAt between :dateFrom and :dateTo))")
     public List<Product> searchProductsByParametersWithAdmin(String productName, String categoryName,
-                                                             Float realPriceFrom, Float realPriceTo,
-                                                             Date dateFrom, Date dateTo);
+                                                            Float realPriceFrom, Float realPriceTo,
+                                                            Date dateFrom, Date dateTo);
 
 }

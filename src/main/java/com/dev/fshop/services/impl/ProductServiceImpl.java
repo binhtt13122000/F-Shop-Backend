@@ -76,5 +76,4 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.searchProductsByParametersWithUser(1, productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
         }
     }
-
 }
