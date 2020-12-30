@@ -8,6 +8,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.type.LongType;
 import org.hibernate.type.Type;
 
 import java.io.Serializable;
@@ -29,7 +30,7 @@ public class UserIdPrefixedSequenceOrderIdGenerator extends SequenceStyleGenerat
 
     @Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
-        super.configure(type, params, serviceRegistry);
+        super.configure(LongType.INSTANCE, params, serviceRegistry);
         codeNumberSeparator = ConfigurationHelper.getString(CODE_NUMBER_SEPARATOR_PARAMETER,params,CODE_NUMBER_SEPARATOR_DEFAULT);
         numberFormat = ConfigurationHelper.getString(NUMBER_FORMAT_PARAMETER,params,NUMBER_FORMAT_DEFAULT);
         valuePrefix = ConfigurationHelper.getString(VALUE_PREFIX_PARAMETER,params,VALUE_PREFIX_DEFAULT);
