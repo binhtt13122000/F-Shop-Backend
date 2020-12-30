@@ -29,7 +29,7 @@ public class Promotion implements Serializable {
     //promotion id
     @Id
     @JsonIgnore
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_prmotion")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_promotion")
     @GenericGenerator(
             name = "sequence_promotion",
             strategy = "com.dev.fshop.generator.entities.UserIdPrefixedSequencePromotionIdGenerator",
@@ -53,13 +53,11 @@ public class Promotion implements Serializable {
 
     @Column(name = "promo", nullable = false)
     @NotNull
-    @NotBlank
     @Schema(example = "20")
     private float promo;
 
     @Column(name = "status", nullable = false)
     @NotNull
-    @NotBlank
     @Schema(example = "1")
     private boolean status;
 

@@ -54,6 +54,7 @@ public class ProductDetail implements Serializable {
     @JoinColumn(name = "proId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Product product;
 
     @Transient
