@@ -61,6 +61,6 @@ public class ProductDetail implements Serializable {
     private String proId;
 
     public String getProId() {
-        return proId == null ? product.getProId() : proId;
+        return proId == null ? product.getProductId() : proId;
     }
 }

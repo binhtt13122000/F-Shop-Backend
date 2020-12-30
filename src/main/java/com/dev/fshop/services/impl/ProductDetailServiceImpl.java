@@ -20,7 +20,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     public ProductDetail getProductDetailByProIdAndProSize(String proId, String proSize) {
-        return productDetailRepository.findProductDetailByProductProIdAndProSize(proId, proSize);
+        return productDetailRepository.findProductDetailByProductProductIdAndProSize(proId, proSize);
     }
 
     @Override

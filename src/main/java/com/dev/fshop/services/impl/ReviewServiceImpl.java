@@ -16,7 +16,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> findReviewsByProductId(String productId) {
-        return reviewRepository.findReviewsByProductProId(productId);
+        return reviewRepository.findReviewsByProductProductId(productId);
     }
 
     @Override

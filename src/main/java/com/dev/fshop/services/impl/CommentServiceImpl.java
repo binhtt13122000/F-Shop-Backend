@@ -15,7 +15,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> getCommentsByProductId(String productId) {
-        return commentRepository.findCommentsByProductProId(productId);
+//        return commentRepository.findCommentsByProductProId(productId);
+        return null;
     }
 
     @Override

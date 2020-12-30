@@ -266,7 +266,7 @@ public class ProductController {
     @Operation(description = "Create new product", responses = {
             @ApiResponse(
                     description = "Create new product successfully!",
-                    responseCode = "200",
+                    responseCode = "201",
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
@@ -289,18 +289,6 @@ public class ProductController {
                     )
             ),
             @ApiResponse(
-                    description = "Supplier or Category is not available!",
-                    responseCode = "404",
-                    content = @Content(
-                            mediaType = "text/plain; charset=utf-8",
-                            examples = @ExampleObject(
-                                    description = "Supplier or Category is not available!",
-                                    value = "Supplier or Category is not available!"
-                            ),
-                            schema = @Schema(implementation = String.class)
-                    )
-            ),
-            @ApiResponse(
                     description = "Create failed!",
                     responseCode = "400",
                     content = @Content(
@@ -314,22 +302,10 @@ public class ProductController {
             ),
     })
     @PostMapping("/products")
-    public ResponseEntity createProduct(@RequestBody Product product, Authentication authentication) {
+    public ResponseEntity createProduct(@Valid @RequestBody Product product, Authentication authentication) {
         if (AuthenticatedRole.isAdmin(authentication)) {
-            Category checkCategoryExisted = categoryService.findCategoryByCategoryId(product.getCategoryId());
-            if (checkCategoryExisted != null) {
-                Supplier checkSupplierExisted = supplierService.findSupplierBySupplierId(product.getSupplierId());
-                if (checkSupplierExisted != null) {
-                    product.setCategory(checkCategoryExisted);
-                    product.setSupplier(checkSupplierExisted);
-                    productService.createNewProduct(product);
-                    return new ResponseEntity("Create new product successfully!", HttpStatus.OK);
-                } else {
-                    return new ResponseEntity("Supplier is not available!", HttpStatus.NOT_FOUND);
-                }
-            } else {
-                return new ResponseEntity("Category is not available!", HttpStatus.NOT_FOUND);
-            }
+            productService.createNewProduct(product);
+            return new ResponseEntity("Create new product successfully!", HttpStatus.CREATED);
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }

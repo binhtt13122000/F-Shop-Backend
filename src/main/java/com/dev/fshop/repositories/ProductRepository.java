@@ -1,6 +1,7 @@
 package com.dev.fshop.repositories;
 
 
+import com.dev.fshop.entities.Category;
 import com.dev.fshop.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

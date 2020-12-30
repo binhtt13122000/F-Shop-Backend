@@ -81,7 +81,7 @@ public class CartDetail implements Serializable {
     private String cartId;
 
     public String getProId() {
-        return proId == null ? product.getProId() : proId;
+        return proId == null ? product.getProductId() : proId;
     }
 
     public String getCartId() {

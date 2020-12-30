@@ -1,6 +1,8 @@
 package com.dev.fshop.services.impl;
 
+import com.dev.fshop.entities.Category;
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.entities.Supplier;
 import com.dev.fshop.repositories.ProductRepository;
 import com.dev.fshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(Product currentProduct, Product newProduct) {
         System.out.println(newProduct.getCategory().getProTypeId());
-        currentProduct.setProPrice(newProduct.getProPrice());
-        currentProduct.setProDescription(newProduct.getProDescription());
-        currentProduct.setProName(newProduct.getProName());
+        currentProduct.setProductPrice(newProduct.getProductPrice());
+        currentProduct.setProductDescription(newProduct.getProductDescription());
+        currentProduct.setProductName(newProduct.getProductName());
         currentProduct.setRealPrice(newProduct.getRealPrice());
         currentProduct.setUpdateAt(new Date());
         currentProduct.setCategory(newProduct.getCategory());
@@ -49,6 +51,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createNewProduct(Product product) {
+        product.setCreateAt(new Date());
+        product.setCategory(new Category(product.getCategoryId(), null));
+        product.setSupplier(new Supplier(product.getSupplierId(), null));
         return productRepository.save(product);
     }
 

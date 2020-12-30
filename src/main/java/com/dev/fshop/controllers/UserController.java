@@ -102,7 +102,7 @@ public class UserController {
     @Operation(description = "Create new user", responses = {
             @ApiResponse(
                     description = "Create new user successfully!",
-                    responseCode = "200",
+                    responseCode = "201",
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
@@ -134,12 +134,24 @@ public class UserController {
     @Operation(description = "Create new staff", responses = {
             @ApiResponse(
                     description = "Create new staff successfully!",
-                    responseCode = "200",
+                    responseCode = "201",
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
                                     description = "Create new staff successfully!",
                                     value = "Create new staff successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
                             ),
                             schema = @Schema(implementation = String.class)
                     )
@@ -158,9 +170,12 @@ public class UserController {
             ),
     })
     @PostMapping("/users")
-    public ResponseEntity addStaff(@Valid @RequestBody Account account) {
-        accountService.addUser(account, "ROL_2");
-        return new ResponseEntity("Create new staff successfully!", HttpStatus.OK);
+    public ResponseEntity addStaff(@Valid @RequestBody Account account, Authentication authentication) {
+        if(AuthenticatedRole.isAdmin(authentication)){
+            accountService.addUser(account, "ROL_2");
+            return new ResponseEntity("Create new staff successfully!", HttpStatus.CREATED);
+        }
+        return new ResponseEntity("Access denied", HttpStatus.FORBIDDEN);
     }
 
     @Operation(description = "change password", responses = {

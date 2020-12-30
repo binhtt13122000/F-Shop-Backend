@@ -5,6 +5,7 @@ import com.dev.fshop.generator.entities.StringPrefixedSequenceIdGenerator;
 import com.dev.fshop.supporters.Discount;
 import com.dev.fshop.supporters.ProductDetail;
 import com.dev.fshop.supporters.ProductImage;
+import com.dev.fshop.validation.existIn.ExistIn;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -49,7 +50,7 @@ public class Product implements Serializable {
 
     @Column(name = "proName", nullable = false)
     @NotNull(message = "Product name is not null!")
-    @Size(max = 50, message = "Product name must be at most 50 character!")
+    @Size(max = 50, min = 10, message = "Product name must be at most 50 characters and at least 10 characters!")
     @Schema(name = "ÁO THUN NAM T249")
     private String productName;
 
@@ -67,7 +68,7 @@ public class Product implements Serializable {
 
     @Column(name = "proDescription", nullable = false)
     @NotNull(message = "description is not null!")
-    @Size(max = 100, message = "Product description must be at most 50 character!")
+    @Size(max = 100, min = 10,message = "Product description must be at most 100 characters and at least 10 characters!!")
     @Schema(example = "Áo rất đẹp!")
     private String productDescription;
 
@@ -96,12 +97,16 @@ public class Product implements Serializable {
     private Supplier supplier;
 
     @Transient
-    @Size(max = 40)
+    @Size(max = 40, message = "categoryId must be at most 40 characters!")
+    @NotNull(message = "Category is not null!")
+    @ExistIn(message = "Category is not exist!", fieldName = "categoryId", className = "Product")
     @Schema(example = "SUP_0001")
     private String categoryId;
 
     @Transient
-    @Size(max = 40)
+    @Size(max = 40, message = "categoryId must be at most 40 characters!")
+    @NotNull(message = "SupplierId is not null!")
+    @ExistIn(message = "Supplier is not exist!", fieldName = "supplierId", className = "Product")
     @Schema(example = "TYPE_0001")
     private String supplierId;
 

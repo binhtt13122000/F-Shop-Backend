@@ -83,7 +83,7 @@ public class OrderDetail implements Serializable {
     private String orderId;
 
     public String getProId() {
-        return proId == null ? product.getProId() : proId;
+        return proId == null ? product.getProductId() : proId;
     }
 
     public String getOrderId() {
