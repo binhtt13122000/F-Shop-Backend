@@ -71,6 +71,7 @@ public class ProductController {
     })
     @GetMapping("/products")
     public ResponseEntity getProducts(Authentication authentication) {
+        System.out.println(authentication.getAuthorities());
         if(AuthenticatedRole.isAdmin(authentication)) {
             List<Product> productList = productService.getProducts(true);
             if (!productList.isEmpty() && productList != null) {
@@ -109,7 +110,8 @@ public class ProductController {
             ),
     })
     @GetMapping("/products/{productId}")
-    public ResponseEntity getProductById(@PathVariable String productId) {
+    public ResponseEntity getProductById(@PathVariable String productId, Authentication authentication) {
+        System.out.println(authentication.getAuthorities());
         Product product = productService.getProductByProId(productId);
         if (product != null) {
             return new ResponseEntity(product, HttpStatus.OK);
