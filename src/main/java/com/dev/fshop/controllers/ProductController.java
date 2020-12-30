@@ -77,8 +77,8 @@ public class ProductController {
             @RequestParam Optional<String> categoryName,
             @RequestParam Optional<Float> realPriceFrom,
             @RequestParam Optional<Float> realPriceTo,
-            @RequestParam(required = false) @DateTimeFormat(pattern="MMddyyyy") Date dateFrom,
-            @RequestParam(required = false) @DateTimeFormat(pattern="MMddyyyy") Date dateTo,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
             Authentication authentication) {
         if (q.isPresent()) {
             if (AuthenticatedRole.isAdmin(authentication)) {
@@ -98,7 +98,7 @@ public class ProductController {
             }
         } else {
             if (!productName.isPresent() && !categoryName.isPresent() && !realPriceFrom.isPresent() && !realPriceTo.isPresent()
-                    && dateFrom == null && dateTo == null) {
+            && dateFrom == null && dateTo == null) {
                 if (AuthenticatedRole.isAdmin(authentication)) {
                     List<Product> productList = productService.getProducts(true);
                     if (productList != null && !productList.isEmpty()) {
