@@ -39,4 +39,5 @@ public class PromotionServiceImpl implements PromotionService {
     public Promotion getPromotionByPromotionId(String promotionId) {
         return promotionRepository.findById(promotionId).orElse(null);
     }
+
 }

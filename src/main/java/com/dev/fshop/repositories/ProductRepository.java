@@ -35,4 +35,4 @@ public interface ProductRepository extends JpaRepository<Product, String>{
                                                             Float realPriceFrom, Float realPriceTo,
                                                             Date dateFrom, Date dateTo);
 
-}
+    }
