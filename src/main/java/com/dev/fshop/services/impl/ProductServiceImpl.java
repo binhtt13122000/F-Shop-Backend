@@ -1,8 +1,6 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entities.Category;
 import com.dev.fshop.entities.Product;
-import com.dev.fshop.entities.Supplier;
 import com.dev.fshop.repositories.ProductRepository;
 import com.dev.fshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getProducts(boolean isAdmin) {
         if (isAdmin) {
-        System.out.println(productRepository.findAll());
+            System.out.println(productRepository.findAll());
             return productRepository.findAll();
         }else {
             return productRepository.getProductsByStatus(1);
@@ -37,26 +35,46 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Product currentProduct, Product newProduct) {
+        System.out.println(newProduct.getCategory().getProTypeId());
         currentProduct.setProductPrice(newProduct.getProductPrice());
         currentProduct.setProductDescription(newProduct.getProductDescription());
         currentProduct.setProductName(newProduct.getProductName());
         currentProduct.setRealPrice(newProduct.getRealPrice());
         currentProduct.setUpdateAt(new Date());
-        currentProduct.setCategory(new Category(newProduct.getCategoryId(), null));
-        currentProduct.setSupplier(new Supplier(newProduct.getSupplierId(), null));
-        currentProduct.setCategoryId(newProduct.getCategoryId());
-        currentProduct.setSupplierId(newProduct.getSupplierId());
-        System.out.println(currentProduct);
+        currentProduct.setCategory(newProduct.getCategory());
+        currentProduct.setSupplier(newProduct.getSupplier());
         return productRepository.save(currentProduct);
     }
 
 
     @Override
     public Product createNewProduct(Product product) {
-        product.setCreateAt(new Date());
-        product.setCategory(new Category(product.getCategoryId(), null));
-        product.setSupplier(new Supplier(product.getSupplierId(), null));
         return productRepository.save(product);
+    }
+
+    @Override
+    public List<Product> searchProductsByParameterQ(boolean isAdmin, String q) {
+        if(isAdmin) {
+            return productRepository.searchProductsByParameterQWithAdmin(q);
+        }
+        else {
+            return productRepository.searchProductsByParameterQWithUser(1, q);
+        }
+    }
+
+    @Override
+    public List<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom, Float realPriceTo, Date dateFrom, Date dateTo) {
+        if(productName != null) {
+            productName = "%" + productName + "%";
+        }
+        if(categoryName != null) {
+            categoryName = "%" + categoryName + "%";
+        }
+        if(isAdmin) {
+            return productRepository.searchProductsByParametersWithAdmin(productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
+        }else {
+            return productRepository.searchProductsByParametersWithUser(1, productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
+        }
     }
 
 }

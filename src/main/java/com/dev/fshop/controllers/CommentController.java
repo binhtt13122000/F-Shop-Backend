@@ -80,15 +80,15 @@ public class CommentController {
     })
     @GetMapping("/products/{productId}/comments")
     public ResponseEntity getCommentByProduct(@PathVariable("productId") String productId) {
-            try {
-                List<Comment> commentList = commentService.getCommentsByProductId(productId);
-                if (!commentList.isEmpty() && commentList != null) {
-                    return new ResponseEntity(commentList, HttpStatus.OK);
-                }
-                return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
-            } catch (Exception e) {
-                return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
+        try {
+            List<Comment> commentList = commentService.getCommentsByProductId(productId);
+            if (!commentList.isEmpty() && commentList != null) {
+                return new ResponseEntity(commentList, HttpStatus.OK);
             }
+            return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
+        }
     }
 
     //create
@@ -132,12 +132,12 @@ public class CommentController {
     })
     @PostMapping("/products/{productId}/comments")
     public ResponseEntity postComment(@PathVariable("productId") String productId, @RequestBody Comment comment) {
-            try {
-                commentService.createNewComment(comment);
-                return new ResponseEntity("Post comment successful", HttpStatus.OK);
-            }catch (Exception e) {
-                return new ResponseEntity("Post comment failed.", HttpStatus.BAD_REQUEST);
-            }
+        try {
+            commentService.createNewComment(comment);
+            return new ResponseEntity("Post comment successful", HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity("Post comment failed.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     //update

@@ -5,6 +5,7 @@ import com.dev.fshop.entities.Comment;
 import com.dev.fshop.entities.Promotion;
 import com.dev.fshop.services.AccountService;
 import com.dev.fshop.services.PromotionService;
+import com.dev.fshop.utils.AuthenticatedRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -77,21 +79,21 @@ public class PromotionController {
             ),
     })
     @GetMapping("/users/{username}/promotions")
-    public ResponseEntity findPromotionByAccount(@PathVariable String username){
-        Account account = accountService.getUserByUsername(username);
-        if(account != null) {
-            try {
+    public ResponseEntity findPromotionByAccount(@PathVariable String username, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication) || AuthenticatedRole.isMySelf(username, authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
                 List<Promotion> promotionList = promotionService.getPromotionsByUserId(account.getUserId());
-                if(promotionList != null && !promotionList.isEmpty()) {
+                if (promotionList != null && !promotionList.isEmpty()) {
                     return new ResponseEntity(promotionList, HttpStatus.OK);
-                }else {
-                    return new ResponseEntity("Promotion can not found", HttpStatus.NOT_FOUND);
+                } else {
+                    return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                 }
-            }catch (Exception e) {
-                return  new ResponseEntity("Promotion can not found", HttpStatus.BAD_REQUEST);
             }
+            return new ResponseEntity("User is not available!", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("User is not available", HttpStatus.BAD_REQUEST);
     }
 
     @Operation(description = "Create new promotion", responses = {
@@ -103,6 +105,18 @@ public class PromotionController {
                             examples = @ExampleObject(
                                     description = "Create new promotion successfully!",
                                     value = "Create new promotion successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
                             ),
                             schema = @Schema(implementation = String.class)
                     )
@@ -133,17 +147,17 @@ public class PromotionController {
             ),
     })
     @PostMapping("/users/{username}/promotions")
-    public ResponseEntity createPromotion(@PathVariable String username, @RequestBody Promotion promotion){
-        Account account = accountService.getUserByUsername(username);
-        if(account != null) {
-            try {
-                promotionService.createPromotion(promotion);
+    public ResponseEntity createPromotion(@PathVariable String username, @RequestBody Promotion promotion, Authentication authentication) {
+        if(AuthenticatedRole.isAdmin(authentication)) {
+            Account account = accountService.getUserByUsername(username);
+            if (account != null) {
+                promotionService.createPromotion(promotion, account);
                 return new ResponseEntity("Create new promotion successfully!", HttpStatus.OK);
-            }catch (Exception e) {
-                return new ResponseEntity("Create promotion failed", HttpStatus.BAD_REQUEST);
             }
+            return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Account is not available", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "update promotion", responses = {
@@ -177,8 +191,8 @@ public class PromotionController {
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
-                                    description = "Account is not available!",
-                                    value = "Account is not available!"
+                                    description = "Promotion is not available!",
+                                    value = "Promotion is not available!"
                             ),
                             schema = @Schema(implementation = String.class)
                     )
@@ -196,17 +210,18 @@ public class PromotionController {
                     )
             ),
     })
-    @PutMapping("/users/{username}/promotions")
-    public ResponseEntity updatePromotion(@PathVariable String username, @RequestBody Promotion promotion){
-        Account account = accountService.getUserByUsername(username);
-        if(account != null) {
-            try {
-                promotionService.updatePromotion(promotion);
-                return new ResponseEntity("Update promotion successfully!", HttpStatus.OK);
-            }catch (Exception e) {
-                return new ResponseEntity("Update Promotion failed!", HttpStatus.BAD_REQUEST);
+    @PutMapping("/users/promotions/{promotionId}")
+    public ResponseEntity updatePromotion(@PathVariable String promotionId, @RequestBody Promotion promotion, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Promotion currentPromotion = promotionService.getPromotionByPromotionId(promotionId);
+            if (currentPromotion != null) {
+                promotionService.updatePromotion(currentPromotion, promotion);
+                return new ResponseEntity("update promotion successfully!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Promotion is not available!", HttpStatus.NOT_FOUND);
             }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Account is not available", HttpStatus.NOT_FOUND);
     }
 }
