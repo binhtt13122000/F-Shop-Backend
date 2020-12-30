@@ -37,6 +37,6 @@ public class UserIdPrefixedSequencePromotionIdGenerator extends SequenceStyleGen
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((Promotion) object).getUserId(), super.generate(session, object));
+        return String.format("%1$s", ((Promotion) object).getUserId()) + "_" + valuePrefix +  String.format(numberFormat, super.generate(session, object));
     }
 }

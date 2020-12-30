@@ -1,5 +1,6 @@
 package com.dev.fshop.services.impl;
 
+import com.dev.fshop.entities.Product;
 import com.dev.fshop.repositories.ProductDetailRepository;
 import com.dev.fshop.services.ProductDetailService;
 import com.dev.fshop.supporters.ProductDetail;
@@ -12,12 +13,23 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private ProductDetailRepository productDetailRepository;
 
     @Override
-    public ProductDetail addQuantity(ProductDetail productDetail) {
+    public ProductDetail addQuantity(ProductDetail productDetail, int quantity) {
+        productDetail.setProQuantity(productDetail.getProQuantity() + quantity);
         return productDetailRepository.save(productDetail);
     }
 
     @Override
     public ProductDetail getProductDetailByProIdAndProSize(String proId, String proSize) {
         return productDetailRepository.findProductDetailByProductProIdAndProSize(proId, proSize);
+    }
+
+    @Override
+    public ProductDetail createNewProductDetail(Product product, String proSize, int quantity) {
+        ProductDetail newProductDetail = new ProductDetail();
+        newProductDetail.setProduct(product);
+        newProductDetail.setProSize(proSize);
+        newProductDetail.setProQuantity(quantity);
+        newProductDetail.setStatus(1);
+        return productDetailRepository.save(newProductDetail);
     }
 }

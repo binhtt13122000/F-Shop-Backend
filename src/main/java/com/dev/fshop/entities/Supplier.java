@@ -52,9 +52,9 @@ public class Supplier implements Serializable {
     private String supplierName;
 
     //relation
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JsonIgnore
-    private Collection<Product> products;
+//    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @JsonIgnore
+//    private Collection<Product> products;
 }

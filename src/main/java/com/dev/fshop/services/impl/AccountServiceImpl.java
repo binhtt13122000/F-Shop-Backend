@@ -27,13 +27,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account addUser(Account account, String roleId) {
+    public String addUser(Account account, String roleId) {
+        System.out.println(account.toString());
         account.setRole(new Role(roleId, null));
         account.setStatus(true);
         String password = account.getPassword();
         account.setPassword(passwordEncoder.encode(password));
         account.setRegisteredAt(new Date());
-        return userRepository.save(account);
+        userRepository.save(account);
+        return "Create new user successfully!";
     }
 
     @Override

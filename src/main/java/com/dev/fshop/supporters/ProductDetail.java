@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -36,18 +37,16 @@ public class ProductDetail implements Serializable {
     private String proItemId;
     @Column(name = "proSize", nullable = false)
     @NotNull
-    @NotBlank
     @Size(max = 20)
     @Schema(example = "XL")
     private String proSize;
     @Column(name = "proQuantity", nullable = false)
     @NotNull
-    @NotBlank
+    @Min(1)
     @Schema(example = "2")
     private int proQuantity;
     @Column(name = "status", nullable = false)
     @NotNull
-    @NotBlank
     @Schema(example = "1")
     private int status;
 
@@ -58,7 +57,6 @@ public class ProductDetail implements Serializable {
     private Product product;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String proId;
 

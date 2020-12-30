@@ -1,6 +1,7 @@
 package com.dev.fshop.generator.supporters;
 
 import com.dev.fshop.supporters.Discount;
+import com.dev.fshop.supporters.ProductDetail;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -37,6 +38,6 @@ public class ProductIdPrefixedSequenceDiscountIdGenerator extends SequenceStyleG
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((Discount) object).getProId(), super.generate(session, object));
+        return String.format("%1$s", ((Discount) object).getProId())  + "_" + valuePrefix +  String.format(numberFormat, super.generate(session, object));
     }
 }

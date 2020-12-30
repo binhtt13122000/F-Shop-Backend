@@ -1,6 +1,7 @@
 package com.dev.fshop.generator.entities;
 
 import com.dev.fshop.entities.Orders;
+import com.dev.fshop.supporters.ProductDetail;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -37,6 +38,6 @@ public class UserIdPrefixedSequenceOrderIdGenerator extends SequenceStyleGenerat
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format, ((Orders) object).getUserId(), super.generate(session, object));
+        return String.format("%1$s", ((Orders) object).getUserId())  + "_" + valuePrefix + String.format(numberFormat, super.generate(session, object));
     }
 }

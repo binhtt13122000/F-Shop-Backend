@@ -78,7 +78,7 @@ public class UserController {
             @RequestParam Optional<String> role, Authentication authentication
     ) {
         if(AuthenticatedRole.isAdmin(authentication)) {
-            if (q.isPresent()) {
+            if(q.isPresent()) {
                 List<Account> accountList = accountService.searchAccountsByParameter("%" + q.orElse(null) + "%");
                 if (accountList != null && !accountList.isEmpty()) {
                     return new ResponseEntity(accountList, HttpStatus.OK);
