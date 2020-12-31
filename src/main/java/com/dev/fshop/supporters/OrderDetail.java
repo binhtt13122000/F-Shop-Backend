@@ -75,7 +75,7 @@ public class OrderDetail implements Serializable {
     @Transient
     @NotBlank
     @Size(max = 40)
-    private String proId;
+    private String productId;
 
     @Transient
     @NotBlank
@@ -83,7 +83,7 @@ public class OrderDetail implements Serializable {
     private String orderId;
 
     public String getProId() {
-        return proId == null ? product.getProId() : proId;
+        return productId == null ? product.getProductId() : productId;
     }
 
     public String getOrderId() {

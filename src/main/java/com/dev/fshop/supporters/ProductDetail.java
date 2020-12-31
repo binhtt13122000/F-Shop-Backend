@@ -52,16 +52,16 @@ public class ProductDetail implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "proId")
+    @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonIgnore
     private Product product;
 
     @Transient
     @Size(max = 40)
-    private String proId;
+    private String productId;
 
     public String getProId() {
-        return proId == null ? product.getProId() : proId;
+        return productId == null ? product.getProductId() : productId;
     }
 }

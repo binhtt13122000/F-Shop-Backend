@@ -1,4 +1,4 @@
-package com.dev.fshop.validation;
+package com.dev.fshop.validation.unique;
 
 
 public interface UniqueService {

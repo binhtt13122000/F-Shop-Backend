@@ -2,9 +2,8 @@ package com.dev.fshop.entities;
 
 
 import com.dev.fshop.generator.entities.StringPrefixedSequenceIdGenerator;
-import com.dev.fshop.services.AccountService;
 import com.dev.fshop.utils.Regex;
-import com.dev.fshop.validation.Unique;
+import com.dev.fshop.validation.unique.Unique;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

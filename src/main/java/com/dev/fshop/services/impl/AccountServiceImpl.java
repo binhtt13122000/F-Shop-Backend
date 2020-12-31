@@ -70,6 +70,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account changeStatusAccount(Account account, boolean status) {
         account.setStatus(status);
-        return  userRepository.save(account);
+        return userRepository.save(account);
     }
 }

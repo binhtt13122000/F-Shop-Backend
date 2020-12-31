@@ -5,7 +5,9 @@ import com.dev.fshop.generator.entities.StringPrefixedSequenceIdGenerator;
 import com.dev.fshop.supporters.Discount;
 import com.dev.fshop.supporters.ProductDetail;
 import com.dev.fshop.supporters.ProductImage;
+import com.dev.fshop.validation.existIn.ExistIn;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,10 +33,9 @@ import java.util.List;
 @Table(name = "Product")
 @Schema(name = "Product")
 public class Product implements Serializable {
-    //proId
     @Id
     @Column(name = "proId", nullable = false, unique = true)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_product")
     @GenericGenerator(
             name = "sequence_product",
@@ -45,44 +46,35 @@ public class Product implements Serializable {
                     @Parameter(name = StringPrefixedSequenceIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
-    private String proId;
+    private String productId;
 
-    //proName
     @Column(name = "proName", nullable = false)
-    @NotNull
-    @NotBlank
-    @Size(max = 50)
+    @NotNull(message = "Product name is not null!")
+    @Size(max = 50, min = 10, message = "Product name must be at most 50 characters and at least 10 characters!")
     @Schema(name = "ÁO THUN NAM T249")
-    private String proName;
+    private String productName;
 
-    //proPrice
     @Column(name = "proPrice", nullable = false)
-    @Min(1)
-    @NotNull
+    @Min(value = 1000, message = "The lowest price of the product is 1000 VNĐ")
+    @NotNull(message = "Product price is not null")
     @Schema(name = "100000")
-    private float proPrice;
+    private float productPrice;
 
-    //realPrice
     @Column(name = "realPrice", nullable = false)
-    @Min(1)
-    @NotNull
+    @Min(value = 1000, message = "The lowest real price of the product is 1000 VNĐ")
+    @NotNull(message = "Real price is not null!")
     @Schema(name = "120000")
     private float realPrice;
 
-    //description
-    @NotNull
-    @NotBlank
-    @Size(max = 100)
     @Column(name = "proDescription", nullable = false)
+    @NotNull(message = "description is not null!")
+    @Size(max = 100, min = 10, message = "Product description must be at most 100 characters and at least 10 characters!!")
     @Schema(example = "Áo rất đẹp!")
-    private String proDescription;
+    private String productDescription;
 
-    //create
     @Column(name = "createAt", nullable = false)
-    @NotNull
     private Date createAt;
 
-    //updateAt
     @Column(name = "updateAt")
     private Date updateAt;
 
@@ -90,7 +82,6 @@ public class Product implements Serializable {
     @Column(name = "status", nullable = false)
     private int status;
 
-    //relation
     @ManyToOne
     @JoinColumn(name = "proTypeId")
     @EqualsAndHashCode.Exclude
@@ -106,12 +97,16 @@ public class Product implements Serializable {
     private Supplier supplier;
 
     @Transient
-    @Size(max = 40)
+    @Size(max = 40, min = 1, message = "categoryId must be at most 40 characters!")
+    @NotNull(message = "CategoryId is not null!")
+    @ExistIn(message = "Category is not exist!", fieldName = "categoryId", className = "Product")
     @Schema(example = "SUP_0001")
     private String categoryId;
 
     @Transient
-    @Size(max = 40)
+    @Size(max = 40, min = 1, message = "categoryId must be at most 40 characters!")
+    @NotNull(message = "SupplierId is not null!")
+    @ExistIn(message = "Supplier is not exist!", fieldName = "supplierId", className = "Product")
     @Schema(example = "TYPE_0001")
     private String supplierId;
 

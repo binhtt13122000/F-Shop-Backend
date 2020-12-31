@@ -1,4 +1,4 @@
-package com.dev.fshop.validation;
+package com.dev.fshop.validation.unique;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,7 +11,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
 @Target({ElementType.METHOD, ElementType.FIELD})
-@Constraint(validatedBy = UserUniqueValidator.class)
+@Constraint(validatedBy = UniqueValidator.class)
 @Retention(RUNTIME)
 public @interface Unique {
     String message() default "This value is taken!";

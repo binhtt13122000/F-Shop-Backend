@@ -148,14 +148,14 @@ public class PromotionController {
     })
     @PostMapping("/users/{username}/promotions")
     public ResponseEntity createPromotion(@PathVariable String username, @RequestBody Promotion promotion, Authentication authentication) {
-        if(AuthenticatedRole.isAdmin(authentication)) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
             Account account = accountService.getUserByUsername(username);
             if (account != null) {
                 promotionService.createPromotion(promotion, account);
                 return new ResponseEntity("Create new promotion successfully!", HttpStatus.OK);
             }
             return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
-        }else {
+        } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }

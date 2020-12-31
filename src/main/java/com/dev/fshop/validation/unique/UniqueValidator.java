@@ -1,5 +1,7 @@
-package com.dev.fshop.validation;
+package com.dev.fshop.validation.unique;
 
+import com.dev.fshop.validation.unique.Unique;
+import com.dev.fshop.validation.unique.UniqueServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -7,7 +9,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 @Component
-public class UserUniqueValidator implements ConstraintValidator<Unique,String> {
+public class UniqueValidator implements ConstraintValidator<Unique,String> {
 
     @Autowired
     private UniqueServiceImp service;
