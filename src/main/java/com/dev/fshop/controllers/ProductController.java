@@ -384,6 +384,4 @@ public class ProductController {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
-
-
 }
