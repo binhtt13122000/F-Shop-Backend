@@ -63,9 +63,9 @@ public class Discount implements Serializable {
     @Transient
     @NotBlank
     @Size(max = 40)
-    private String proId;
+    private String productId;
 
     public String getProId() {
-        return proId == null ? product.getProId() : proId;
+        return productId == null ? product.getProductId() : productId;
     }
 }

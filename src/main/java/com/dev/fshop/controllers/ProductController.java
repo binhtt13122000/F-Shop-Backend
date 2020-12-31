@@ -77,8 +77,8 @@ public class ProductController {
             @RequestParam Optional<String> categoryName,
             @RequestParam Optional<Float> realPriceFrom,
             @RequestParam Optional<Float> realPriceTo,
-            @RequestParam(required = false) @DateTimeFormat(pattern="MMddyyyy") Date dateFrom,
-            @RequestParam(required = false) @DateTimeFormat(pattern="MMddyyyy") Date dateTo,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
             Authentication authentication) {
         if (q.isPresent()) {
             if (AuthenticatedRole.isAdmin(authentication)) {
@@ -98,7 +98,7 @@ public class ProductController {
             }
         } else {
             if (!productName.isPresent() && !categoryName.isPresent() && !realPriceFrom.isPresent() && !realPriceTo.isPresent()
-            && dateFrom == null && dateTo == null) {
+                    && dateFrom == null && dateTo == null) {
                 if (AuthenticatedRole.isAdmin(authentication)) {
                     List<Product> productList = productService.getProducts(true);
                     if (productList != null && !productList.isEmpty()) {
@@ -162,7 +162,7 @@ public class ProductController {
     })
     @GetMapping("/products/{productId}")
     public ResponseEntity getProductById(@PathVariable String productId) {
-        Product product = productService.getProductByProId(productId);
+        Product product = productService.getProductByProductId(productId);
         if (product != null) {
             return new ResponseEntity(product, HttpStatus.OK);
         }
@@ -222,7 +222,7 @@ public class ProductController {
     @PutMapping("/products/{productId}")
     public ResponseEntity updateProduct(@PathVariable String productId, @RequestBody Product product, Authentication authentication) {
         if (AuthenticatedRole.isAdmin(authentication)) {
-            Product currentProduct = productService.getProductByProId(productId);
+            Product currentProduct = productService.getProductByProductId(productId);
             if (currentProduct != null) {
                 Category checkCategoryExisted = categoryService.findCategoryByCategoryId(product.getCategoryId());
                 if (checkCategoryExisted != null) {
@@ -298,7 +298,7 @@ public class ProductController {
     @PutMapping("/products/{productId}/{productSize}/{quantity}")
     public ResponseEntity addQuantity(@PathVariable String productId, @PathVariable String productSize, @PathVariable Integer quantity, Authentication authentication) {
         if (AuthenticatedRole.isAdmin(authentication)) {
-            Product checkProductExisted = productService.getProductByProId(productId);
+            Product checkProductExisted = productService.getProductByProductId(productId);
             if (checkProductExisted != null) {
                 ProductDetail productDetail = productDetailService.getProductDetailByProIdAndProSize(productId, productSize);
                 if (productDetail != null) {

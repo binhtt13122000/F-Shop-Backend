@@ -19,16 +19,16 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Override
-    public Product getProductByProId(String proId) {
+    public Product getProductByProductId(String proId) {
         return productRepository.findById(proId).orElse(null);
     }
 
     @Override
     public List<Product> getProducts(boolean isAdmin) {
         if (isAdmin) {
-        System.out.println(productRepository.findAll());
+            System.out.println(productRepository.findAll());
             return productRepository.findAll();
-        }else {
+        } else {
             return productRepository.getProductsByStatus(1);
         }
     }
@@ -36,9 +36,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(Product currentProduct, Product newProduct) {
         System.out.println(newProduct.getCategory().getProTypeId());
-        currentProduct.setProPrice(newProduct.getProPrice());
-        currentProduct.setProDescription(newProduct.getProDescription());
-        currentProduct.setProName(newProduct.getProName());
+        currentProduct.setProductPrice(newProduct.getProductPrice());
+        currentProduct.setProductDescription(newProduct.getProductDescription());
+        currentProduct.setProductName(newProduct.getProductName());
         currentProduct.setRealPrice(newProduct.getRealPrice());
         currentProduct.setUpdateAt(new Date());
         currentProduct.setCategory(newProduct.getCategory());
@@ -54,25 +54,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> searchProductsByParameterQ(boolean isAdmin, String q) {
-        if(isAdmin) {
+        if (isAdmin) {
             return productRepository.searchProductsByParameterQWithAdmin(q);
-        }
-        else {
+        } else {
             return productRepository.searchProductsByParameterQWithUser(1, q);
         }
     }
 
     @Override
     public List<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom, Float realPriceTo, Date dateFrom, Date dateTo) {
-        if(productName != null) {
+        if (productName != null) {
             productName = "%" + productName + "%";
         }
-        if(categoryName != null) {
+        if (categoryName != null) {
             categoryName = "%" + categoryName + "%";
         }
-        if(isAdmin) {
+        if (isAdmin) {
             return productRepository.searchProductsByParametersWithAdmin(productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
-        }else {
+        } else {
             return productRepository.searchProductsByParametersWithUser(1, productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
         }
     }

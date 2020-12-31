@@ -96,7 +96,7 @@ public class Comment implements Serializable {
     @Transient
     @NotBlank
     @Size(max = 40)
-    private String proId;
+    private String productId;
 
     //replace userEntity
     @NotBlank
@@ -109,6 +109,6 @@ public class Comment implements Serializable {
     }
 
     public String getProId() {
-        return proId == null ? product.getProId() : proId;
+        return productId == null ? product.getProductId() : productId;
     }
 }

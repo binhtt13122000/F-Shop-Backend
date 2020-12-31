@@ -77,23 +77,23 @@ public class UserController {
             @RequestParam Optional<String> email,
             @RequestParam Optional<String> role, Authentication authentication
     ) {
-        if(AuthenticatedRole.isAdmin(authentication)) {
-            if(q.isPresent()) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            if (q.isPresent()) {
                 List<Account> accountList = accountService.searchAccountsByParameter("%" + q.orElse(null) + "%");
                 if (accountList != null && !accountList.isEmpty()) {
                     return new ResponseEntity(accountList, HttpStatus.OK);
-                }else {
+                } else {
                     return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                 }
             } else {
                 List<Account> accountList = accountService.searchAccountsByParameters(email.orElse(null), role.orElse(null));
                 if (accountList != null && !accountList.isEmpty()) {
                     return new ResponseEntity(accountList, HttpStatus.OK);
-                }else {
+                } else {
                     return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                 }
             }
-        }else {
+        } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
@@ -296,7 +296,7 @@ public class UserController {
             ),
     })
     @PutMapping("/users/{username}")
-    public ResponseEntity updateProfile(@PathVariable String username,@RequestBody Account account, Authentication authentication) {
+    public ResponseEntity updateProfile(@PathVariable String username, @RequestBody Account account, Authentication authentication) {
         if (AuthenticatedRole.isMySelf(username, authentication)) {
             Account currentAccount = accountService.getUserByUsername(username);
             if (currentAccount != null) {

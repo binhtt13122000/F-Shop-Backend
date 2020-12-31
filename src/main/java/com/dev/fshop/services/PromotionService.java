@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface PromotionService {
     public List<Promotion> getPromotionsByUserId(String userId);
+
     public Promotion createPromotion(Promotion promotion, Account account);
+
     public Promotion updatePromotion(Promotion currentPromotion, Promotion newPromotion);
+
     public Promotion getPromotionByPromotionId(String promotionId);
 }

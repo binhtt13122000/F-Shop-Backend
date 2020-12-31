@@ -1,6 +1,7 @@
-package com.dev.fshop.validation;
+package com.dev.fshop.validation.unique;
 
 import com.dev.fshop.repositories.UserRepository;
+import com.dev.fshop.validation.unique.UniqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

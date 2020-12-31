@@ -145,7 +145,7 @@ public class ReviewController {
     })
     @PostMapping("/products/{productId}/reviews")
     public ResponseEntity postReview(@PathVariable("productId") String productId, @RequestBody Review review) {
-        Product product = productService.getProductByProId(productId);
+        Product product = productService.getProductByProductId(productId);
         if (product != null) {
             Orders orders = orderService.findOrderByOrderId(review.getOrderId());
             if (orders != null) {
