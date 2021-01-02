@@ -1,6 +1,7 @@
 package com.dev.fshop.entities;
 
 import com.dev.fshop.generator.entities.UserIdPrefixedSequenceCartIdGenerator;
+import com.dev.fshop.utils.Regex;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -8,10 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -38,6 +36,13 @@ public class Cart implements Serializable {
             }
     )
     private String cartId;
+    @Column(name = "cartDescription", nullable = false, unique = true)
+    @NotNull(message = "Cart description is not null")
+    @NotBlank
+    @Size(max = 50, message = "Max Size of Cart description is 100 characters!")
+    @Pattern(regexp = Regex.REGEX_FULLNAME, message = "Format of cart description is wrong!")
+    @Schema(example = "Giỏ hàng quần xinh")
+    private String cartDescription;
 
     @Column(name = "cartTotal", nullable = false)
     @NotNull
