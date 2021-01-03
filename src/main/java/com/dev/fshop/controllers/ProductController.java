@@ -300,7 +300,7 @@ public class ProductController {
         if (AuthenticatedRole.isAdmin(authentication)) {
             Product checkProductExisted = productService.getProductByProductId(productId);
             if (checkProductExisted != null) {
-                ProductDetail productDetail = productDetailService.getProductDetailByProIdAndProSize(productId, productSize);
+                ProductDetail productDetail = productDetailService.getProductDetailByProductIdAndProductSize(productId, productSize);
                 if (productDetail != null) {
                     productDetailService.addQuantity(productDetail, quantity);
                     return new ResponseEntity("add quantity successfully!", HttpStatus.OK);

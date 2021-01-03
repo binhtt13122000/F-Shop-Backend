@@ -46,14 +46,12 @@ public class CartDetail implements Serializable {
 
     @Column(name = "cartQuantity", nullable = false)
     @NotNull
-    @NotBlank
     @Min(1)
     @Schema(example = "XL")
     private int cartQuantity;
 
     @Column(name = "cartItemPrice", nullable = false)
     @NotNull
-    @NotBlank
     @Min(1)
     @Schema(example = "80000")
     private float cartItemPrice;
@@ -71,12 +69,10 @@ public class CartDetail implements Serializable {
     private Cart cart;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String productId;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String cartId;
 

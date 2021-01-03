@@ -38,27 +38,21 @@ public class Cart implements Serializable {
     private String cartId;
     @Column(name = "cartDescription", nullable = false, unique = true)
     @NotNull(message = "Cart description is not null")
-    @NotBlank
     @Size(max = 50, message = "Max Size of Cart description is 100 characters!")
-    @Pattern(regexp = Regex.REGEX_FULLNAME, message = "Format of cart description is wrong!")
     @Schema(example = "Giỏ hàng quần xinh")
     private String cartDescription;
 
     @Column(name = "cartTotal", nullable = false)
     @NotNull
-    @NotBlank
-    @Min(1)
     @Schema(example = "1200000")
     private float cartTotal;
 
     @Column(name = "createTime", nullable = false)
     @NotNull
-    @NotBlank
     private Date createTime;
 
     @Column(name = "status", nullable = false)
     @NotNull
-    @NotBlank
     private int status;
 
     @ManyToOne
@@ -69,7 +63,6 @@ public class Cart implements Serializable {
     private Account account;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String userId;
 
