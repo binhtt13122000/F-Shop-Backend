@@ -37,7 +37,7 @@ public class CartDetailServiceImpl implements CartDetailService {
         cartDetail.setCartQuantity(cartDetail.getCartQuantity() + cartQuantity);
         cartDetail.setCartItemPrice(cartDetail.getCartItemPrice() + price);
         Cart updateCart = cartService.updateCartTotal(cartDetail.getCart(), price);
-        if(updateCart != null) {
+        if (updateCart != null) {
             return cartDetailRepository.save(cartDetail);
         }
         return null;
@@ -55,7 +55,7 @@ public class CartDetailServiceImpl implements CartDetailService {
         cartDetail.setCartQuantity(cartQuantity);
         cartDetail.setCartItemPrice(price);
         Cart updateCart = cartService.updateCartTotal(cart, price);
-        if(updateCart != null) {
+        if (updateCart != null) {
             return cartDetailRepository.save(cartDetail);
         }
         return null;

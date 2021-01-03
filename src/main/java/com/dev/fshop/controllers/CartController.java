@@ -88,36 +88,51 @@ public class CartController {
             @RequestParam Optional<Float> priceTo,
             Authentication authentication
     ) {
-        Account checkAccountExisted = accountService.getUserByUsername(username);
-        if (checkAccountExisted != null) {
-            if (q.isPresent()) {
-                if (AuthenticatedRole.isAdmin(authentication)) {
+        if (q.isPresent()) {
+            if (AuthenticatedRole.isAdmin(authentication)) {
+                Account checkAccountExisted = accountService.getUserByUsername(username);
+                if (checkAccountExisted != null) {
                     List<Cart> cartList = cartService.getCartsByParameterQ(true, q.orElse(null), checkAccountExisted.getUserId());
                     if (cartList != null && !cartList.isEmpty()) {
                         return new ResponseEntity(cartList, HttpStatus.OK);
                     } else {
                         return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                     }
-                } else if (AuthenticatedRole.isMySelf(username, authentication)) {
-                    List<Cart> cartList = cartService.getCartsByParameterQ(false, q.orElse(null), checkAccountExisted.getUserId());
+                } else {
+                    return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
+                }
+            } else if (AuthenticatedRole.isMySelf(username, authentication)) {
+                Account checkAccountExisted = accountService.getUserByUsername(username);
+                if (checkAccountExisted != null) {
+                    List<Cart> cartList = cartService.getCartsByParameterQ(false, checkAccountExisted.getUserId(), q.orElse(null));
                     if (cartList != null && !cartList.isEmpty()) {
                         return new ResponseEntity(cartList, HttpStatus.OK);
                     } else {
                         return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                     }
                 } else {
-                    return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+                    return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
                 }
             } else {
-                if (dateFrom == null && dateTo == null && !priceFrom.isPresent() && !priceTo.isPresent()) {
-                    if (AuthenticatedRole.isAdmin(authentication)) {
+                return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+            }
+        } else {
+            if (dateFrom == null && dateTo == null && !priceFrom.isPresent() && !priceTo.isPresent()) {
+                if (AuthenticatedRole.isAdmin(authentication)) {
+                    Account checkAccountExisted = accountService.getUserByUsername(username);
+                    if (checkAccountExisted != null) {
                         List<Cart> cartList = cartService.getAllCarts(true, checkAccountExisted.getUserId());
                         if (!cartList.isEmpty() && cartList != null) {
                             return new ResponseEntity(cartList, HttpStatus.OK);
                         } else {
                             return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                         }
-                    } else if (AuthenticatedRole.isMySelf(username, authentication)) {
+                    } else {
+                        return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
+                    }
+                } else if (AuthenticatedRole.isMySelf(username, authentication)) {
+                    Account checkAccountExisted = accountService.getUserByUsername(username);
+                    if (checkAccountExisted != null) {
                         List<Cart> cartList = cartService.getAllCarts(false, checkAccountExisted.getUserId());
                         if (!cartList.isEmpty() && cartList != null) {
                             return new ResponseEntity(cartList, HttpStatus.OK);
@@ -125,10 +140,15 @@ public class CartController {
                             return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                         }
                     } else {
-                        return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+                        return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
                     }
                 } else {
-                    if (AuthenticatedRole.isAdmin(authentication)) {
+                    return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+                }
+            } else {
+                if (AuthenticatedRole.isAdmin(authentication)) {
+                    Account checkAccountExisted = accountService.getUserByUsername(username);
+                    if (checkAccountExisted != null) {
                         List<Cart> cartList = cartService.getCartByParameters(true, checkAccountExisted.getUserId(),
                                 dateFrom, dateTo, priceFrom.orElse(null), priceTo.orElse(null));
                         if (cartList != null && !cartList.isEmpty()) {
@@ -136,7 +156,12 @@ public class CartController {
                         } else {
                             return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                         }
-                    } else if (AuthenticatedRole.isMySelf(username, authentication)) {
+                    } else {
+                        return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
+                    }
+                } else if (AuthenticatedRole.isMySelf(username, authentication)) {
+                    Account checkAccountExisted = accountService.getUserByUsername(username);
+                    if (checkAccountExisted != null) {
                         List<Cart> cartList = cartService.getCartByParameters(false, checkAccountExisted.getUserId(),
                                 dateFrom, dateTo, priceFrom.orElse(null), priceTo.orElse(null));
                         if (cartList != null && !cartList.isEmpty()) {
@@ -145,12 +170,12 @@ public class CartController {
                             return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                         }
                     } else {
-                        return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+                        return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
                     }
+                } else {
+                    return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
                 }
             }
-        } else {
-            return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
         }
     }
 
