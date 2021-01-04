@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface CartService {
-    public List<Cart> getCartsByUserId(String userId);
 
     public Cart getCartByCartId(String cartId);
 

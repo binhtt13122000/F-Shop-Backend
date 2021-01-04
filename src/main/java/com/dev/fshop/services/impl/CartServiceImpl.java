@@ -17,11 +17,6 @@ public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
 
     @Override
-    public List<Cart> getCartsByUserId(String userId) {
-        return cartRepository.getCartsByAccount_UserId(userId);
-    }
-
-    @Override
     public Cart getCartByCartId(String cartId) {
         return cartRepository.findById(cartId).orElse(null);
     }
