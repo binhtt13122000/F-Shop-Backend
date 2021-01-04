@@ -1,5 +1,6 @@
 package com.dev.fshop.generator.supporters;
 
+import com.dev.fshop.entities.Review;
 import com.dev.fshop.supporters.CartDetail;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
@@ -30,15 +31,15 @@ public class ProductIdPrefixedSequenceCartDetailGenerator extends SequenceStyleG
     @Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
         super.configure(LongType.INSTANCE, params, serviceRegistry);
-        codeNumberSeparator = ConfigurationHelper.getString(CODE_NUMBER_SEPARATOR_PARAMETER,params,CODE_NUMBER_SEPARATOR_DEFAULT);
-        numberFormat = ConfigurationHelper.getString(NUMBER_FORMAT_PARAMETER,params,NUMBER_FORMAT_DEFAULT);
-        valuePrefix = ConfigurationHelper.getString(VALUE_PREFIX_PARAMETER,params,VALUE_PREFIX_DEFAULT);
+        codeNumberSeparator = ConfigurationHelper.getString(CODE_NUMBER_SEPARATOR_PARAMETER, params, CODE_NUMBER_SEPARATOR_DEFAULT);
+        numberFormat = ConfigurationHelper.getString(NUMBER_FORMAT_PARAMETER, params, NUMBER_FORMAT_DEFAULT);
+        valuePrefix = ConfigurationHelper.getString(VALUE_PREFIX_PARAMETER, params, VALUE_PREFIX_DEFAULT);
         this.format = "%1$s" + codeNumberSeparator + valuePrefix + numberFormat;
     }
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        String createPrefix = ((CartDetail)object).getCartId() + "_" + ((CartDetail) object).getProId();
-        return String.format(format, createPrefix , super.generate(session, object));
+        return String.format("%1$s", ((CartDetail) object).getCartId()) + "_" + String.format("%1$s", ((CartDetail) object).getProId())
+                + "_" + valuePrefix + String.format(numberFormat, super.generate(session, object));
     }
 }
