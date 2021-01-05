@@ -56,8 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         final CorsConfiguration configuration = new CorsConfiguration();
 
         List<String> origin = new ArrayList<>();
-        origin.add("http://localhost:3000");
-        origin.add("https://fcode-ea6412.netlify.com");
+        origin.add("http://localhost:8080");
 
         configuration.setAllowedOrigins(origin);
 
