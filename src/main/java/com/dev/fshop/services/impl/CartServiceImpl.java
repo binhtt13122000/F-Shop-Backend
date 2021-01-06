@@ -5,6 +5,8 @@ import com.dev.fshop.entities.Cart;
 import com.dev.fshop.repositories.CartRepository;
 import com.dev.fshop.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -32,22 +34,23 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Cart> getCartsByParameterQ(boolean isAdmin, String userId, String q) {
+    public Page<Cart> getCartsByParameterQ(boolean isAdmin, String userId, String q, Pageable pageable) {
         if (q != null) {
             q = "%" + q + "%";
         }
         if (isAdmin) {
-            return cartRepository.getCartsByParameterQByAdmin(q, userId);
+            return cartRepository.getCartsByParameterQByAdmin(q, userId, pageable);
         }
-        return cartRepository.getCartsByParameterQByUser(1, q, userId);
+        return cartRepository.getCartsByParameterQByUser(1, q, userId, pageable);
     }
 
     @Override
-    public List<Cart> getCartByParameters(boolean isAdmin, String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo) {
+    public Page<Cart> getCartByParameters(boolean isAdmin, String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo,
+                                          Pageable pageable) {
         if (isAdmin) {
-            return cartRepository.getCartsByParametersByAdmin(userId, dateFrom, dateTo, priceFrom, priceTo);
+            return cartRepository.getCartsByParametersByAdmin(userId, dateFrom, dateTo, priceFrom, priceTo, pageable);
         }
-        return cartRepository.getCartsByParametersByUser(1, userId, dateFrom, dateTo, priceFrom, priceTo);
+        return cartRepository.getCartsByParametersByUser(1, userId, dateFrom, dateTo, priceFrom, priceTo, pageable);
     }
 
     @Override
@@ -57,11 +60,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Cart> getAllCarts(boolean isAdmin, String userId) {
+    public Page<Cart> getAllCarts(boolean isAdmin, String userId, Pageable pageable) {
         if (isAdmin) {
-            return cartRepository.getCartsByAccount_UserId(userId);
+            return cartRepository.getCartsByAccount_UserId(userId, pageable);
         } else {
-            return cartRepository.getCartsByUserIdByUser(userId, 1);
+            return cartRepository.getCartsByUserIdByUser(userId, 1, pageable);
         }
     }
 
