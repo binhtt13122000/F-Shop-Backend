@@ -81,7 +81,9 @@ public class ProductController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
             Authentication authentication) {
         if (q.isPresent()) {
+            System.out.println(1);
             if (AuthenticatedRole.isAdmin(authentication)) {
+                System.out.println(2);
                 List<Product> productList = productService.searchProductsByParameterQ(true, "%" + q.orElse(null) + "%");
                 if (productList != null && !productList.isEmpty()) {
                     return new ResponseEntity(productList, HttpStatus.OK);

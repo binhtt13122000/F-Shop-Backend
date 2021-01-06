@@ -15,38 +15,50 @@ public class AuthenticatedRole {
     public static final String SELLER = "ROLE_SELLER";
 
     public static boolean isMySelf(String userName, Authentication authentication) {
-        return userName.equals(authentication.getName());
+        if(authentication != null) {
+            return userName.equals(authentication.getName());
+        }
+        return false;
     }
 
     public static boolean isAdmin(Authentication authentication) {
-        List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        if(roles.get(0).equals(ADMIN))
-            return true;
+        if(authentication != null) {
+            List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+            if (roles.get(0).equals(ADMIN))
+                return true;
+            return false;
+        }
         return false;
     }
 
     public static boolean isUser(Authentication authentication) {
-        String role = null;
-        Collection authorities = authentication.getAuthorities();
-        Iterator iterator = authorities.iterator();
-        if(iterator.hasNext()) {
-            role =(String) iterator.next();
-        }
-        if(role.equals(USER)) {
-            return true;
+        if(authentication != null) {
+            String role = null;
+            Collection authorities = authentication.getAuthorities();
+            Iterator iterator = authorities.iterator();
+            if (iterator.hasNext()) {
+                role = (String) iterator.next();
+            }
+            if (role.equals(USER)) {
+                return true;
+            }
+            return false;
         }
         return false;
     }
 
     public static boolean isSeller(Authentication authentication) {
-        String role = null;
-        Collection authorities = authentication.getAuthorities();
-        Iterator iterator = authorities.iterator();
-        if(iterator.hasNext()) {
-            role =(String) iterator.next();
-        }
-        if(role.equals(SELLER)) {
-            return true;
+        if(authentication != null) {
+            String role = null;
+            Collection authorities = authentication.getAuthorities();
+            Iterator iterator = authorities.iterator();
+            if (iterator.hasNext()) {
+                role = (String) iterator.next();
+            }
+            if (role.equals(SELLER)) {
+                return true;
+            }
+            return false;
         }
         return false;
     }
