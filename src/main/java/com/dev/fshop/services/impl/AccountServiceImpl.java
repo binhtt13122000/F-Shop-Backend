@@ -6,6 +6,8 @@ import com.dev.fshop.repositories.UserRepository;
 import com.dev.fshop.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -58,13 +60,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> searchAccountsByParameters(String email, String role) {
-        return userRepository.searchAccountsByParameters(email, role);
+    public Page<Account> searchAccountsByParameters(String email, String role, Pageable pageable) {
+        return userRepository.searchAccountsByParameters(email, role, pageable);
     }
 
     @Override
-    public List<Account> searchAccountsByParameter(String q) {
-        return userRepository.searchAccountsByParameter(q);
+    public Page<Account> searchAccountsByParameter(String q, Pageable pageable) {
+        return userRepository.searchAccountsByParameter(q, pageable);
     }
 
     @Override

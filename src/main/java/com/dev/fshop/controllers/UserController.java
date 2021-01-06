@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -75,18 +78,22 @@ public class UserController {
     public ResponseEntity getUsers(
             @RequestParam Optional<String> q,
             @RequestParam Optional<String> email,
-            @RequestParam Optional<String> role, Authentication authentication
+            @RequestParam Optional<String> role,
+            Authentication authentication,
+            @RequestParam Integer pageIndex,
+            @RequestParam Integer pageSize
     ) {
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         if (AuthenticatedRole.isAdmin(authentication)) {
             if (q.isPresent()) {
-                List<Account> accountList = accountService.searchAccountsByParameter("%" + q.orElse(null) + "%");
+                Page<Account> accountList = accountService.searchAccountsByParameter("%" + q.orElse(null) + "%", pageable);
                 if (accountList != null && !accountList.isEmpty()) {
                     return new ResponseEntity(accountList, HttpStatus.OK);
                 } else {
                     return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                 }
             } else {
-                List<Account> accountList = accountService.searchAccountsByParameters(email.orElse(null), role.orElse(null));
+                Page<Account> accountList = accountService.searchAccountsByParameters(email.orElse(null), role.orElse(null), pageable);
                 if (accountList != null && !accountList.isEmpty()) {
                     return new ResponseEntity(accountList, HttpStatus.OK);
                 } else {
