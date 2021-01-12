@@ -52,6 +52,7 @@ public class ProductImage implements Serializable {
     private boolean status;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "proId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
