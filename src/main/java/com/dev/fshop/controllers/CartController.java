@@ -53,7 +53,7 @@ public class CartController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Cart.class))
+                            schema = @Schema(implementation =  Page.class)
                     )
             ),
             @ApiResponse(
@@ -89,11 +89,11 @@ public class CartController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
             @RequestParam Optional<Float> priceFrom,
             @RequestParam Optional<Float> priceTo,
-            @RequestParam Integer pageIndex,
-            @RequestParam Integer pageSize,
+            @RequestParam Optional<Integer> pageIndex,
+            @RequestParam Optional<Integer> pageSize,
             Authentication authentication
     ) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (q.isPresent()) {
             if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
                 Account checkAccountExisted = accountService.getUserByUsername(username);
@@ -313,7 +313,7 @@ public class CartController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Cart.class))
+                            schema = @Schema(implementation =  Page.class)
                     )
             ),
             @ApiResponse(
@@ -343,10 +343,10 @@ public class CartController {
     })
     @GetMapping("/carts/users/{username}")
     public ResponseEntity getCartsByUsername(@PathVariable String username,
-                                             @RequestParam Integer pageIndex,
-                                             @RequestParam Integer pageSize,
+                                             @RequestParam Optional<Integer> pageIndex,
+                                             @RequestParam Optional<Integer> pageSize,
                                              Authentication authentication) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkExistedAccount = accountService.getUserByUsername(username);
             if (checkExistedAccount != null) {
@@ -370,7 +370,7 @@ public class CartController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = CartDetail.class))
+                            array = @ArraySchema(schema = @Schema(implementation = Page.class))
                     )
             ),
             @ApiResponse(
@@ -400,10 +400,10 @@ public class CartController {
     @GetMapping("/carts/{cartId}/users/{username}/cartDetails")
     public ResponseEntity getCartDetailsByCartId(@PathVariable String cartId,
                                                  @PathVariable String username,
-                                                 @RequestParam Integer pageIndex,
-                                                 @RequestParam Integer pageSize,
+                                                 @RequestParam Optional<Integer> pageIndex,
+                                                 @RequestParam Optional<Integer> pageSize,
                                                  Authentication authentication) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Cart checkCartExisted = cartService.getCartByCartId(cartId);
             if (checkCartExisted != null) {

@@ -80,10 +80,10 @@ public class UserController {
             @RequestParam Optional<String> email,
             @RequestParam Optional<String> role,
             Authentication authentication,
-            @RequestParam Integer pageIndex,
-            @RequestParam Integer pageSize
+            @RequestParam Optional<Integer> pageIndex,
+            @RequestParam Optional<Integer> pageSize
     ) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (AuthenticatedRole.isAdmin(authentication)) {
             if (q.isPresent()) {
                 Page<Account> accountList = accountService.searchAccountsByParameter("%" + q.orElse(null) + "%", pageable);

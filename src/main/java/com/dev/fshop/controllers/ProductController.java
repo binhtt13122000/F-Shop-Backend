@@ -54,7 +54,7 @@ public class ProductController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Product.class))
+                            schema = @Schema(implementation =  Page.class)
                     )
             ),
             @ApiResponse(
@@ -79,10 +79,10 @@ public class ProductController {
             @RequestParam Optional<Float> realPriceTo,
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateFrom,
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
-            @RequestParam Integer pageIndex,
-            @RequestParam Integer pageSize,
+            @RequestParam Optional<Integer> pageIndex,
+            @RequestParam Optional<Integer> pageSize,
             Authentication authentication) {
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (q.isPresent()) {
             if (AuthenticatedRole.isAdmin(authentication)) {
                 Page<Product> productList = productService.searchProductsByParameterQ(true, "%" + q.orElse(null) + "%", pageable);
@@ -164,12 +164,20 @@ public class ProductController {
             ),
     })
     @GetMapping("/products/{productId}")
-    public ResponseEntity getProductById(@PathVariable String productId) {
-        Product product = productService.getProductByProductId(productId);
-        if (product != null) {
-            return new ResponseEntity(product, HttpStatus.OK);
+    public ResponseEntity getProductById(@PathVariable String productId, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Product product = productService.getProductByProductId(productId);
+            if (product != null) {
+                return new ResponseEntity(product, HttpStatus.OK);
+            }
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+        } else {
+            Product product = productService.getProductByProductId(productId);
+            if (product != null) {
+                return new ResponseEntity(product, HttpStatus.OK);
+            }
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "update product", responses = {
