@@ -4,11 +4,13 @@ import com.dev.fshop.entities.Product;
 import com.dev.fshop.repositories.ProductRepository;
 import com.dev.fshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.springframework.data.domain.Pageable;
 import java.util.Date;
 import java.util.List;
 
@@ -24,12 +26,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProducts(boolean isAdmin) {
+    public Page<Product> getProducts(boolean isAdmin, Pageable pageable) {
         if (isAdmin) {
             System.out.println(productRepository.findAll());
-            return productRepository.findAll();
+            return productRepository.findAll(pageable);
         } else {
-            return productRepository.getProductsByStatus(1);
+            return productRepository.getProductsByStatus(1, pageable);
         }
     }
 
@@ -53,16 +55,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> searchProductsByParameterQ(boolean isAdmin, String q) {
+    public Page<Product> searchProductsByParameterQ(boolean isAdmin, String q, Pageable pageable) {
         if (isAdmin) {
-            return productRepository.searchProductsByParameterQWithAdmin(q);
+            return productRepository.searchProductsByParameterQWithAdmin(q, pageable);
         } else {
-            return productRepository.searchProductsByParameterQWithUser(1, q);
+            return productRepository.searchProductsByParameterQWithUser(1, q, pageable);
         }
     }
 
     @Override
-    public List<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom, Float realPriceTo, Date dateFrom, Date dateTo) {
+    public Page<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom,
+                                                    Float realPriceTo, Date dateFrom, Date dateTo, Pageable pageable) {
         if (productName != null) {
             productName = "%" + productName + "%";
         }
@@ -70,9 +73,9 @@ public class ProductServiceImpl implements ProductService {
             categoryName = "%" + categoryName + "%";
         }
         if (isAdmin) {
-            return productRepository.searchProductsByParametersWithAdmin(productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
+            return productRepository.searchProductsByParametersWithAdmin(productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo, pageable);
         } else {
-            return productRepository.searchProductsByParametersWithUser(1, productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo);
+            return productRepository.searchProductsByParametersWithUser(1, productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo, pageable);
         }
     }
 

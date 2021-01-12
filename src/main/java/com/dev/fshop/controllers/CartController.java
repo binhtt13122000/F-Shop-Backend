@@ -15,6 +15,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +53,7 @@ public class CartController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Cart.class))
+                            schema = @Schema(implementation =  Page.class)
                     )
             ),
             @ApiResponse(
@@ -86,13 +89,16 @@ public class CartController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
             @RequestParam Optional<Float> priceFrom,
             @RequestParam Optional<Float> priceTo,
+            @RequestParam Optional<Integer> pageIndex,
+            @RequestParam Optional<Integer> pageSize,
             Authentication authentication
     ) {
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (q.isPresent()) {
             if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
                 Account checkAccountExisted = accountService.getUserByUsername(username);
                 if (checkAccountExisted != null) {
-                    List<Cart> cartList = cartService.getCartsByParameterQ(false, checkAccountExisted.getUserId(), q.orElse(null));
+                    Page<Cart> cartList = cartService.getCartsByParameterQ(false, checkAccountExisted.getUserId(), q.orElse(null), pageable);
                     if (cartList != null && !cartList.isEmpty()) {
                         return new ResponseEntity(cartList, HttpStatus.OK);
                     } else {
@@ -109,7 +115,7 @@ public class CartController {
                 if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
                     Account checkAccountExisted = accountService.getUserByUsername(username);
                     if (checkAccountExisted != null) {
-                        List<Cart> cartList = cartService.getAllCarts(false, checkAccountExisted.getUserId());
+                        Page<Cart> cartList = cartService.getAllCarts(false, checkAccountExisted.getUserId(), pageable);
                         if (!cartList.isEmpty() && cartList != null) {
                             return new ResponseEntity(cartList, HttpStatus.OK);
                         } else {
@@ -125,8 +131,8 @@ public class CartController {
                 if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
                     Account checkAccountExisted = accountService.getUserByUsername(username);
                     if (checkAccountExisted != null) {
-                        List<Cart> cartList = cartService.getCartByParameters(false, checkAccountExisted.getUserId(),
-                                dateFrom, dateTo, priceFrom.orElse(null), priceTo.orElse(null));
+                        Page<Cart> cartList = cartService.getCartByParameters(false, checkAccountExisted.getUserId(),
+                                dateFrom, dateTo, priceFrom.orElse(null), priceTo.orElse(null), pageable);
                         if (cartList != null && !cartList.isEmpty()) {
                             return new ResponseEntity(cartList, HttpStatus.OK);
                         } else {
@@ -307,7 +313,7 @@ public class CartController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Cart.class))
+                            schema = @Schema(implementation =  Page.class)
                     )
             ),
             @ApiResponse(
@@ -336,11 +342,15 @@ public class CartController {
             )
     })
     @GetMapping("/carts/users/{username}")
-    public ResponseEntity getCartsByUsername(@PathVariable String username, Authentication authentication) {
+    public ResponseEntity getCartsByUsername(@PathVariable String username,
+                                             @RequestParam Optional<Integer> pageIndex,
+                                             @RequestParam Optional<Integer> pageSize,
+                                             Authentication authentication) {
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkExistedAccount = accountService.getUserByUsername(username);
             if (checkExistedAccount != null) {
-                List<Cart> cartList = cartService.getAllCarts(false, checkExistedAccount.getUserId());
+                Page<Cart> cartList = cartService.getAllCarts(false, checkExistedAccount.getUserId(), pageable);
                 if (!cartList.isEmpty() && cartList != null) {
                     return new ResponseEntity(cartList, HttpStatus.OK);
                 } else {
@@ -360,7 +370,7 @@ public class CartController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = CartDetail.class))
+                            array = @ArraySchema(schema = @Schema(implementation = Page.class))
                     )
             ),
             @ApiResponse(
@@ -388,11 +398,16 @@ public class CartController {
             )
     })
     @GetMapping("/carts/{cartId}/users/{username}/cartDetails")
-    public ResponseEntity getCartDetailsByCartId(@PathVariable String cartId, @PathVariable String username, Authentication authentication) {
+    public ResponseEntity getCartDetailsByCartId(@PathVariable String cartId,
+                                                 @PathVariable String username,
+                                                 @RequestParam Optional<Integer> pageIndex,
+                                                 @RequestParam Optional<Integer> pageSize,
+                                                 Authentication authentication) {
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Cart checkCartExisted = cartService.getCartByCartId(cartId);
             if (checkCartExisted != null) {
-                List<CartDetail> cartDetailList = cartDetailService.getCartDetailsByCartId(cartId);
+                Page<CartDetail> cartDetailList = cartDetailService.getCartDetailsByCartId(cartId, pageable);
                 if (!cartDetailList.isEmpty() && cartDetailList != null) {
                     return new ResponseEntity(cartDetailList, HttpStatus.OK);
                 } else {

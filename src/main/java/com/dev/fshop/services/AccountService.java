@@ -1,6 +1,8 @@
 package com.dev.fshop.services;
 
 import com.dev.fshop.entities.Account;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ public interface AccountService {
 
     boolean changePassword(Account account, String hashPassword);
 
-    List<Account> searchAccountsByParameters(String email, String role);
+    Page<Account> searchAccountsByParameters(String email, String role, Pageable pageable);
 
-    List<Account> searchAccountsByParameter(String q);
+    Page<Account> searchAccountsByParameter(String q, Pageable pageable);
 }

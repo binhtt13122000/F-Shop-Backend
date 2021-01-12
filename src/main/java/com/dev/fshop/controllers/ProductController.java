@@ -1,6 +1,5 @@
 package com.dev.fshop.controllers;
 
-import com.dev.fshop.entities.Account;
 import com.dev.fshop.entities.Category;
 import com.dev.fshop.entities.Product;
 import com.dev.fshop.entities.Supplier;
@@ -11,7 +10,6 @@ import com.dev.fshop.services.SupplierService;
 import com.dev.fshop.supporters.ProductDetail;
 import com.dev.fshop.utils.AuthenticatedRole;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -19,14 +17,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +54,7 @@ public class ProductController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Product.class))
+                            schema = @Schema(implementation =  Page.class)
                     )
             ),
             @ApiResponse(
@@ -79,17 +79,20 @@ public class ProductController {
             @RequestParam Optional<Float> realPriceTo,
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateFrom,
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
+            @RequestParam Optional<Integer> pageIndex,
+            @RequestParam Optional<Integer> pageSize,
             Authentication authentication) {
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (q.isPresent()) {
             if (AuthenticatedRole.isAdmin(authentication)) {
-                List<Product> productList = productService.searchProductsByParameterQ(true, "%" + q.orElse(null) + "%");
+                Page<Product> productList = productService.searchProductsByParameterQ(true, "%" + q.orElse(null) + "%", pageable);
                 if (productList != null && !productList.isEmpty()) {
                     return new ResponseEntity(productList, HttpStatus.OK);
                 } else {
                     return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                 }
             } else {
-                List<Product> productList = productService.searchProductsByParameterQ(false, "%" + q.orElse(null) + "%");
+                Page<Product> productList = productService.searchProductsByParameterQ(false, "%" + q.orElse(null) + "%", pageable);
                 if (!productList.isEmpty() && productList != null) {
                     return new ResponseEntity(productList, HttpStatus.OK);
                 } else {
@@ -100,14 +103,14 @@ public class ProductController {
             if (!productName.isPresent() && !categoryName.isPresent() && !realPriceFrom.isPresent() && !realPriceTo.isPresent()
                     && dateFrom == null && dateTo == null) {
                 if (AuthenticatedRole.isAdmin(authentication)) {
-                    List<Product> productList = productService.getProducts(true);
+                    Page<Product> productList = productService.getProducts(true, pageable);
                     if (productList != null && !productList.isEmpty()) {
                         return new ResponseEntity(productList, HttpStatus.OK);
                     } else {
                         return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                     }
                 } else {
-                    List<Product> productList = productService.getProducts(false);
+                    Page<Product> productList = productService.getProducts(false, pageable);
                     if (productList != null && !productList.isEmpty()) {
                         return new ResponseEntity(productList, HttpStatus.OK);
                     } else {
@@ -116,18 +119,18 @@ public class ProductController {
                 }
             } else {
                 if (AuthenticatedRole.isAdmin(authentication)) {
-                    List<Product> productList = productService.searchProductsByParameters(true, productName.orElse(null),
+                    Page<Product> productList = productService.searchProductsByParameters(true, productName.orElse(null),
                             categoryName.orElse(null), realPriceFrom.orElse(null), realPriceTo.orElse(null),
-                            dateFrom, dateTo);
+                            dateFrom, dateTo, pageable);
                     if (productList != null && !productList.isEmpty()) {
                         return new ResponseEntity(productList, HttpStatus.OK);
                     } else {
                         return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                     }
                 } else {
-                    List<Product> productList = productService.searchProductsByParameters(false, productName.orElse(null),
+                    Page<Product> productList = productService.searchProductsByParameters(false, productName.orElse(null),
                             categoryName.orElse(null), realPriceFrom.orElse(null), realPriceTo.orElse(null),
-                            dateFrom, dateTo);
+                            dateFrom, dateTo, pageable);
                     if (productList != null && !productList.isEmpty()) {
                         return new ResponseEntity(productList, HttpStatus.OK);
                     } else {
@@ -161,12 +164,20 @@ public class ProductController {
             ),
     })
     @GetMapping("/products/{productId}")
-    public ResponseEntity getProductById(@PathVariable String productId) {
-        Product product = productService.getProductByProductId(productId);
-        if (product != null) {
-            return new ResponseEntity(product, HttpStatus.OK);
+    public ResponseEntity getProductById(@PathVariable String productId, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Product product = productService.getProductByProductId(productId);
+            if (product != null) {
+                return new ResponseEntity(product, HttpStatus.OK);
+            }
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+        } else {
+            Product product = productService.getProductByProductId(productId);
+            if (product != null) {
+                return new ResponseEntity(product, HttpStatus.OK);
+            }
+            return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "update product", responses = {

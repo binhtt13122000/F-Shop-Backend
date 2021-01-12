@@ -9,6 +9,8 @@ import com.dev.fshop.services.CartService;
 import com.dev.fshop.supporters.CartDetail;
 import com.dev.fshop.supporters.ProductDetail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +24,8 @@ public class CartDetailServiceImpl implements CartDetailService {
     private CartService cartService;
 
     @Override
-    public List<CartDetail> getCartDetailsByCartId(String cartId) {
-        return cartDetailRepository.getCartDetailsByCart_CartId(cartId);
+    public Page<CartDetail> getCartDetailsByCartId(String cartId, Pageable pageable) {
+        return cartDetailRepository.getCartDetailsByCart_CartId(cartId, pageable);
     }
 
     @Override
