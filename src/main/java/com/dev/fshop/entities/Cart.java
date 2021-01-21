@@ -23,7 +23,6 @@ public class Cart implements Serializable {
     //id
     @Id
     @Column(name = "cartId", nullable = false, updatable = false, unique = true)
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_cart")
     @GenericGenerator(
             name = "sequence_cart",

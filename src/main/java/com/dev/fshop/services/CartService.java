@@ -10,17 +10,17 @@ import java.util.List;
 
 public interface CartService {
 
-    public Cart getCartByCartId(String cartId);
+    public Cart getCartByCartIdAndUserId(String cartId, String userId, int status);
 
     public Cart createNewCart(Account accountExisted, Cart cart);
 
-    public Page<Cart> getCartsByParameterQ(boolean isAdmin, String userId, String q, Pageable pageable);
+    public Page<Cart> getCartsByParameterQ(String userId, String q, Pageable pageable);
 
-    public Page<Cart> getCartByParameters(boolean isAdmin, String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo,
+    public Page<Cart> getCartByParameters(String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo,
                                           Pageable pageable);
 
     public Cart updateCartTotal(Cart cart, float cartPrice);
 
-    public Page<Cart> getAllCarts(boolean isAdmin, String userId, Pageable pageable);
+    public Page<Cart> getAllCarts(String userId, Pageable pageable);
 
 }
