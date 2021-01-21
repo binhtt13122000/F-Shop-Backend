@@ -51,7 +51,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 }
             }
         }
-
+        System.out.println(token.length());
         if (!token.isEmpty()) {
             try {
                 String signinKey = SecurityConstants.JWT_SECRET;

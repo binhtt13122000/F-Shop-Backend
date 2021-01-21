@@ -74,6 +74,7 @@ public class AuthenticationController {
             String token = jwtUtils.generateToken(user);
             HttpHeaders headers = new HttpHeaders();
             String cookieToken = SecurityConstants.TOKEN_HEADER + "=" + token;
+            System.out.println(cookieToken);
             headers.add("Set-Cookie",
                     cookieToken + "; HttpOnly; SameSite=None; Max-Age=864000");
             return new ResponseEntity("Login Successfully!",headers, HttpStatus.OK);
