@@ -53,7 +53,7 @@ public class CartController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation =  Page.class)
+                            schema = @Schema(implementation = Page.class)
                     )
             ),
             @ApiResponse(
@@ -98,7 +98,7 @@ public class CartController {
             if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
                 Account checkAccountExisted = accountService.getUserByUsername(username);
                 if (checkAccountExisted != null) {
-                    Page<Cart> cartList = cartService.getCartsByParameterQ(false, checkAccountExisted.getUserId(), q.orElse(null), pageable);
+                    Page<Cart> cartList = cartService.getCartsByParameterQ(checkAccountExisted.getUserId(), q.orElse(null), pageable);
                     if (cartList != null && !cartList.isEmpty()) {
                         return new ResponseEntity(cartList, HttpStatus.OK);
                     } else {
@@ -115,7 +115,7 @@ public class CartController {
                 if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
                     Account checkAccountExisted = accountService.getUserByUsername(username);
                     if (checkAccountExisted != null) {
-                        Page<Cart> cartList = cartService.getAllCarts(false, checkAccountExisted.getUserId(), pageable);
+                        Page<Cart> cartList = cartService.getAllCarts(checkAccountExisted.getUserId(), pageable);
                         if (!cartList.isEmpty() && cartList != null) {
                             return new ResponseEntity(cartList, HttpStatus.OK);
                         } else {
@@ -131,7 +131,7 @@ public class CartController {
                 if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
                     Account checkAccountExisted = accountService.getUserByUsername(username);
                     if (checkAccountExisted != null) {
-                        Page<Cart> cartList = cartService.getCartByParameters(false, checkAccountExisted.getUserId(),
+                        Page<Cart> cartList = cartService.getCartByParameters(checkAccountExisted.getUserId(),
                                 dateFrom, dateTo, priceFrom.orElse(null), priceTo.orElse(null), pageable);
                         if (cartList != null && !cartList.isEmpty()) {
                             return new ResponseEntity(cartList, HttpStatus.OK);
@@ -264,9 +264,13 @@ public class CartController {
             )
     })
     @PostMapping("/carts/{cartId}/users/{username}/cartDetails")
-    public ResponseEntity addProductInCartDetail(@PathVariable String cartId, @RequestBody String productId,
-                                                 @RequestBody String cartSize, @RequestBody Integer cartQuantity,
-                                                 @PathVariable String username, Authentication authentication) {
+    public ResponseEntity addProductInCartDetail(@PathVariable String cartId,
+                                                 @PathVariable String username,
+                                                 @RequestParam  String productId,
+                                                 @RequestParam  String cartSize,
+                                                 @RequestParam  Integer cartQuantity,
+                                                 Authentication authentication
+    ) {
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(username);
             if (checkAccountExisted != null) {
@@ -274,12 +278,13 @@ public class CartController {
                 if (checkProductExisted != null) {
                     ProductDetail checkProductDetailExisted = productDetailService.getProductDetailByProductIdAndProductSize(productId, cartSize);
                     if (checkProductDetailExisted != null) {
-                        Cart checkCartExisted = cartService.getCartByCartId(cartId);
+                        Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 1);
                         if (checkCartExisted != null) {
                             if (checkCartExisted.getStatus() == 1) {
-                                CartDetail checkCartDetailExisted = cartDetailService.getCartDetailByCartIdAndProductIdAndCartSize(cartId,
+                                CartDetail checkCartDetailExisted = cartDetailService.getCartDetailByCartIdAndProductIdAndCartSize(checkCartExisted.getCartId(),
                                         checkProductExisted.getProductId(), checkProductDetailExisted.getProSize());
                                 if (checkCartDetailExisted != null) {
+                                    System.out.println(cartQuantity);
                                     cartDetailService.addQuantityProductInCartDetailExisted(checkCartDetailExisted, checkProductExisted, cartQuantity);
                                     return new ResponseEntity("Add product successfully!", HttpStatus.OK);
                                 } else {
@@ -313,7 +318,7 @@ public class CartController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation =  Page.class)
+                            schema = @Schema(implementation = Page.class)
                     )
             ),
             @ApiResponse(
@@ -350,7 +355,7 @@ public class CartController {
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkExistedAccount = accountService.getUserByUsername(username);
             if (checkExistedAccount != null) {
-                Page<Cart> cartList = cartService.getAllCarts(false, checkExistedAccount.getUserId(), pageable);
+                Page<Cart> cartList = cartService.getAllCarts(checkExistedAccount.getUserId(), pageable);
                 if (!cartList.isEmpty() && cartList != null) {
                     return new ResponseEntity(cartList, HttpStatus.OK);
                 } else {
@@ -405,16 +410,21 @@ public class CartController {
                                                  Authentication authentication) {
         Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
-            Cart checkCartExisted = cartService.getCartByCartId(cartId);
-            if (checkCartExisted != null) {
-                Page<CartDetail> cartDetailList = cartDetailService.getCartDetailsByCartId(cartId, pageable);
-                if (!cartDetailList.isEmpty() && cartDetailList != null) {
-                    return new ResponseEntity(cartDetailList, HttpStatus.OK);
+            Account checkAccountExisted = accountService.getUserByUsername(username);
+            if (checkAccountExisted != null) {
+                Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 1);
+                if (checkCartExisted != null) {
+                    Page<CartDetail> cartDetailList = cartDetailService.getCartDetailsByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), pageable);
+                    if (!cartDetailList.isEmpty() && cartDetailList != null) {
+                        return new ResponseEntity(cartDetailList, HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                    }
                 } else {
-                    return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
+                    return new ResponseEntity("Cart is not available!", HttpStatus.NOT_FOUND);
                 }
             } else {
-                return new ResponseEntity("Cart is not available!", HttpStatus.NOT_FOUND);
+                return new ResponseEntity("Can not found your account!", HttpStatus.NOT_FOUND);
             }
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);

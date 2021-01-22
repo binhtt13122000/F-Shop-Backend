@@ -39,12 +39,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsServiceImp userDetailsService;
 
     @Bean(name = "passwordEncoder")
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2Y);
     }
 
     @Bean
-    public AuthenticationProvider authProvider(){
+    public AuthenticationProvider authProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
@@ -52,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
+    public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
 
         List<String> origin = new ArrayList<>();
@@ -94,7 +94,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/v1/api/login").permitAll()
-                .antMatchers(HttpMethod.POST,  "/v1/api/users/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/v1/api/users/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/api/products").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/api/products/*").permitAll()
                 .anyRequest().authenticated()

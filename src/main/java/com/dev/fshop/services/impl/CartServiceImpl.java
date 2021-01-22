@@ -19,8 +19,8 @@ public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
 
     @Override
-    public Cart getCartByCartId(String cartId) {
-        return cartRepository.findById(cartId).orElse(null);
+    public Cart getCartByCartIdAndUserId(String cartId, String userId, int status) {
+        return cartRepository.getCartByCartIdAndUserId(cartId, userId, status);
     }
 
     @Override
@@ -34,22 +34,16 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Page<Cart> getCartsByParameterQ(boolean isAdmin, String userId, String q, Pageable pageable) {
+    public Page<Cart> getCartsByParameterQ(String userId, String q, Pageable pageable) {
         if (q != null) {
             q = "%" + q + "%";
-        }
-        if (isAdmin) {
-            return cartRepository.getCartsByParameterQByAdmin(q, userId, pageable);
         }
         return cartRepository.getCartsByParameterQByUser(1, q, userId, pageable);
     }
 
     @Override
-    public Page<Cart> getCartByParameters(boolean isAdmin, String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo,
+    public Page<Cart> getCartByParameters(String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo,
                                           Pageable pageable) {
-        if (isAdmin) {
-            return cartRepository.getCartsByParametersByAdmin(userId, dateFrom, dateTo, priceFrom, priceTo, pageable);
-        }
         return cartRepository.getCartsByParametersByUser(1, userId, dateFrom, dateTo, priceFrom, priceTo, pageable);
     }
 
@@ -60,12 +54,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Page<Cart> getAllCarts(boolean isAdmin, String userId, Pageable pageable) {
-        if (isAdmin) {
-            return cartRepository.getCartsByAccount_UserId(userId, pageable);
-        } else {
-            return cartRepository.getCartsByUserIdByUser(userId, 1, pageable);
-        }
+    public Page<Cart> getAllCarts(String userId, Pageable pageable) {
+        return cartRepository.getCartsByUserIdByUser(userId, 1, pageable);
     }
 
 }

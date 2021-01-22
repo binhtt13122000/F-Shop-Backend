@@ -26,7 +26,6 @@ import java.util.Date;
 public class Orders implements Serializable {
     //id
     @Id
-    @JsonIgnore
     @Column(name = "orderId", nullable = false, unique = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_order")
     @GenericGenerator(
