@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, String> {
-    public Page<Review> findReviewsByProduct_ProductIdWithAdmin(String productId, Pageable pageable);
+    public Page<Review> findReviewsByProduct_ProductId(String productId, Pageable pageable);
 
     @Query("select u from Review u where u.product.productId = :productId and u.orders.account.userId = :userId and " +
             "u.status >= :status")

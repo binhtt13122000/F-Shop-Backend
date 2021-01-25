@@ -22,7 +22,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<Review> findReviewsByProductIdWithAdmin(String productId, Pageable pageable) {
-        return reviewRepository.findReviewsByProduct_ProductIdWithAdmin(productId, pageable);
+        return reviewRepository.findReviewsByProduct_ProductId(productId, pageable);
     }
 
     @Override
