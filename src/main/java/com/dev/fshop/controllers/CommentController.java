@@ -89,26 +89,16 @@ public class CommentController {
                     )
             ),
     })
-    @GetMapping("/products/{productId}/users/{username}/comments")
+    @GetMapping("/products/{productId}/comments")
     public ResponseEntity getCommentByProduct(@PathVariable("productId") String productId,
-                                              @PathVariable("username") String username,
+                                              @RequestParam Optional<String> username,
                                               @RequestParam Optional<Integer> pageIndex,
                                               @RequestParam Optional<Integer> pageSize,
                                               Authentication authentication) {
         Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
-        if (AuthenticatedRole.isAdmin(authentication)) {
-            Product checkProductExisted = productService.getProductByProductId(productId);
-            if (checkProductExisted == null) {
-                return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
-            } else {
-                Page<Comment> commentList = commentService.getCommentsByProductIdWithAdmin(checkProductExisted.getProductId(), pageable);
-                if (!commentList.isEmpty() && commentList != null) {
-                    return new ResponseEntity(commentList, HttpStatus.OK);
-                }
-                return new ResponseEntity("NOT FOUND", HttpStatus.NOT_FOUND);
-            }
-        } else if (AuthenticatedRole.isMySelf(username, authentication)) {
-            Account checkAccountExisted = accountService.getUserByUsername(username);
+        String usName = username.orElse(null);
+        if (usName != null && AuthenticatedRole.isMySelf(usName, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(usName);
             if (checkAccountExisted == null) {
                 return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
             } else {
@@ -123,6 +113,17 @@ public class CommentController {
                     }
                     return new ResponseEntity(commentList, HttpStatus.OK);
                 }
+            }
+        } else if (AuthenticatedRole.isAdmin(authentication)) {
+            Product checkProductExisted = productService.getProductByProductId(productId);
+            if (checkProductExisted == null) {
+                return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+            } else {
+                Page<Comment> commentList = commentService.getCommentsByProductIdWithAdmin(checkProductExisted.getProductId(), pageable);
+                if (!commentList.isEmpty() && commentList != null) {
+                    return new ResponseEntity(commentList, HttpStatus.OK);
+                }
+                return new ResponseEntity("NOT FOUND", HttpStatus.NOT_FOUND);
             }
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
@@ -259,7 +260,7 @@ public class CommentController {
                                         @PathVariable("username") String username,
                                         @RequestBody Comment comment,
                                         Authentication authentication) {
-        if (AuthenticatedRole.isMySelf(username, authentication)) {
+        if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(username);
             if (checkAccountExisted != null) {
                 Comment checkCommentExisted = commentService.getCommentByCommentId(commentId);
@@ -332,14 +333,14 @@ public class CommentController {
                     )
             ),
     })
-    @PatchMapping("/comments/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     public ResponseEntity deleteComment(@PathVariable("commentId") String commentId,
                                         @RequestParam Optional<String> username,
                                         Authentication authentication) {
         String usName = username.orElse(null);
-        if (usName != null && AuthenticatedRole.isMySelf(usName, authentication)) {
+        if (usName != null && AuthenticatedRole.isMySelf(usName, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(usName);
-            if(checkAccountExisted != null) {
+            if (checkAccountExisted != null) {
                 Comment checkCommentExisted = commentService.getCommentByCommentIdAndUserId(commentId, checkAccountExisted.getUserId());
                 if (checkCommentExisted != null) {
                     if (checkCommentExisted.getStatus() == -1) {
@@ -351,7 +352,7 @@ public class CommentController {
                 } else {
                     return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
                 }
-            }else {
+            } else {
                 return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
             }
         } else if (AuthenticatedRole.isAdmin(authentication)) {
@@ -426,10 +427,10 @@ public class CommentController {
         if (AuthenticatedRole.isAdmin(authentication)) {
             Comment checkExisted = commentService.getCommentByCommentId(commentId);
             if (checkExisted != null) {
-                if(checkExisted.getStatus() != -1) {
+                if (checkExisted.getStatus() != -1) {
                     commentService.changeStatusComment(checkExisted, 1);
                     return new ResponseEntity("confirm comment successfully!", HttpStatus.OK);
-                }else {
+                } else {
                     return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
                 }
             }

@@ -18,4 +18,9 @@ public class OrderServiceImpl implements OrderService {
     public Orders findOrderByOrderId(String orderId) {
         return ordersRepository.findById(orderId).orElse(null);
     }
+
+    @Override
+    public List<Orders> getOrdersByProductIdAndUserId(String productId, String userId) {
+        return ordersRepository.getOrdersByProductIdAndUserIdAndStatus(productId, userId, 0);
+    }
 }

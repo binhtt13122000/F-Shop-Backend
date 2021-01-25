@@ -92,13 +92,13 @@ public class Review implements Serializable {
     @Transient
     @NotBlank
     @Size(max = 40)
-    private String proId;
+    private String productId;
 
     public String getOrderId() {
         return orderId == null ? orders.getOrderId() : orderId;
     }
 
     public String getProId() {
-        return proId == null ? product.getProductId() : proId;
+        return productId == null ? product.getProductId() : productId;
     }
 }

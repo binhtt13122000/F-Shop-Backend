@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface OrderService {
     public Orders findOrderByOrderId(String orderId);
+
+    public List<Orders> getOrdersByProductIdAndUserId(String productId, String userId);
 }
