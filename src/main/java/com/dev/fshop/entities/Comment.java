@@ -27,7 +27,6 @@ import java.util.Date;
 @Schema(name = "Comment")
 public class Comment implements Serializable {
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_comment")
     @GenericGenerator(
             name = "sequence_comment",
@@ -46,34 +45,28 @@ public class Comment implements Serializable {
     @Column(name = "name", nullable = false)
     @Size(max = 50)
     @NotNull
-    @NotBlank
     @Schema(example = "Trương Thanh Bình")
     private String name;
 
     //phone
     @Column(name = "phoneNumber")
     @Size(max = 15)
-    @NotBlank
     @Schema(example = "0335579880")
     private String phoneNumber;
 
     //content
     @Column(name = "content", nullable = false)
     @NotNull
-    @NotBlank
     @Size(max = 100)
     @Schema(name = "ngu vậy man!")
     private String content;
 
     //create time
     @Column(name = "createTime", nullable = false)
-    @NotBlank
-    @NotNull
     private Date createTime;
 
     @Column(name = "status", nullable = false)
     @NotNull
-    @NotBlank
     private int status;
 
     //customer entity
@@ -94,12 +87,10 @@ public class Comment implements Serializable {
 
     //replace productEntity
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String productId;
 
     //replace userEntity
-    @NotBlank
     @Transient
     @Size(max = 40)
     private String userId;
