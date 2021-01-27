@@ -202,8 +202,12 @@ public class CommentController {
                 if (checkProductExisted != null) {
                     if (parentId.isPresent()) {
                         Comment parentComment = commentService.getCommentByCommentId(parentId.orElse(null));
-                        commentService.createNewComment(comment, parentComment, checkAccountExisted, checkProductExisted);
-                        return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                        if (parentComment != null) {
+                            commentService.createNewComment(comment, parentComment, checkAccountExisted, checkProductExisted);
+                            return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                        } else {
+                            return new ResponseEntity("Parent Comment is not found!", HttpStatus.NOT_FOUND);
+                        }
                     } else {
                         commentService.createNewComment(comment, null, checkAccountExisted, checkProductExisted);
                         return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
