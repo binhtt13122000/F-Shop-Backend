@@ -29,7 +29,7 @@ public class CartServiceImpl implements CartService {
         cart.setAccount(accountExisted);
         cart.setCartTotal(0);
         cart.setCreateTime(new Date());
-        cart.setStatus(1);
+        cart.setStatus(0);
         return cartRepository.save(cart);
     }
 
@@ -56,6 +56,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public Page<Cart> getAllCarts(String userId, Pageable pageable) {
         return cartRepository.getCartsByUserIdByUser(userId, 1, pageable);
+    }
+
+    @Override
+    public boolean deleteCart(Cart cart) {
+        cartRepository.save(cart);
+        return true;
     }
 
 }

@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, String> {
-    public ProductDetail findProductDetailByProduct_ProductIdAndAndProSize(String productId, String productSize);
+
+    @Query("select  u from ProductDetail  u where u.product.productId = :productId and u.proSize = :productSize")
+    public ProductDetail findProductDetailByProductIdAndAndProSize(String productId, String productSize);
 }

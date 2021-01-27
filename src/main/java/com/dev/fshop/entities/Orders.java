@@ -42,50 +42,37 @@ public class Orders implements Serializable {
     //fullname
     @Column(name = "fullname", nullable = false)
     @NotNull
-    @NotBlank
     @Size(max = 50)
     @Schema(example = "Trương Thanh Bình")
     private String fullname;
     //phone number
     @NotNull
-    @NotBlank
     @Size(max = 15)
     @Column(name = "phoneNumber", nullable = false)
     @Schema(example = "0335579880")
     private String phoneNumber;
     //address
     @Column(name = "address", nullable = false)
-    @NotBlank
     @NotNull
     @Size(max = 50)
     private String address;
     //create time
     @Column(name = "createAt", nullable = false)
     @NotNull
-    @NotBlank
     private Date createAt;
     //orderTotal
     @NotNull
-    @NotBlank
     @Min(1)
     @Column(name = "orderTotal", nullable = false)
     @Schema(example = "1200000")
     private float orderTotal;
     //orderTotal
-    @NotNull
-    @NotBlank
-    @Min(1)
-    @Column(name = "realTotal", nullable = false)
-    @Schema(example = "1150000")
-    private float realTotal;
     //status
     @NotNull
-    @NotBlank
     @Column(name = "status", nullable = false)
     private int status;
     //isOnline
     @NotNull
-    @NotBlank
     @Column(name = "isOnline", nullable = false)
     private boolean isOnline;
 
@@ -112,17 +99,15 @@ public class Orders implements Serializable {
     private Promotion promotion;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String userId;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
+    @JsonIgnore
     private String sellerId;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String promotionId;
 

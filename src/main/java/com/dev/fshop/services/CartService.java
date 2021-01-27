@@ -23,4 +23,5 @@ public interface CartService {
 
     public Page<Cart> getAllCarts(String userId, Pageable pageable);
 
+    public boolean deleteCart(Cart cart);
 }

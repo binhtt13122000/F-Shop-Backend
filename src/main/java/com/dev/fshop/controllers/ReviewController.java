@@ -192,13 +192,14 @@ public class ReviewController {
                                      @PathVariable("username") String username,
                                      @RequestBody Review review,
                                      Authentication authentication) {
+        Pageable pageable = PageRequest.of(0, 4);
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(username);
             if (checkAccountExisted != null) {
                 Product checkProductExisted = productService.getProductByProductId(productId);
                 if (checkProductExisted != null) {
                     List<Orders> ordersList = orderService.getOrdersByProductIdAndUserId(checkProductExisted.getProductId(),
-                            checkAccountExisted.getUserId());
+                            checkAccountExisted.getUserId(), false);
                     if (!ordersList.isEmpty() && ordersList != null) {
                         reviewService.postReview(review, ordersList.get(ordersList.size() - 1), checkProductExisted);
                         return new ResponseEntity("Create new review successfully!", HttpStatus.OK);
@@ -267,7 +268,7 @@ public class ReviewController {
                     )
             ),
     })
-    @PutMapping("/users/{username}/reviews/{reviewId}/")
+    @PutMapping("/users/{username}/reviews/{reviewId}")
     public ResponseEntity updateReview(@PathVariable("reviewId") String reviewId,
                                        @PathVariable("username") String userName,
                                        @RequestBody Review review,
@@ -406,13 +407,13 @@ public class ReviewController {
                     )
             ),
             @ApiResponse(
-                    description = "review is not available!",
+                    description = "Review is not available!",
                     responseCode = "404",
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
-                                    description = "review is not available!",
-                                    value = "review is not available!"
+                                    description = "Review is not available!",
+                                    value = "Review is not available!"
                             ),
                             schema = @Schema(implementation = String.class)
                     )
@@ -443,7 +444,7 @@ public class ReviewController {
                     return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
                 }
             }
-            return new ResponseEntity("review is not available!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Review is not available!", HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }

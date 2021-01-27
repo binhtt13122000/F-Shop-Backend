@@ -27,7 +27,6 @@ import java.util.Date;
 public class Review implements Serializable {
     //id
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_review")
     @GenericGenerator(
             name = "sequence_review",
@@ -45,7 +44,6 @@ public class Review implements Serializable {
     //star
     @Column(name = "star", nullable = false)
     @NotNull
-    @NotBlank
     @Min(1)
     @Max(5)
     @Schema(example = "3")
@@ -53,20 +51,17 @@ public class Review implements Serializable {
 
     //content
     @Column(name = "content")
-    @NotBlank
     @Schema(example = "đẹp")
     private String content;
 
     //createTime
     @Column(name = "createTime", nullable = false)
     @NotNull
-    @NotBlank
     private Date createTime;
 
     //status
     @Column(name = "status", nullable = false)
     @NotNull
-    @NotBlank
     @Schema(example = "1")
     private int status;
 
@@ -85,12 +80,10 @@ public class Review implements Serializable {
     private Product product;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String orderId;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String productId;
 

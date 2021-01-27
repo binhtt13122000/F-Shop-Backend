@@ -405,16 +405,13 @@ public class CartController {
     @GetMapping("/carts/{cartId}/users/{username}/cartDetails")
     public ResponseEntity getCartDetailsByCartId(@PathVariable String cartId,
                                                  @PathVariable String username,
-                                                 @RequestParam Optional<Integer> pageIndex,
-                                                 @RequestParam Optional<Integer> pageSize,
                                                  Authentication authentication) {
-        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(username);
             if (checkAccountExisted != null) {
                 Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 1);
                 if (checkCartExisted != null) {
-                    Page<CartDetail> cartDetailList = cartDetailService.getCartDetailsByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), pageable);
+                    List<CartDetail> cartDetailList = cartDetailService.getCartDetailsByCartIdAndUserId(cartId, checkAccountExisted.getUserId());
                     if (!cartDetailList.isEmpty() && cartDetailList != null) {
                         return new ResponseEntity(cartDetailList, HttpStatus.OK);
                     } else {

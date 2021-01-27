@@ -58,6 +58,8 @@ public class ReviewServiceImpl implements ReviewService {
         newReview.setOrderId(currentReview.getOrderId());
         newReview.setProductId(currentReview.getProductId());
         newReview.setProduct(currentReview.getProduct());
+        newReview.setCreateTime(currentReview.getCreateTime());
+        newReview.setStatus(0);
         return reviewRepository.save(newReview);
     }
 

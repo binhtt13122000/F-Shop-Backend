@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +25,6 @@ import java.io.Serializable;
 public class OrderDetail implements Serializable {
     @Id
     @Column(name = "orderItemId", nullable = false, unique = true)
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_orderDetail")
     @GenericGenerator(
             name = "sequence_orderDetail",
@@ -41,14 +41,12 @@ public class OrderDetail implements Serializable {
     //quantity
     @Column(name = "orderItemQuan", nullable = false)
     @NotNull
-    @NotBlank
     @Min(1)
     @Schema(example = "3")
     private int orderItemQuan;
     //price
     @Column(name = "orderItemPrice", nullable = false)
     @NotNull
-    @NotBlank
     @Min(1)
     @Schema(example = "180000")
     private float orderItemPrice;
@@ -56,9 +54,16 @@ public class OrderDetail implements Serializable {
     //orderSize
     @Column(name = "orderSize", nullable = false)
     @NotNull
-    @NotBlank
     @Schema(example = "XL")
     private String orderSize;
+
+    @Column(name = "createAt")
+    @NotNull
+    private Date createAt;
+
+    @Column(name = "status")
+    @NotNull
+    private int status;
 
     @ManyToOne
     @JoinColumn(name = "proId")
@@ -73,12 +78,10 @@ public class OrderDetail implements Serializable {
     private Orders orders;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String productId;
 
     @Transient
-    @NotBlank
     @Size(max = 40)
     private String orderId;
 
