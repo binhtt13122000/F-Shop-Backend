@@ -20,7 +20,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart getCartByCartIdAndUserId(String cartId, String userId, int status) {
-        return cartRepository.getCartByCartIdAndUserId(cartId, userId, status);
+        return cartRepository.getCartByCartIdAndAccount_UserIdAndStatusGreaterThanEqual(cartId, userId, status);
     }
 
     @Override
@@ -38,13 +38,13 @@ public class CartServiceImpl implements CartService {
         if (q != null) {
             q = "%" + q + "%";
         }
-        return cartRepository.getCartsByParameterQByUser(1, q, userId, pageable);
+        return cartRepository.getCartsByParameterQByUser(0, q, userId, pageable);
     }
 
     @Override
     public Page<Cart> getCartByParameters(String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo,
                                           Pageable pageable) {
-        return cartRepository.getCartsByParametersByUser(1, userId, dateFrom, dateTo, priceFrom, priceTo, pageable);
+        return cartRepository.getCartsByParametersByUser(0, userId, dateFrom, dateTo, priceFrom, priceTo, pageable);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Page<Cart> getAllCarts(String userId, Pageable pageable) {
-        return cartRepository.getCartsByUserIdByUser(userId, 1, pageable);
+        return cartRepository.getCartsByUserIdByUser(userId, 0, pageable);
     }
 
     @Override

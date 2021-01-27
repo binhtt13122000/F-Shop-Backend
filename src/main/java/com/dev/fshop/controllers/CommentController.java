@@ -94,9 +94,11 @@ public class CommentController {
                                               @RequestParam Optional<String> username,
                                               @RequestParam Optional<Integer> pageIndex,
                                               @RequestParam Optional<Integer> pageSize,
+                                              @RequestParam Optional<String> parentId,
                                               Authentication authentication) {
         Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
         String usName = username.orElse(null);
+        Comment parent = null;
         if (usName != null && AuthenticatedRole.isMySelf(usName, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(usName);
             if (checkAccountExisted == null) {
@@ -106,7 +108,10 @@ public class CommentController {
                 if (checkProductExisted == null) {
                     return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
                 } else {
-                    Page<Comment> commentList = commentService.getCommentsByProductIdWithUser(checkAccountExisted.getUserId(),
+                    if (parentId.isPresent()) {
+                        parent = commentService.getCommentByCommentId(parentId.orElse(null));
+                    }
+                    Page<Comment> commentList = commentService.getCommentsByProductIdWithUser(checkAccountExisted.getUserId(), parent,
                             checkProductExisted.getProductId(), pageable);
                     if (commentList.isEmpty() || commentList == null) {
                         return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
@@ -119,7 +124,10 @@ public class CommentController {
             if (checkProductExisted == null) {
                 return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
             } else {
-                Page<Comment> commentList = commentService.getCommentsByProductIdWithAdmin(checkProductExisted.getProductId(), pageable);
+                if (parentId.isPresent()) {
+                    parent = commentService.getCommentByCommentId(parentId.orElse(null));
+                }
+                Page<Comment> commentList = commentService.getCommentsByProductIdWithAdmin(checkProductExisted.getProductId(), parent, pageable);
                 if (!commentList.isEmpty() && commentList != null) {
                     return new ResponseEntity(commentList, HttpStatus.OK);
                 }
@@ -184,6 +192,7 @@ public class CommentController {
     @PostMapping("/products/{productId}/users/{username}/comments")
     public ResponseEntity postComment(@PathVariable("productId") String productId,
                                       @PathVariable("username") String username,
+                                      @RequestParam Optional<String> parentId,
                                       @RequestBody Comment comment,
                                       Authentication authentication) {
         if (AuthenticatedRole.isMySelf(username, authentication)) {
@@ -191,8 +200,15 @@ public class CommentController {
             if (checkAccountExisted != null) {
                 Product checkProductExisted = productService.getProductByProductId(productId);
                 if (checkProductExisted != null) {
-                    commentService.createNewComment(comment, checkAccountExisted, checkProductExisted);
-                    return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                    if (parentId.isPresent()) {
+                        Comment parentComment = commentService.getCommentByCommentId(parentId.orElse(null));
+                        commentService.createNewComment(comment, parentComment, checkAccountExisted, checkProductExisted);
+                        return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                    } else {
+                        commentService.createNewComment(comment, null, checkAccountExisted, checkProductExisted);
+                        return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                    }
+
                 } else {
                     return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
                 }

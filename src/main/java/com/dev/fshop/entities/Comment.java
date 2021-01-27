@@ -65,6 +65,17 @@ public class Comment implements Serializable {
     @Column(name = "createTime", nullable = false)
     private Date createTime;
 
+    @ManyToOne
+    @JoinColumn(name = "parentId", nullable = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    private Comment parent;
+
+    @Transient
+    @Size(max = 40)
+    private String parentId;
+
     @Column(name = "status", nullable = false)
     @NotNull
     private int status;
@@ -94,6 +105,8 @@ public class Comment implements Serializable {
     @Transient
     @Size(max = 40)
     private String userId;
+
+    public String getParentId() {return  parentId == null ? (parent != null ) ? parent.getCommentId() : null : parentId;}
 
     public String getUserId() {
         return userId == null ? (account != null) ? account.getUserId() : null : userId;

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -19,13 +20,21 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
 
     @Override
-    public Page<Comment> getCommentsByProductIdWithAdmin(String productId, Pageable pageable) {
-        return commentRepository.findCommentsByProduct_ProductId(productId, pageable);
+    public Page<Comment> getCommentsByProductIdWithAdmin(String productId, Comment parent, Pageable pageable) {
+        if (parent == null) {
+            return commentRepository.findCommentsByProduct_ProductIdAndParent_CommentId(productId, null, pageable);
+        } else {
+            return commentRepository.findCommentsByProduct_ProductIdAndParent_CommentId(productId, parent.getCommentId(), pageable);
+        }
     }
 
     @Override
-    public Page<Comment> getCommentsByProductIdWithUser(String userId, String productId, Pageable pageable) {
-        return commentRepository.findCommentsByProduct_ProductIdAndAccount_UserIdAndStatusGreaterThanEqual(productId, userId, 0, pageable);
+    public Page<Comment> getCommentsByProductIdWithUser(String userId, Comment parent, String productId, Pageable pageable) {
+        if (parent != null) {
+            return commentRepository.findCommentsByProduct_ProductIdAndAccount_UserIdAndParent_CommentIdAndStatusGreaterThanEqual(productId, userId, parent.getCommentId(), 0, pageable);
+        } else {
+            return commentRepository.findCommentsByProduct_ProductIdAndAccount_UserIdAndParent_CommentIdAndStatusGreaterThanEqual(productId, userId, null, 0, pageable);
+        }
     }
 
     @Override
@@ -39,11 +48,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment createNewComment(Comment comment, Account account, Product product) {
+    public Comment createNewComment(Comment comment, Comment parentId, Account account, Product product) {
         comment.setAccount(account);
         comment.setUserId(account.getUserId());
         comment.setProduct(product);
         comment.setProductId(product.getProductId());
+        comment.setParent(parentId);
         comment.setCreateTime(new Date());
         comment.setStatus(0);
         return commentRepository.save(comment);
@@ -56,6 +66,7 @@ public class CommentServiceImpl implements CommentService {
         newComment.setUserId(currentComment.getUserId());
         newComment.setProduct(currentComment.getProduct());
         newComment.setProductId(currentComment.getProductId());
+        newComment.setParent(currentComment.getParent());
         newComment.setCreateTime(currentComment.getCreateTime());
         return commentRepository.save(newComment);
     }

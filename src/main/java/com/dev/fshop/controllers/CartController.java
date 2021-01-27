@@ -278,7 +278,7 @@ public class CartController {
                 if (checkProductExisted != null) {
                     ProductDetail checkProductDetailExisted = productDetailService.getProductDetailByProductIdAndProductSize(productId, cartSize);
                     if (checkProductDetailExisted != null) {
-                        Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 1);
+                        Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 0);
                         if (checkCartExisted != null) {
                             if (checkCartExisted.getStatus() == 1) {
                                 CartDetail checkCartDetailExisted = cartDetailService.getCartDetailByCartIdAndProductIdAndCartSize(checkCartExisted.getCartId(),
@@ -409,7 +409,7 @@ public class CartController {
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(username);
             if (checkAccountExisted != null) {
-                Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 1);
+                Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 0);
                 if (checkCartExisted != null) {
                     List<CartDetail> cartDetailList = cartDetailService.getCartDetailsByCartIdAndUserId(cartId, checkAccountExisted.getUserId());
                     if (!cartDetailList.isEmpty() && cartDetailList != null) {
