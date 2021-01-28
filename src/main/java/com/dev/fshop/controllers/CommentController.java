@@ -1,9 +1,12 @@
 package com.dev.fshop.controllers;
 
+import com.dev.fshop.entities.Account;
 import com.dev.fshop.entities.Comment;
 import com.dev.fshop.entities.Product;
+import com.dev.fshop.services.AccountService;
 import com.dev.fshop.services.CommentService;
 import com.dev.fshop.services.ProductService;
+import com.dev.fshop.utils.AuthenticatedRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,13 +16,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/v1/api")
@@ -32,13 +40,16 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private AccountService accountService;
+
     @Operation(description = "get comments by product", responses = {
             @ApiResponse(
                     description = "get comments by product successfully!",
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Comment.class))
+                            schema = @Schema(implementation = Page.class)
                     )
             ),
             @ApiResponse(
@@ -79,16 +90,52 @@ public class CommentController {
             ),
     })
     @GetMapping("/products/{productId}/comments")
-    public ResponseEntity getCommentByProduct(@PathVariable("productId") String productId) {
-            try {
-                List<Comment> commentList = commentService.getCommentsByProductId(productId);
+    public ResponseEntity getCommentByProduct(@PathVariable("productId") String productId,
+                                              @RequestParam Optional<String> username,
+                                              @RequestParam Optional<Integer> pageIndex,
+                                              @RequestParam Optional<Integer> pageSize,
+                                              @RequestParam Optional<String> parentId,
+                                              Authentication authentication) {
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
+        String usName = username.orElse(null);
+        Comment parent = null;
+        if (usName != null && AuthenticatedRole.isMySelf(usName, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(usName);
+            if (checkAccountExisted == null) {
+                return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
+            } else {
+                Product checkProductExisted = productService.getProductByProductId(productId);
+                if (checkProductExisted == null) {
+                    return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+                } else {
+                    if (parentId.isPresent()) {
+                        parent = commentService.getCommentByCommentId(parentId.orElse(null));
+                    }
+                    Page<Comment> commentList = commentService.getCommentsByProductIdWithUser(checkAccountExisted.getUserId(), parent,
+                            checkProductExisted.getProductId(), pageable);
+                    if (commentList.isEmpty() || commentList == null) {
+                        return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+                    }
+                    return new ResponseEntity(commentList, HttpStatus.OK);
+                }
+            }
+        } else if (AuthenticatedRole.isAdmin(authentication)) {
+            Product checkProductExisted = productService.getProductByProductId(productId);
+            if (checkProductExisted == null) {
+                return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+            } else {
+                if (parentId.isPresent()) {
+                    parent = commentService.getCommentByCommentId(parentId.orElse(null));
+                }
+                Page<Comment> commentList = commentService.getCommentsByProductIdWithAdmin(checkProductExisted.getProductId(), parent, pageable);
                 if (!commentList.isEmpty() && commentList != null) {
                     return new ResponseEntity(commentList, HttpStatus.OK);
                 }
-                return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
-            } catch (Exception e) {
-                return new ResponseEntity("Get list comments by product id failed!", HttpStatus.NOT_FOUND);
+                return new ResponseEntity("NOT FOUND", HttpStatus.NOT_FOUND);
             }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
     //create
@@ -106,13 +153,25 @@ public class CommentController {
                     )
             ),
             @ApiResponse(
-                    description = "Product is not available!",
+                    description = "Not Found!",
                     responseCode = "404",
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
-                                    description = "Product is not available!",
-                                    value = "Product is not available!"
+                                    description = "Not Found!",
+                                    value = "Not Found!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied",
+                                    value = "Access denied!"
                             ),
                             schema = @Schema(implementation = String.class)
                     )
@@ -130,14 +189,39 @@ public class CommentController {
                     )
             ),
     })
-    @PostMapping("/products/{productId}/comments")
-    public ResponseEntity postComment(@PathVariable("productId") String productId, @RequestBody Comment comment) {
-            try {
-                commentService.createNewComment(comment);
-                return new ResponseEntity("Post comment successful", HttpStatus.OK);
-            }catch (Exception e) {
-                return new ResponseEntity("Post comment failed.", HttpStatus.BAD_REQUEST);
+    @PostMapping("/products/{productId}/users/{username}/comments")
+    public ResponseEntity postComment(@PathVariable("productId") String productId,
+                                      @PathVariable("username") String username,
+                                      @RequestParam Optional<String> parentId,
+                                      @RequestBody Comment comment,
+                                      Authentication authentication) {
+        if (AuthenticatedRole.isMySelf(username, authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(username);
+            if (checkAccountExisted != null) {
+                Product checkProductExisted = productService.getProductByProductId(productId);
+                if (checkProductExisted != null) {
+                    if (parentId.isPresent()) {
+                        Comment parentComment = commentService.getCommentByCommentId(parentId.orElse(null));
+                        if (parentComment != null) {
+                            commentService.createNewComment(comment, parentComment, checkAccountExisted, checkProductExisted);
+                            return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                        } else {
+                            return new ResponseEntity("Parent Comment is not found!", HttpStatus.NOT_FOUND);
+                        }
+                    } else {
+                        commentService.createNewComment(comment, null, checkAccountExisted, checkProductExisted);
+                        return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                    }
+
+                } else {
+                    return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
             }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
     }
 
     //update
@@ -148,8 +232,8 @@ public class CommentController {
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
-                                    description = "update comment successfully!",
-                                    value = "update comment successfully!"
+                                    description = "Update comment successfully!",
+                                    value = "Update comment successfully!"
                             ),
                             schema = @Schema(implementation = String.class)
                     )
@@ -191,17 +275,31 @@ public class CommentController {
                     )
             ),
     })
-    @PutMapping("/comments/{commentId}/update")
-    public ResponseEntity updateComment(@PathVariable("commentId") String commentId, @RequestBody Comment comment) {
-        Comment checkExisted = commentService.getCommentByCommentId(commentId);
-        if(checkExisted != null) {
-            try {
-                return new ResponseEntity(commentService.updateComment(comment), HttpStatus.OK);
-            }catch (Exception e) {
-                return new ResponseEntity("Update comment failed", HttpStatus.BAD_REQUEST);
+    @PutMapping("/users/{username}/comments/{commentId}")
+    public ResponseEntity updateComment(@PathVariable("commentId") String commentId,
+                                        @PathVariable("username") String username,
+                                        @RequestBody Comment comment,
+                                        Authentication authentication) {
+        if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(username);
+            if (checkAccountExisted != null) {
+                Comment checkCommentExisted = commentService.getCommentByCommentId(commentId);
+                if (checkCommentExisted != null) {
+                    if (checkCommentExisted.getStatus() == -1) {
+                        return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+                    } else {
+                        commentService.updateComment(checkCommentExisted, comment);
+                        return new ResponseEntity("Update comment successfully!", HttpStatus.OK);
+                    }
+                } else {
+                    return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
             }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
     }
 
     //delete
@@ -255,17 +353,43 @@ public class CommentController {
                     )
             ),
     })
-    @PutMapping("/comment/{commentId}/delete")
-    public ResponseEntity deleteComment(@PathVariable("commentId") String commentId) {
-        Comment comment = commentService.getCommentByCommentId(commentId);
-        if(comment != null) {
-            boolean check = commentService.deleteComment(commentId);
-            if (check) {
-                return new ResponseEntity("Delete Comment successful", HttpStatus.OK);
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity deleteComment(@PathVariable("commentId") String commentId,
+                                        @RequestParam Optional<String> username,
+                                        Authentication authentication) {
+        String usName = username.orElse(null);
+        if (usName != null && AuthenticatedRole.isMySelf(usName, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(usName);
+            if (checkAccountExisted != null) {
+                Comment checkCommentExisted = commentService.getCommentByCommentIdAndUserId(commentId, checkAccountExisted.getUserId());
+                if (checkCommentExisted != null) {
+                    if (checkCommentExisted.getStatus() == -1) {
+                        return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+                    } else {
+                        commentService.changeStatusComment(checkCommentExisted, -1);
+                        return new ResponseEntity("delete comment successfully!", HttpStatus.OK);
+                    }
+                } else {
+                    return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity("Delete Comment failed", HttpStatus.BAD_REQUEST);
+        } else if (AuthenticatedRole.isAdmin(authentication)) {
+            Comment checkCommentExisted = commentService.getCommentByCommentId(commentId);
+            if (checkCommentExisted != null) {
+                if (checkCommentExisted.getStatus() == -1) {
+                    return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+                } else {
+                    commentService.changeStatusComment(checkCommentExisted, -1);
+                    return new ResponseEntity("delete comment successfully!", HttpStatus.OK);
+                }
+            } else {
+                return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "confirm comment", responses = {
@@ -318,17 +442,23 @@ public class CommentController {
                     )
             ),
     })
-    @PutMapping("/comments/{commentId}/confirm")
-    public ResponseEntity confirmComment(@PathVariable("commentId") String commentId) {
-        Comment checkExisted = commentService.getCommentByCommentId(commentId);
-        if(checkExisted != null) {
-            try {
-                return new ResponseEntity(commentService.updateComment(checkExisted), HttpStatus.OK);
-            }catch (Exception e) {
-                return new ResponseEntity("Confirm comment failed", HttpStatus.BAD_REQUEST);
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity confirmComment(@PathVariable("commentId") String commentId, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Comment checkExisted = commentService.getCommentByCommentId(commentId);
+            if (checkExisted != null) {
+                if (checkExisted.getStatus() != -1) {
+                    commentService.changeStatusComment(checkExisted, 1);
+                    return new ResponseEntity("confirm comment successfully!", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+                }
             }
+            return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("CommentId is not found", HttpStatus.NOT_FOUND);
+
     }
 
 }

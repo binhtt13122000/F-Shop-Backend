@@ -13,16 +13,15 @@ import java.util.List;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, String> {
 
-    @Query("select u from Cart u where u.account.userId = :userId and u.cartId = :cartId and u.status = :status")
-    public Cart getCartByCartIdAndUserId(String cartId, String userId, int status);
+    public Cart getCartByCartIdAndAccount_UserIdAndStatusGreaterThanEqual(String cartId, String userId, int status);
 
-    @Query("select u from Cart u where u.account.userId = :userId and u.status = :status")
+    @Query("select u from Cart u where u.account.userId = :userId and u.status >= :status")
     public Page<Cart> getCartsByUserIdByUser(String userId, int status, Pageable pageable);
 
-    @Query("select u from Cart u where (u.account.userId = :userId) and (:q is null  or u.cartDescription like :q) and (u.status = :status)")
+    @Query("select u from Cart u where (u.account.userId = :userId) and (:q is null  or u.cartDescription like :q) and (u.status >= :status)")
     public Page<Cart> getCartsByParameterQByUser(int status, String q, String userId, Pageable pageable);
 
-    @Query("select u from Cart u where u.account.userId = :userId and u.status = :status  and ((:dateFrom is null and :dateTo is null) or " +
+    @Query("select u from Cart u where u.account.userId = :userId and u.status >= :status  and ((:dateFrom is null and :dateTo is null) or " +
             "(:dateFrom is not  null and :dateTo is not null and u.createTime between :dateFrom and :dateTo)) and " +
             "((:priceFrom is null and :priceTo is null ) or (:priceFrom is not null and :priceTo is not null and u.cartTotal >= :priceFrom and u.cartTotal <= :priceTo))")
     public Page<Cart> getCartsByParametersByUser(int status, String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo, Pageable pageable);

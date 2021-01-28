@@ -24,8 +24,8 @@ public class CartDetailServiceImpl implements CartDetailService {
     private CartService cartService;
 
     @Override
-    public Page<CartDetail> getCartDetailsByCartIdAndUserId(String cartId, String userId, Pageable pageable) {
-        return cartDetailRepository.getCartDetailsByCart_CartIdAndCart_Account_UserId(cartId, userId, pageable);
+    public List<CartDetail> getCartDetailsByCartIdAndUserId(String cartId, String userId) {
+        return cartDetailRepository.getCartDetailsByCart_CartIdAndCart_Account_UserId(cartId, userId);
     }
 
     @Override

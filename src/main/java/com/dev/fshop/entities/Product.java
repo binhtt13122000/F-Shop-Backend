@@ -34,8 +34,7 @@ import java.util.List;
 @Schema(name = "Product")
 public class Product implements Serializable {
     @Id
-    @Column(name = "proId", nullable = false, unique = true)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "proId", nullable = false, updatable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_product")
     @GenericGenerator(
             name = "sequence_product",

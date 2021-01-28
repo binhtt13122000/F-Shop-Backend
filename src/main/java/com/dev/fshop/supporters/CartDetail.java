@@ -23,7 +23,6 @@ import java.io.Serializable;
 public class CartDetail implements Serializable {
     @Id
     @Column(name = "cartItemId", nullable = false)
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_cartDetail")
     @GenericGenerator(
             name = "sequence_cartDetail",
@@ -39,7 +38,6 @@ public class CartDetail implements Serializable {
 
     @Column(name = "cartSize", nullable = false)
     @NotNull
-    @NotBlank
     @Size(max = 20)
     @Schema(example = "XL")
     private String cartSize;
@@ -68,13 +66,14 @@ public class CartDetail implements Serializable {
     @ToString.Exclude
     private Cart cart;
 
-    @Transient
-    @Size(max = 40)
-    private String productId;
 
     @Transient
     @Size(max = 40)
     private String cartId;
+
+    @Transient
+    @Size(max = 40)
+    private String productId;
 
     public String getProId() {
         return productId == null ? product.getProductId() : productId;

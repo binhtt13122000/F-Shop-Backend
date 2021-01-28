@@ -1,11 +1,11 @@
 package com.dev.fshop.controllers;
 
-import com.dev.fshop.entities.Orders;
-import com.dev.fshop.entities.Product;
-import com.dev.fshop.entities.Review;
+import com.dev.fshop.entities.*;
+import com.dev.fshop.services.AccountService;
 import com.dev.fshop.services.OrderService;
 import com.dev.fshop.services.ProductService;
 import com.dev.fshop.services.ReviewService;
+import com.dev.fshop.utils.AuthenticatedRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -15,14 +15,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/v1/api")
@@ -36,6 +41,9 @@ public class ReviewController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private AccountService accountService;
 
     @Operation(description = "get review by product", responses = {
             @ApiResponse(
@@ -84,12 +92,48 @@ public class ReviewController {
             ),
     })
     @GetMapping("/products/{productId}/reviews")
-    public ResponseEntity getReviewsByProduct(@PathVariable("productId") String productId) {
-        List<Review> reviewList = reviewService.findReviewsByProductId(productId);
-        if (!reviewList.isEmpty() && reviewList != null) {
-            return new ResponseEntity(reviewList, HttpStatus.OK);
+    public ResponseEntity getReviewsByProduct(@PathVariable("productId") String productId,
+                                              @RequestParam Optional<String> username,
+                                              @RequestParam Optional<Integer> pageIndex,
+                                              @RequestParam Optional<Integer> pageSize,
+                                              Authentication authentication) {
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
+        String usName = username.orElse(null);
+        if (usName != null && AuthenticatedRole.isMySelf(usName, authentication) &&
+                !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(usName);
+            if (checkAccountExisted != null) {
+                Product checkProductExisted = productService.getProductByProductId(productId);
+                if (checkProductExisted != null) {
+                    Page<Review> reviewList = reviewService.findReviewsByProductIdWithUserId(checkProductExisted.getProductId(), checkAccountExisted.getUserId(),
+                            pageable);
+                    if (!reviewList.isEmpty() && reviewList != null) {
+                        return new ResponseEntity(reviewList, HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
+                    }
+                } else {
+                    return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
+            }
+        } else if (AuthenticatedRole.isAdmin(authentication)) {
+            Product checkProductExisted = productService.getProductByProductId(productId);
+            if (checkProductExisted != null) {
+                Page<Review> reviewList = reviewService.findReviewsByProductIdWithAdmin(checkProductExisted.getProductId(),
+                        pageable);
+                if (!reviewList.isEmpty() && reviewList != null) {
+                    return new ResponseEntity(reviewList, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Can not find list reviews by product id", HttpStatus.NOT_FOUND);
     }
 
     //create
@@ -143,21 +187,34 @@ public class ReviewController {
                     )
             ),
     })
-    @PostMapping("/products/{productId}/reviews")
-    public ResponseEntity postReview(@PathVariable("productId") String productId, @RequestBody Review review) {
-        Product product = productService.getProductByProductId(productId);
-        if (product != null) {
-            Orders orders = orderService.findOrderByOrderId(review.getOrderId());
-            if (orders != null) {
-                List<Review> reviewList = reviewService.findReviewsByProductId(productId);
-                if (!reviewList.isEmpty() && reviewList != null) {
-                    return new ResponseEntity(reviewList, HttpStatus.OK);
+    @PostMapping("/products/{productId}/users/{username}/reviews")
+    public ResponseEntity postReview(@PathVariable("productId") String productId,
+                                     @PathVariable("username") String username,
+                                     @RequestBody Review review,
+                                     Authentication authentication) {
+        Pageable pageable = PageRequest.of(0, 4);
+        if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(username);
+            if (checkAccountExisted != null) {
+                Product checkProductExisted = productService.getProductByProductId(productId);
+                if (checkProductExisted != null) {
+                    List<Orders> ordersList = orderService.getOrdersByProductIdAndUserId(checkProductExisted.getProductId(),
+                            checkAccountExisted.getUserId(), false);
+                    if (!ordersList.isEmpty() && ordersList != null) {
+                        reviewService.postReview(review, ordersList.get(ordersList.size() - 1), checkProductExisted);
+                        return new ResponseEntity("Create new review successfully!", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Order is not available!", HttpStatus.NOT_FOUND);
+                    }
+                } else {
+                    return new ResponseEntity("Product is not available!", HttpStatus.NOT_FOUND);
                 }
-                return new ResponseEntity("Can not find list reviews by product id", HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity("Order is not available", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Product is not available", HttpStatus.NOT_FOUND);
     }
 
     //update
@@ -211,18 +268,27 @@ public class ReviewController {
                     )
             ),
     })
-    @PutMapping("/reviews/{reviewId}/update")
-    public ResponseEntity updateReview(@PathVariable("reviewId") String reviewId, @RequestBody Review review) {
-        Review checkExisted = reviewService.findReviewByReviewId(reviewId);
-        if (checkExisted != null) {
-            try {
-                reviewService.updateReview(review);
-                return new ResponseEntity("Update review successful", HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity("Update review failed", HttpStatus.BAD_REQUEST);
+    @PutMapping("/users/{username}/reviews/{reviewId}")
+    public ResponseEntity updateReview(@PathVariable("reviewId") String reviewId,
+                                       @PathVariable("username") String userName,
+                                       @RequestBody Review review,
+                                       Authentication authentication) {
+        if (AuthenticatedRole.isMySelf(userName, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(userName);
+            if (checkAccountExisted != null) {
+                Review checkReviewExisted = reviewService.findReviewByReviewIdWithUser(reviewId, checkAccountExisted.getUserId());
+                if (checkReviewExisted != null) {
+                    reviewService.updateReview(checkReviewExisted, review);
+                    return new ResponseEntity("update reviews successfully!", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
             }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Review is not available", HttpStatus.NOT_FOUND);
     }
 
     //delete
@@ -276,18 +342,43 @@ public class ReviewController {
                     )
             ),
     })
-    @PutMapping("/reviews/{reviewId}/delete")
-    public ResponseEntity deleteReview(@PathVariable("reviewId") String reviewÌd) {
-        Review checkExisted = reviewService.findReviewByReviewId(reviewÌd);
-        if (checkExisted != null) {
-            try {
-                reviewService.deleteReview(reviewÌd);
-                return new ResponseEntity("Delete review successful", HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity("Delete review failed", HttpStatus.BAD_REQUEST);
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity deleteReview(@PathVariable("reviewId") String reviewId,
+                                       @RequestParam Optional<String> userName,
+                                       Authentication authentication) {
+        String usName = userName.orElse(null);
+        if (usName != null && AuthenticatedRole.isMySelf(usName, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkAccountExisted = accountService.getUserByUsername(usName);
+            if (checkAccountExisted != null) {
+                Review checkReviewExisted = reviewService.findReviewByReviewIdWithUser(reviewId, checkAccountExisted.getUserId());
+                if (checkReviewExisted != null) {
+                    if (checkReviewExisted.getStatus() != -1) {
+                        reviewService.changeStatusReview(checkReviewExisted, -1);
+                        return new ResponseEntity("delete reviews successfully!", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
+                    }
+                } else {
+                    return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Account is not found!", HttpStatus.NOT_FOUND);
             }
+        } else if (AuthenticatedRole.isAdmin(authentication)) {
+            Review checkReviewExisted = reviewService.findReviewByReviewIdWithAdmin(reviewId);
+            if (checkReviewExisted != null) {
+                if (checkReviewExisted.getStatus() != -1) {
+                    reviewService.changeStatusReview(checkReviewExisted, -1);
+                    return new ResponseEntity("delete reviews successfully!", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Review is not available", HttpStatus.NOT_FOUND);
     }
 
     @Operation(description = "confirm review", responses = {
@@ -316,13 +407,13 @@ public class ReviewController {
                     )
             ),
             @ApiResponse(
-                    description = "review is not available!",
+                    description = "Review is not available!",
                     responseCode = "404",
                     content = @Content(
                             mediaType = "text/plain; charset=utf-8",
                             examples = @ExampleObject(
-                                    description = "review is not available!",
-                                    value = "review is not available!"
+                                    description = "Review is not available!",
+                                    value = "Review is not available!"
                             ),
                             schema = @Schema(implementation = String.class)
                     )
@@ -340,20 +431,22 @@ public class ReviewController {
                     )
             ),
     })
-    @PutMapping("/reviews/{reviewId}/confirm")
-    public ResponseEntity confirmReview(@PathVariable("reviewId") String reviewId) {
-        Review checkExisted = reviewService.findReviewByReviewId(reviewId);
-        if (checkExisted != null) {
-            try {
-                boolean checkConfirm = reviewService.confirmReview(checkExisted);
-                if (checkConfirm) {
-                    return new ResponseEntity("Confirm review successful", HttpStatus.OK);
+    @PutMapping("/reviews/{reviewId}")
+    public ResponseEntity confirmReview(@PathVariable("reviewId") String reviewId,
+                                        Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Review checkExisted = reviewService.findReviewByReviewIdWithAdmin(reviewId);
+            if (checkExisted != null) {
+                if (checkExisted.getStatus() != -1) {
+                    reviewService.changeStatusReview(checkExisted, 1);
+                    return new ResponseEntity("confirm review successfully!", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity("Review is not found!", HttpStatus.NOT_FOUND);
                 }
-                return new ResponseEntity("Confirm review failed", HttpStatus.BAD_REQUEST);
-            } catch (Exception e) {
-                return new ResponseEntity("Confirm review failed", HttpStatus.BAD_REQUEST);
             }
+            return new ResponseEntity("Review is not available!", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Review is not available", HttpStatus.NOT_FOUND);
     }
 }
