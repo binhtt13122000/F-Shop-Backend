@@ -34,7 +34,9 @@ public class Cart implements Serializable {
                     @Parameter(name = UserIdPrefixedSequenceCartIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
+    @Schema(example = "CART_0001")
     private String cartId;
+
     @Column(name = "cartDescription", nullable = false, unique = true)
     @NotNull(message = "Cart description is not null")
     @Size(max = 50, message = "Max Size of Cart description is 100 characters!")
