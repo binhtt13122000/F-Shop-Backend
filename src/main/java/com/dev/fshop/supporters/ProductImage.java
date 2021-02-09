@@ -3,6 +3,7 @@ package com.dev.fshop.supporters;
 import com.dev.fshop.entities.Product;
 import com.dev.fshop.generator.supporters.ProductIdPrefixedSequenceProductImageIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -34,18 +35,24 @@ public class ProductImage implements Serializable {
                     @Parameter(name = ProductIdPrefixedSequenceProductImageIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
+    @Schema(example = "PRO_IMAGE_0001")
     private String imageId;
+
     @Column(name = "createTime", nullable = false)
     @NotNull
     @NotBlank
     private Date createTime;
+
     @Column(name = "imgDescription")
     @NotBlank
+    @Schema(example = "Content of image is sport product.")
     private String imgDescription;
+
     @Column(name = "imgUrl", nullable = false)
     @NotBlank
     @NotNull
     private String imgUrl;
+
     @Column(name = "status", nullable = false)
     @NotBlank
     @NotNull

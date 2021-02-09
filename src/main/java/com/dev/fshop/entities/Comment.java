@@ -39,6 +39,7 @@ public class Comment implements Serializable {
             }
     )
     @Column(name = "commentId", nullable = false, unique = true)
+    @Schema(example = "CMT_0001")
     private String commentId;
 
     //name
@@ -58,7 +59,7 @@ public class Comment implements Serializable {
     @Column(name = "content", nullable = false)
     @NotNull
     @Size(max = 100)
-    @Schema(name = "ngu vậy man!")
+    @Schema(example = "Good product!")
     private String content;
 
     //create time

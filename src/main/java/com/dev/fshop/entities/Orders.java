@@ -38,7 +38,9 @@ public class Orders implements Serializable {
                     @Parameter(name = UserIdPrefixedSequenceOrderIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
+    @Schema(example = "ORDER_0001")
     private String orderId;
+
     //fullname
     @Column(name = "fullname", nullable = false)
     @NotNull
@@ -51,11 +53,13 @@ public class Orders implements Serializable {
     @Column(name = "phoneNumber", nullable = false)
     @Schema(example = "0335579880")
     private String phoneNumber;
+
     //address
     @Column(name = "address", nullable = false)
     @NotNull
     @Size(max = 50)
     private String address;
+
     //create time
     @Column(name = "createAt", nullable = false)
     @NotNull

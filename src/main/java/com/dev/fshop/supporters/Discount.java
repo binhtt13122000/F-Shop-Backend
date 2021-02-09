@@ -32,7 +32,9 @@ public class Discount implements Serializable {
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceDiscountIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
+    @Schema(example = "DISCOUNT_0001")
     private String discountId;
+
     @Column(name = "discount", nullable = false)
     @Max(10)
     @Min(5)
@@ -40,14 +42,17 @@ public class Discount implements Serializable {
     @NotNull
     @Schema(example = "10")
     private float discount;
+
     @Column(name = "startTime", nullable = false)
     @NotBlank
     @NotNull
     private Date startTime;
+
     @Column(name = "endTime", nullable = false)
     @NotBlank
     @NotNull
     private Date endTime;
+
     @Column(name = "status", nullable = false)
     @NotBlank
     @NotNull

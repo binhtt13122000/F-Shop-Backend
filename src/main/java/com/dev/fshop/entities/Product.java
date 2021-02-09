@@ -45,24 +45,25 @@ public class Product implements Serializable {
                     @Parameter(name = StringPrefixedSequenceIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
+    @Schema(example = "PRO_00001")
     private String productId;
 
     @Column(name = "proName", nullable = false)
     @NotNull(message = "Product name is not null!")
     @Size(max = 50, min = 10, message = "Product name must be at most 50 characters and at least 10 characters!")
-    @Schema(name = "ÁO THUN NAM T249")
+    @Schema(example = "ÁO THUN NAM T249")
     private String productName;
 
     @Column(name = "proPrice", nullable = false)
     @Min(value = 1000, message = "The lowest price of the product is 1000 VNĐ")
     @NotNull(message = "Product price is not null")
-    @Schema(name = "100000")
+    @Schema(example = "100000")
     private float productPrice;
 
     @Column(name = "realPrice", nullable = false)
     @Min(value = 1000, message = "The lowest real price of the product is 1000 VNĐ")
     @NotNull(message = "Real price is not null!")
-    @Schema(name = "120000")
+    @Schema(example = "120000")
     private float realPrice;
 
     @Column(name = "proDescription", nullable = false)
@@ -99,7 +100,7 @@ public class Product implements Serializable {
     @Size(max = 40, min = 1, message = "categoryId must be at most 40 characters!")
     @NotNull(message = "CategoryId is not null!")
     @ExistIn(message = "Category is not exist!", fieldName = "categoryId", className = "Product")
-    @Schema(example = "SUP_0001")
+    @Schema(example = "SUP_00001")
     private String categoryId;
 
     @Transient

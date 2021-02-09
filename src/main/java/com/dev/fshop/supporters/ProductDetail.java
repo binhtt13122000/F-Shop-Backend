@@ -34,17 +34,21 @@ public class ProductDetail implements Serializable {
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceProductDetailIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
+    @Schema(example = "PRO_DETAIL_0001")
     private String proItemId;
+
     @Column(name = "proSize", nullable = false)
     @NotNull
     @Size(max = 20)
     @Schema(example = "XL")
     private String proSize;
+
     @Column(name = "proQuantity", nullable = false)
     @NotNull
     @Min(1)
     @Schema(example = "2")
     private int proQuantity;
+
     @Column(name = "status", nullable = false)
     @NotNull
     @Schema(example = "1")

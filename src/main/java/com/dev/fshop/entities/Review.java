@@ -39,6 +39,7 @@ public class Review implements Serializable {
             }
     )
     @Column(name = "reviewId", nullable = false, unique = true)
+    @Schema(example = "REVIEW_0001")
     private String reviewId;
 
     //star
