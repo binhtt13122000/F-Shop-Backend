@@ -51,7 +51,7 @@ public class ProductController {
                     responseCode = "200",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation =  Page.class)
+                            schema = @Schema(implementation = Page.class)
                     )
             ),
             @ApiResponse(
@@ -387,6 +387,71 @@ public class ProductController {
                 }
             } else {
                 return new ResponseEntity("Category is not available!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Operation(description = "Delete product", responses = {
+            @ApiResponse(
+                    description = "Delete product is successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Delete product is successfully!",
+                                    value = "Delete product is successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Product is not found!",
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Product is not found!",
+                                    value = "Product is not found!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Delete product failed!",
+                    responseCode = "400",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Delete product failed!",
+                                    value = "Delete product is failed!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+    })
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity deleteProductByProductId(@PathVariable String productId, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Product checkProductExisted = productService.getProductByProductId(productId);
+            if (checkProductExisted != null && checkProductExisted.getStatus() != -1) {
+                productService.changeStatusProductByProductId(checkProductExisted, -1);
+                return new ResponseEntity("Delete product is successfully.", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
             }
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);

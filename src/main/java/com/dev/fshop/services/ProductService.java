@@ -21,4 +21,6 @@ public interface ProductService {
 
     public Page<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom, Float realPriceTo,
                                                     Date dateFrom, Date dateTo, Pageable pageable);
+
+    public boolean changeStatusProductByProductId(Product currentProduct, int status);
 }
