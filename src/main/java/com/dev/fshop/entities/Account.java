@@ -61,6 +61,7 @@ public class Account implements Serializable {
 
     @Column(name = "phoneNumber")
     @Pattern(regexp = Regex.REGEX_PHONE, message = "Phone is not valid!")
+    @Schema(example = "0902472118")
     private String phoneNumber;
 
     @Column(name = "email", nullable = false, unique = true, updatable = false)
@@ -68,6 +69,7 @@ public class Account implements Serializable {
     @NotNull(message = "Email is not null!")
     @Email(message = "Email is not valid!")
     @Size(max = 50, min = 10, message = "Email must have between 10 and 40 characters!")
+    @Schema(example = "binhtt13122000@gmail.com")
     private String email;
 
     @Column(name = "gender", nullable = false)
@@ -77,12 +79,12 @@ public class Account implements Serializable {
 
     @Column(name = "country")
     @Size(max = 50, message = "Country name has max length is 50!")
-    @Schema(name = "Việt Nam")
+    @Schema(example = "Việt Nam")
     private String country;
 
     @Column(name = "address")
     @Size(max = 50, message = "Address name has max length is 50!")
-    @Schema(name = "Q9, TP HCM")
+    @Schema(example = "Q9, TP HCM")
     private String address;
 
     @Column(name = "registeredAt", nullable = false)

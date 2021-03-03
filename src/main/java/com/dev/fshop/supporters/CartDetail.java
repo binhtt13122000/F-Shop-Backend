@@ -34,6 +34,7 @@ public class CartDetail implements Serializable {
                     @org.hibernate.annotations.Parameter(name = ProductIdPrefixedSequenceCartDetailGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
+    @Schema(example = "CART_DETAILS_0001")
     private String cartItemId;
 
     @Column(name = "cartSize", nullable = false)
@@ -45,7 +46,7 @@ public class CartDetail implements Serializable {
     @Column(name = "cartQuantity", nullable = false)
     @NotNull
     @Min(1)
-    @Schema(example = "XL")
+    @Schema(example = "24")
     private int cartQuantity;
 
     @Column(name = "cartItemPrice", nullable = false)

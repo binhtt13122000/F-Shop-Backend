@@ -36,6 +36,7 @@ public class OrderDetail implements Serializable {
                     @org.hibernate.annotations.Parameter(name = UserIdPrefixedSequenceOrderDetailIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%04d")
             }
     )
+    @Schema(example = "ORDER_DETAIL_0001")
     private String orderItemId;
 
     //quantity

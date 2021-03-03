@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.springframework.data.domain.Pageable;
+
 import java.util.Date;
 import java.util.List;
 
@@ -77,6 +79,13 @@ public class ProductServiceImpl implements ProductService {
         } else {
             return productRepository.searchProductsByParametersWithUser(1, productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo, pageable);
         }
+    }
+
+    @Override
+    public boolean changeStatusProductByProductId(Product currentProduct, int status) {
+        currentProduct.setStatus(status);
+        productRepository.save(currentProduct);
+        return true;
     }
 
 }

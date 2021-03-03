@@ -41,6 +41,7 @@ public class Promotion implements Serializable {
             }
     )
     @Column(name = "promotionID", nullable = false, unique = true)
+    @Schema(example = "PROMO_0001")
     private String promotionID;
 
     @Column(name = "promotionName", nullable = false)
