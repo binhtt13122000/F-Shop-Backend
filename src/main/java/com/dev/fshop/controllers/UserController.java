@@ -504,10 +504,11 @@ public class UserController {
     public ResponseEntity getContacts(Authentication authentication, @RequestParam Optional<Integer> pageIndex,
                                       @RequestParam Optional<Integer> pageSize) {
         Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
+        System.out.println(pageIndex.orElse(1) - 1);
         if (AuthenticatedRole.isUser(authentication)) {
-            return new ResponseEntity(accountService.searchAccountsByParameters(null, "ROL_3",pageable).getContent().get(pageIndex.orElse(1) - 1), HttpStatus.OK);
+            return new ResponseEntity(accountService.searchAccountsByParameters(null, "ADMIN",pageable).getContent(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(accountService.searchAccountsByParameters(null, "ROL_1",pageable).getContent().get(pageIndex.orElse(1) - 1), HttpStatus.OK);
+            return new ResponseEntity(accountService.searchAccountsByParameters(null, "USER",pageable).getContent(), HttpStatus.OK);
         }
     }
 }

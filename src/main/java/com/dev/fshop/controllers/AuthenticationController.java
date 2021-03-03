@@ -75,7 +75,6 @@ public class AuthenticationController {
             String token = jwtUtils.generateToken(user);
             HttpHeaders headers = new HttpHeaders();
             String cookieToken = SecurityConstants.TOKEN_HEADER + "=" + token;
-            System.out.println(cookieToken);
             headers.add("Set-Cookie",
                     cookieToken + "; HttpOnly; SameSite=None; Max-Age=864000");
             return new ResponseEntity("Login Successfully!",headers, HttpStatus.OK);
@@ -116,6 +115,8 @@ public class AuthenticationController {
         if(!authentication.getName().equals(username)){
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity("Logout successfully", HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Set-Cookie", null);
+        return new ResponseEntity("Logout successfully", headers,HttpStatus.OK);
     }
 }
