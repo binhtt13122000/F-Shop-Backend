@@ -57,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         List<String> origin = new ArrayList<>();
         origin.add("http://localhost:8080");
-
+        origin.add("http://localhost:3000");
         configuration.setAllowedOrigins(origin);
 
         List<String> method = new ArrayList<>();
