@@ -499,4 +499,15 @@ public class UserController {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
+
+    @GetMapping("/users/contacts")
+    public ResponseEntity getContacts(Authentication authentication, @RequestParam Optional<Integer> pageIndex,
+                                      @RequestParam Optional<Integer> pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
+        if (AuthenticatedRole.isUser(authentication)) {
+            return new ResponseEntity(accountService.searchAccountsByParameters(null, "ROL_3",pageable).getContent().get(pageIndex.orElse(1) - 1), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(accountService.searchAccountsByParameters(null, "ROL_1",pageable).getContent().get(pageIndex.orElse(1) - 1), HttpStatus.OK);
+        }
+    }
 }
