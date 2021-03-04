@@ -110,9 +110,9 @@ public class AuthenticationController {
                     )
             )
     })
-    @PostMapping("/users/{studentId}/logout")
-    public ResponseEntity logout(@PathVariable("studentId") String studentId, Authentication authentication){
-        if(!authentication.getName().equals(studentId)){
+    @PostMapping("/users/{username}/logout")
+    public ResponseEntity logout(@PathVariable("username") String username, Authentication authentication){
+        if(!authentication.getName().equals(username)){
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity("Logout successfully", HttpStatus.OK);
