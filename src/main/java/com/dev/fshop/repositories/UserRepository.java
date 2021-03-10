@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<Account, String> {
     @Query("select u from Account  u where (:email is null or u.email =: email) and (:role is null or u.role.roleName =: role)")
     Page<Account> searchAccountsByParameters(String email, String role, Pageable pageable);
 
-    @Query("select u from Account  u where (:q is null or u.email LIKE : q) or (:q is null or u.role.roleName LIKE : q)")
+    @Query("select u from Account  u where (:q is null or u.name LIKE : q) or (:q is null or u.userId LIKE :q) or (:q is null or u.role.roleName LIKE : q)")
     Page<Account> searchAccountsByParameter(String q, Pageable pageable);
 
 
