@@ -11,13 +11,13 @@ public interface AccountService {
 
     String addUser(Account account, String roleId);
 
-    Account changeStatusAccount(Account account, boolean status);
+    Account changeStatusAccount(Account account);
 
     Account updateProfile(Account currentAccount, Account newAccount);
 
     boolean changePassword(Account account, String hashPassword);
 
-    Page<Account> searchAccountsByParameters(String email, String role, Pageable pageable);
+    Page<Account> searchAccountsByParameters(int status, String email, String role, Pageable pageable);
 
     Page<Account> searchAccountsByParameter(String q, Pageable pageable);
 }

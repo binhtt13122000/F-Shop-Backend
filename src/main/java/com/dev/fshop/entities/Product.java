@@ -50,7 +50,7 @@ public class Product implements Serializable {
 
     @Column(name = "proName", nullable = false)
     @NotNull(message = "Product name is not null!")
-    @Size(max = 50, min = 10, message = "Product name must be at most 50 characters and at least 10 characters!")
+//    @Size(max = 50, min = 10, message = "Product name must be at most 50 characters and at least 10 characters!")
     @Schema(example = "ÁO THUN NAM T249")
     private String productName;
 
@@ -68,7 +68,7 @@ public class Product implements Serializable {
 
     @Column(name = "proDescription", nullable = false)
     @NotNull(message = "description is not null!")
-    @Size(max = 100, min = 10, message = "Product description must be at most 100 characters and at least 10 characters!!")
+//    @Size(max = 100, min = 10, message = "Product description must be at most 100 characters and at least 10 characters!!")
     @Schema(example = "Áo rất đẹp!")
     private String productDescription;
 
@@ -86,14 +86,14 @@ public class Product implements Serializable {
     @JoinColumn(name = "proTypeId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonIgnore
+//    @JsonIgnore
     private Category category;
 
     @ManyToOne
     @JoinColumn(name = "supplierId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonIgnore
+//    @JsonIgnore
     private Supplier supplier;
 
     @Transient

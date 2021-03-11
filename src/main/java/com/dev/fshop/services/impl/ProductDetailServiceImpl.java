@@ -58,4 +58,13 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetail.setProQuantity(productDetail.getProQuantity() - quantity);
         return productDetailRepository.save(productDetail);
     }
+
+    @Override
+    public boolean checkProductDetailIsNotOutOfStockByProductId(String productId, int status, int quantity) {
+        List<ProductDetail> productDetailList = productDetailRepository.checkProductDetailIsNotOutOfStockByProductId(productId, status, quantity);
+        if(productDetailList.size() == 0) {
+            return false;
+        }
+        return true;
+    }
 }

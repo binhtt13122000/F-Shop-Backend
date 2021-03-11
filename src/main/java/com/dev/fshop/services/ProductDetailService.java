@@ -19,4 +19,5 @@ public interface ProductDetailService {
 
     public ProductDetail updateQuantityProductDetail(ProductDetail productDetail, int quantity);
 
+    public boolean checkProductDetailIsNotOutOfStockByProductId(String productId, int status, int quantity);
 }

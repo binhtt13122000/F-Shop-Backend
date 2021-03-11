@@ -28,7 +28,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String addUser(Account account, String roleId) {
         account.setRole(new Role(roleId, null));
-        account.setStatus(true);
+        account.setStatus(1);
         String password = account.getPassword();
         account.setPassword(passwordEncoder.encode(password));
         account.setRegisteredAt(new Date());
@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account updateProfile(Account currentAccount, Account newAccount) {
-        currentAccount.setStatus(newAccount.isStatus());
+        currentAccount.setStatus(newAccount.getStatus());
         currentAccount.setName(newAccount.getName());
         currentAccount.setBirthDate(newAccount.getBirthDate());
         currentAccount.setPhoneNumber(newAccount.getPhoneNumber());
@@ -56,8 +56,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<Account> searchAccountsByParameters(String email, String role, Pageable pageable) {
-        return userRepository.searchAccountsByParameters(email, role, pageable);
+    public Page<Account> searchAccountsByParameters(int status,String email, String role, Pageable pageable) {
+        return userRepository.searchAccountsByParameters(status, email, role, pageable);
     }
 
     @Override
@@ -66,8 +66,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account changeStatusAccount(Account account, boolean status) {
-        account.setStatus(status);
+    public Account changeStatusAccount(Account account) {
         return userRepository.save(account);
     }
 }

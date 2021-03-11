@@ -79,6 +79,7 @@ public class UserController {
             @RequestParam Optional<String> q,
             @RequestParam Optional<String> email,
             @RequestParam Optional<String> role,
+            @RequestParam Optional<Integer> status,
             Authentication authentication,
             @RequestParam Optional<Integer> pageIndex,
             @RequestParam Optional<Integer> pageSize
@@ -93,7 +94,7 @@ public class UserController {
                     return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                 }
             } else {
-                Page<Account> accountList = accountService.searchAccountsByParameters(email.orElse(null), role.orElse(null), pageable);
+                Page<Account> accountList = accountService.searchAccountsByParameters(status.orElse(1), email.orElse(null), role.orElse(null), pageable);
                 if (accountList != null && !accountList.isEmpty()) {
                     return new ResponseEntity(accountList, HttpStatus.OK);
                 } else {
@@ -372,8 +373,9 @@ public class UserController {
         if (AuthenticatedRole.isAdmin(authentication)) {
             Account account = accountService.getUserByUsername(username);
             if (account != null) {
-                accountService.changeStatusAccount(account, false);
-                return new ResponseEntity("ban account successfully!", HttpStatus.OK);
+                account.setStatus(0);
+                accountService.changeStatusAccount(account);
+                return new ResponseEntity(account, HttpStatus.OK);
             } else {
                 return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
             }
@@ -437,8 +439,9 @@ public class UserController {
         if (AuthenticatedRole.isAdmin(authentication)) {
             Account account = accountService.getUserByUsername(username);
             if (account != null) {
-                accountService.changeStatusAccount(account, true);
-                return new ResponseEntity("Active account successfully", HttpStatus.OK);
+                account.setStatus(1);
+                accountService.changeStatusAccount(account);
+                return new ResponseEntity(account, HttpStatus.OK);
             } else {
                 return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
             }
@@ -500,15 +503,15 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/contacts")
-    public ResponseEntity getContacts(Authentication authentication, @RequestParam Optional<Integer> pageIndex,
-                                      @RequestParam Optional<Integer> pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
-        System.out.println(pageIndex.orElse(1) - 1);
-        if (AuthenticatedRole.isUser(authentication)) {
-            return new ResponseEntity(accountService.searchAccountsByParameters(null, "ADMIN",pageable).getContent(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity(accountService.searchAccountsByParameters(null, "USER",pageable).getContent(), HttpStatus.OK);
-        }
-    }
+//    @GetMapping("/users/contacts")
+//    public ResponseEntity getContacts(Authentication authentication, @RequestParam Optional<Integer> pageIndex,
+//                                      @RequestParam Optional<Integer> pageSize) {
+//        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
+//        System.out.println(pageIndex.orElse(1) - 1);
+//        if (AuthenticatedRole.isUser(authentication)) {
+//            return new ResponseEntity(accountService.searchAccountsByParameters(null, "ADMIN",pageable).getContent(), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity(accountService.searchAccountsByParameters(null, "USER",pageable).getContent(), HttpStatus.OK);
+//        }
+//    }
 }

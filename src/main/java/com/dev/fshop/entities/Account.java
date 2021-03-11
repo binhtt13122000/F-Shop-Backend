@@ -105,7 +105,7 @@ public class Account implements Serializable {
 
     @Column(name = "status")
     @Schema(example = "true")
-    private boolean status;
+    private int status;
 
     @Transient
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -120,7 +120,7 @@ public class Account implements Serializable {
         return role != null ? role.getRoleId() : null;
     }
 
-    public Account(@NotNull(message = "userName is not null!") @Size(max = 40, min = 10, message = "Username must have between 10 and 40 characters!") @Pattern(regexp = Regex.REGEX_USERNAME, message = "Username does not contain special character!") String userName, @NotNull(message = "Fullname is not null!") @Size(max = 50, message = "Max Size of Fullname is 50 characters!") @Pattern(regexp = Regex.REGEX_FULLNAME, message = "Format of fullname is wrong!") String name, Date birthDate, @Pattern(regexp = Regex.REGEX_PHONE, message = "Phone is not valid!") String phoneNumber, @NotNull(message = "Email is not null!") @Email(message = "Email is not valid!") @Size(max = 50, min = 10, message = "Email must have between 10 and 40 characters!") String email, @NotNull(message = "Gender is not null!") boolean gender, @Size(max = 50, message = "Country name has max length is 50!") String country, @Size(max = 50, message = "Address name has max length is 50!") String address, Date registeredAt, Date lastLogin, @NotNull(message = "password is not null") String password, String avatar, boolean status) {
+    public Account(@NotNull(message = "userName is not null!") @Size(max = 40, min = 10, message = "Username must have between 10 and 40 characters!") @Pattern(regexp = Regex.REGEX_USERNAME, message = "Username does not contain special character!") String userName, @NotNull(message = "Fullname is not null!") @Size(max = 50, message = "Max Size of Fullname is 50 characters!") @Pattern(regexp = Regex.REGEX_FULLNAME, message = "Format of fullname is wrong!") String name, Date birthDate, @Pattern(regexp = Regex.REGEX_PHONE, message = "Phone is not valid!") String phoneNumber, @NotNull(message = "Email is not null!") @Email(message = "Email is not valid!") @Size(max = 50, min = 10, message = "Email must have between 10 and 40 characters!") String email, @NotNull(message = "Gender is not null!") boolean gender, @Size(max = 50, message = "Country name has max length is 50!") String country, @Size(max = 50, message = "Address name has max length is 50!") String address, Date registeredAt, Date lastLogin, @NotNull(message = "password is not null") String password, String avatar, int status) {
         this.userName = userName;
         this.name = name;
         this.birthDate = birthDate;

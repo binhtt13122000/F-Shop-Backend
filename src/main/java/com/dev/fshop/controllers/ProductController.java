@@ -448,8 +448,82 @@ public class ProductController {
         if (AuthenticatedRole.isAdmin(authentication)) {
             Product checkProductExisted = productService.getProductByProductId(productId);
             if (checkProductExisted != null && checkProductExisted.getStatus() != -1) {
-                productService.changeStatusProductByProductId(checkProductExisted, -1);
+                checkProductExisted.setStatus(-1);
+                productService.changeStatusProductByProductId(checkProductExisted);
                 return new ResponseEntity("Delete product is successfully.", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Operation(description = "Active product", responses = {
+            @ApiResponse(
+                    description = "Active product is successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Active product is successfully!",
+                                    value = "Active product is successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Product is not found!",
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Product is not found!",
+                                    value = "Product is not found!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Active product failed!",
+                    responseCode = "400",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Active product failed!",
+                                    value = "Active product is failed!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+    })
+    @PatchMapping("/products/{productId}")
+    public ResponseEntity activeProductProductId(@PathVariable String productId, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Product checkProductExisted = productService.getProductByProductId(productId);
+            if (checkProductExisted != null && checkProductExisted.getStatus() == -1) {
+                boolean checkProductDetailIsNotOutOfStock = productDetailService.checkProductDetailIsNotOutOfStockByProductId(checkProductExisted.getProductId(), 1, 0);
+                int status = -1;
+                if(checkProductDetailIsNotOutOfStock) {
+                    status = 1;
+                }else {
+                    status = 0;
+                }
+                checkProductExisted.setStatus(status);
+                productService.changeStatusProductByProductId(checkProductExisted);
+                return new ResponseEntity(checkProductExisted, HttpStatus.OK);
             } else {
                 return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
             }

@@ -59,7 +59,7 @@ class UserControllerItegrationTest {
         customerEntity.setLastLogin(new SimpleDateFormat("yyyy-mm-dd").parse("2020-08-08"));
         customerEntity.setPassword("user123856");
         customerEntity.setAvatar("string");
-        customerEntity.setStatus(true);
+        customerEntity.setStatus(1);
         String exampleCustomer = "{\n" +
                 "  \"userName\": \"user12245896\",\n" +
                 "  \"name\": \"Trương Thanh Bình\",\n" +

@@ -82,8 +82,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean changeStatusProductByProductId(Product currentProduct, int status) {
-        currentProduct.setStatus(status);
+    public boolean changeStatusProductByProductId(Product currentProduct) {
         productRepository.save(currentProduct);
         return true;
     }
