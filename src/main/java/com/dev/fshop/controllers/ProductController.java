@@ -74,6 +74,7 @@ public class ProductController {
             @RequestParam Optional<String> categoryName,
             @RequestParam Optional<Float> realPriceFrom,
             @RequestParam Optional<Float> realPriceTo,
+            @RequestParam Optional<Integer> status,
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateFrom,
             @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
             @RequestParam Optional<Integer> pageIndex,
@@ -98,7 +99,7 @@ public class ProductController {
             }
         } else {
             if (!productName.isPresent() && !categoryName.isPresent() && !realPriceFrom.isPresent() && !realPriceTo.isPresent()
-                    && dateFrom == null && dateTo == null) {
+                    && dateFrom == null && dateTo == null && !status.isPresent()) {
                 if (AuthenticatedRole.isAdmin(authentication)) {
                     Page<Product> productList = productService.getProducts(true, pageable);
                     if (productList != null && !productList.isEmpty()) {
@@ -118,7 +119,7 @@ public class ProductController {
                 if (AuthenticatedRole.isAdmin(authentication)) {
                     Page<Product> productList = productService.searchProductsByParameters(true, productName.orElse(null),
                             categoryName.orElse(null), realPriceFrom.orElse(null), realPriceTo.orElse(null),
-                            dateFrom, dateTo, pageable);
+                            dateFrom, dateTo, status.orElse(2), pageable);
                     if (productList != null && !productList.isEmpty()) {
                         return new ResponseEntity(productList, HttpStatus.OK);
                     } else {
@@ -127,7 +128,7 @@ public class ProductController {
                 } else {
                     Page<Product> productList = productService.searchProductsByParameters(false, productName.orElse(null),
                             categoryName.orElse(null), realPriceFrom.orElse(null), realPriceTo.orElse(null),
-                            dateFrom, dateTo, pageable);
+                            dateFrom, dateTo, status.orElse(2), pageable);
                     if (productList != null && !productList.isEmpty()) {
                         return new ResponseEntity(productList, HttpStatus.OK);
                     } else {

@@ -32,9 +32,9 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Query("select u from Product  u where (:productName is null or u.productName like :productName) and (:categoryName is null or u.category.proTypeName like :categoryName)" +
             " and ((:realPriceFrom is null and :realPriceTo is null) or (:realPriceFrom is not null and :realPriceTo is not null and u.realPrice >= :realPriceFrom and" +
             " u.realPrice <= :realPriceTo)) and ((:dateFrom is null and :dateTo is null) or (:dateFrom is not null and :dateTo is not null and " +
-            " u.createAt between :dateFrom and :dateTo))")
+            " u.createAt between :dateFrom and :dateTo)) and ((:statusProduct = 2) or (u.status = :statusProduct))")
     public Page<Product> searchProductsByParametersWithAdmin(String productName, String categoryName,
                                                              Float realPriceFrom, Float realPriceTo,
-                                                             Date dateFrom, Date dateTo, Pageable pageable);
+                                                             Date dateFrom, Date dateTo, int statusProduct, Pageable pageable);
 
 }

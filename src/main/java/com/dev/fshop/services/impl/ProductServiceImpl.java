@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom,
-                                                    Float realPriceTo, Date dateFrom, Date dateTo, Pageable pageable) {
+                                                    Float realPriceTo, Date dateFrom, Date dateTo, int status, Pageable pageable) {
         if (productName != null) {
             productName = "%" + productName + "%";
         }
@@ -75,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
             categoryName = "%" + categoryName + "%";
         }
         if (isAdmin) {
-            return productRepository.searchProductsByParametersWithAdmin(productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo, pageable);
+            return productRepository.searchProductsByParametersWithAdmin(productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo, status, pageable);
         } else {
             return productRepository.searchProductsByParametersWithUser(1, productName, categoryName, realPriceFrom, realPriceTo, dateFrom, dateTo, pageable);
         }

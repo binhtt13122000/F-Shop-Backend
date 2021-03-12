@@ -6,6 +6,8 @@ import com.dev.fshop.services.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SupplierServiceImpl implements SupplierService {
 
@@ -15,5 +17,16 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public Supplier findSupplierBySupplierId(String supplierId) {
         return supplierRepository.findById(supplierId).orElse(null);
+    }
+
+    @Override
+    public List<Supplier> searchSupplierBySupplierName(String supplierName) {
+        supplierName = supplierName + "-%";
+        return supplierRepository.searchSupplierBySupplierName(supplierName);
+    }
+
+    @Override
+    public Supplier createNewSupplier(Supplier supplier) {
+        return supplierRepository.save(supplier);
     }
 }

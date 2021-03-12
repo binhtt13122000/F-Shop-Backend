@@ -20,7 +20,7 @@ public interface ProductService {
     public Page<Product> searchProductsByParameterQ(boolean isAdmin, String q, Pageable pageable);
 
     public Page<Product> searchProductsByParameters(boolean isAdmin, String productName, String categoryName, Float realPriceFrom, Float realPriceTo,
-                                                    Date dateFrom, Date dateTo, Pageable pageable);
+                                                    Date dateFrom, Date dateTo, int status, Pageable pageable);
 
     public boolean changeStatusProductByProductId(Product currentProduct);
 }
