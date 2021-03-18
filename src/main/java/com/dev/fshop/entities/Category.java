@@ -31,7 +31,7 @@ public class Category implements Serializable {
     @Id
     @Column(name = "proTypeId", nullable = false, unique = true)
     @Schema(example = "TYPE_0001")
-    @JsonIgnore
+//    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_category")
     @GenericGenerator(
             name = "sequence_category",

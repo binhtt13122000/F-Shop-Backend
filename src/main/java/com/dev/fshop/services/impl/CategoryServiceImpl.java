@@ -4,6 +4,8 @@ import com.dev.fshop.entities.Category;
 import com.dev.fshop.repositories.CategoryRepository;
 import com.dev.fshop.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +26,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> searchCategoriesByCategoryName(String categoryName) {
+    public List<Category> checkCategoriesByCategoryName(String categoryName) {
         return categoryRepository.searchCategoriesByCategoryName(categoryName);
+    }
+
+    @Override
+    public Page<Category> searchCategoriesWithCategoryName(String categoryName, Pageable pageable) {
+        if(categoryName != null) {
+            categoryName = "%" + categoryName + "%";
+        }
+        return categoryRepository.searchCategoriesWithCategoryName(categoryName, pageable);
     }
 }

@@ -276,7 +276,7 @@ public class CartController {
             if (checkAccountExisted != null) {
                 Product checkProductExisted = productService.getProductByProductId(productId);
                 if (checkProductExisted != null) {
-                    ProductDetail checkProductDetailExisted = productDetailService.getProductDetailByProductIdAndProductSize(productId, cartSize);
+                    ProductDetail checkProductDetailExisted = productDetailService.getProductDetailByProductIdAndProductSize(productId, cartSize, 0);
                     if (checkProductDetailExisted != null) {
                         Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 0);
                         if (checkCartExisted != null) {

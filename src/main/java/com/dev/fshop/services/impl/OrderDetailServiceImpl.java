@@ -27,7 +27,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     public boolean createOrderDetails(List<CartDetail> cartDetailList, Orders orders) {
         for (CartDetail cartDetail : cartDetailList) {
             ProductDetail productDetail = productDetailService.getProductDetailByProductIdAndProductSize(cartDetail.getProduct().getProductId(),
-                    cartDetail.getCartSize());
+                    cartDetail.getCartSize(), 0);
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setProduct(productDetail.getProduct());
             orderDetail.setOrders(orders);

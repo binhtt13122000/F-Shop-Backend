@@ -309,10 +309,20 @@ public class ProductController {
         if (AuthenticatedRole.isAdmin(authentication)) {
             Product checkProductExisted = productService.getProductByProductId(productId);
             if (checkProductExisted != null) {
-                ProductDetail productDetail = productDetailService.getProductDetailByProductIdAndProductSize(productId, productSize);
+                ProductDetail productDetail = productDetailService.getProductDetailByProductIdAndProductSize(productId, productSize, 0);
                 if (productDetail != null) {
-                    productDetailService.addQuantity(productDetail, quantity);
-                    return new ResponseEntity("add quantity successfully!", HttpStatus.OK);
+                    if(productDetail.getProQuantity() != 1) {
+                        productDetailService.addQuantity(productDetail, quantity);
+                        return new ResponseEntity("add quantity successfully!", HttpStatus.OK);
+                    }else {
+                        productDetailService.addQuantity(productDetail, quantity);
+                        productDetailService.changeStatusProductDetail(productDetail, 1);
+                        if(checkProductExisted.getStatus() == 0) {
+                            checkProductExisted.setStatus(1);
+                            productService.changeStatusProductByProductId(checkProductExisted);
+                        }
+                        return new ResponseEntity("add quantity successfully!", HttpStatus.OK);
+                    }
                 }
                 return new ResponseEntity("add quantity failed!", HttpStatus.BAD_REQUEST);
             }
@@ -321,6 +331,149 @@ public class ProductController {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
+
+    @Operation(description = "Delete product detail", responses = {
+            @ApiResponse(
+                    description = "Delete product detail successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Delete product detail successfully!",
+                                    value = "Delete product detail successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "product is not available!",
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "product is not available!",
+                                    value = "product is not available!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Delete product details failed!",
+                    responseCode = "400",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Delete product details failed!",
+                                    value = "Delete product details failed!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+    })
+    @DeleteMapping("/products/productDetails/{productDetailId}")
+    public ResponseEntity deleteProductDetailByProductDetailId(@PathVariable String productDetailId, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+                ProductDetail productDetail = productDetailService.getProductDetailByProductDetailId(productDetailId);
+                if (productDetail != null && productDetail.getStatus() >= 0) {
+                   boolean checkDelete =  productDetailService.changeStatusProductDetail(productDetail, -1);
+                    if(checkDelete) {
+                        return new ResponseEntity("Delete product detail successful.", HttpStatus.OK);
+                    }
+                    return new ResponseEntity("Delete product detail failed!", HttpStatus.BAD_REQUEST);
+                }
+                return new ResponseEntity("Product Detail can not found by product detail id!", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Operation(description = "Active product detail", responses = {
+            @ApiResponse(
+                    description = "Active product detail successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Active product detail successfully!",
+                                    value = "Active product detail successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "product is not available!",
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "product is not available!",
+                                    value = "product is not available!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Active product details failed!",
+                    responseCode = "400",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Active product details failed!",
+                                    value = "Active product details failed!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+    })
+    @PatchMapping("/products/productDetails/{productDetailId}")
+    public ResponseEntity activeProductDetailByProductDetailId(@PathVariable String productDetailId, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            System.out.println(123);
+            ProductDetail productDetail = productDetailService.getProductDetailByProductDetailId(productDetailId);
+            System.out.println(productDetail);
+            if (productDetail != null) {
+                int status = -1;
+                if(productDetail.getProQuantity() == 0) {
+                    status = 0;
+                }else {
+                    status = 1;
+                }
+                boolean checkDelete =  productDetailService.changeStatusProductDetail(productDetail, status);
+                if(checkDelete) {
+                    return new ResponseEntity("Active product detail successful.", HttpStatus.OK);
+                }
+                return new ResponseEntity("Active product detail failed!", HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity("Product Detail can not found by product detail id!", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
+    }
+
 
     @Operation(description = "Create new product", responses = {
             @ApiResponse(
@@ -527,6 +680,85 @@ public class ProductController {
                 return new ResponseEntity(checkProductExisted, HttpStatus.OK);
             } else {
                 return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Operation(description = "Create new product details", responses = {
+            @ApiResponse(
+                    description = "Create new product details successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Create new product details successfully!",
+                                    value = "Create new product details successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Product is not available!",
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Product is not available!",
+                                    value = "Product is not available!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Create new product details failed!",
+                    responseCode = "400",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Create product details failed!",
+                                    value = "Create product details failed!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+    })
+    @PostMapping("/products/{productId}/productDetails")
+    public ResponseEntity createProductDetails(@PathVariable String productId, @RequestBody ProductDetail productDetail, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            if(productId.equals(productDetail.getProductId())) {
+                Product checkProduct = productService.getProductByProductId(productId);
+                if (checkProduct != null) {
+                    if(checkProduct.getStatus() != 1) {
+                        checkProduct.setStatus(1);
+                        productService.changeStatusProductByProductId(checkProduct);
+                    }
+                    ProductDetail checkProductDetail = productDetailService.getProductDetailByProductIdAndProductSize(checkProduct.getProductId(), productDetail.getProSize(), -1);
+                    if (checkProductDetail != null) {
+                        return new ResponseEntity(productDetailService.addQuantity(checkProductDetail, productDetail.getProQuantity()), HttpStatus.OK);
+                    } else {
+
+                        return new ResponseEntity(productDetailService.createNewProductDetail(checkProduct, productDetail.getProSize(), productDetail.getProQuantity()), HttpStatus.OK);
+                    }
+                } else {
+                    return new ResponseEntity("Product is not found!", HttpStatus.NOT_FOUND);
+                }
+            }
+            else {
+                return new ResponseEntity("Bad request", HttpStatus.BAD_REQUEST);
             }
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);

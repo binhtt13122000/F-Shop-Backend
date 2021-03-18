@@ -22,13 +22,19 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     }
 
     @Override
-    public ProductDetail getProductDetailByProductIdAndProductSize(String productId, String productSize) {
-        return productDetailRepository.findProductDetailByProductIdAndAndProSize(productId, productSize);
+    public ProductDetail getProductDetailByProductDetailId(String productDetailId) {
+        return productDetailRepository.findById(productDetailId).orElse(null);
+    }
+
+    @Override
+    public ProductDetail getProductDetailByProductIdAndProductSize(String productId, String productSize, int status) {
+        return productDetailRepository.findProductDetailByProductIdAndAndProSize(productId, productSize, status);
     }
 
     @Override
     public ProductDetail createNewProductDetail(Product product, String proSize, int quantity) {
         ProductDetail newProductDetail = new ProductDetail();
+        newProductDetail.setProductId(product.getProductId());
         newProductDetail.setProduct(product);
         newProductDetail.setProSize(proSize);
         newProductDetail.setProQuantity(quantity);
@@ -41,7 +47,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         for (CartDetail cartDetail : cartDetailList
         ) {
             ProductDetail productDetail = productDetailRepository.findProductDetailByProductIdAndAndProSize(cartDetail.getProduct().getProductId(),
-                    cartDetail.getCartSize());
+                    cartDetail.getCartSize(), 1);
             if (productDetail == null) {
                 return false;
             } else {
@@ -65,6 +71,13 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if(productDetailList.size() == 0) {
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean changeStatusProductDetail(ProductDetail productDetail, int status) {
+        productDetail.setStatus(status);
+        productDetailRepository.save(productDetail);
         return true;
     }
 }

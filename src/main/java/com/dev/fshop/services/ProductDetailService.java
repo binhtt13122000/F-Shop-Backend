@@ -11,7 +11,8 @@ import java.util.List;
 public interface ProductDetailService {
     public ProductDetail addQuantity(ProductDetail product, int quantity);
 
-    public ProductDetail getProductDetailByProductIdAndProductSize(String productId, String productSize);
+    public ProductDetail getProductDetailByProductDetailId(String productDetailId);
+    public ProductDetail getProductDetailByProductIdAndProductSize(String productId, String productSize, int status);
 
     public ProductDetail createNewProductDetail(Product product, String proSize, int quantity);
 
@@ -20,4 +21,6 @@ public interface ProductDetailService {
     public ProductDetail updateQuantityProductDetail(ProductDetail productDetail, int quantity);
 
     public boolean checkProductDetailIsNotOutOfStockByProductId(String productId, int status, int quantity);
+
+    public boolean changeStatusProductDetail(ProductDetail productDetail, int status);
 }

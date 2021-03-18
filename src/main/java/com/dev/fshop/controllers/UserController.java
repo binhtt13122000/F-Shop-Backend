@@ -94,7 +94,7 @@ public class UserController {
                     return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                 }
             } else {
-                Page<Account> accountList = accountService.searchAccountsByParameters(status.orElse(1), email.orElse(null), role.orElse(null), pageable);
+                Page<Account> accountList = accountService.searchAccountsByParameters(status.orElse(2), email.orElse(null), role.orElse(null), pageable);
                 if (accountList != null && !accountList.isEmpty()) {
                     return new ResponseEntity(accountList, HttpStatus.OK);
                 } else {

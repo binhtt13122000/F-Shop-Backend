@@ -22,7 +22,7 @@ import java.io.Serializable;
 public class ProductDetail implements Serializable {
     @Id
     @Column(name = "proItemId", nullable = false)
-    @JsonIgnore
+//    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_proDetail")
     @GenericGenerator(
             name = "sequence_proDetail",
@@ -45,7 +45,6 @@ public class ProductDetail implements Serializable {
 
     @Column(name = "proQuantity", nullable = false)
     @NotNull
-    @Min(1)
     @Schema(example = "2")
     private int proQuantity;
 
