@@ -1,6 +1,7 @@
 package com.dev.fshop.services.impl;
 
 import com.dev.fshop.entities.Orders;
+import com.dev.fshop.entities.Product;
 import com.dev.fshop.repositories.OrderDetailRepository;
 import com.dev.fshop.services.OrderDetailService;
 import com.dev.fshop.services.ProductDetailService;
@@ -39,6 +40,21 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             orderDetailRepository.save(orderDetail);
             productDetailService.updateQuantityProductDetail(productDetail, cartDetail.getCartQuantity());
         }
+        return true;
+    }
+
+    @Override
+    public boolean createOrderDetailsByAProduct(int quantity,Product product, ProductDetail productDetail, Orders orders) {
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setProduct(product);
+        orderDetail.setOrders(orders);
+        orderDetail.setOrderSize(productDetail.getProSize());
+        orderDetail.setOrderItemQuan(quantity);
+        orderDetail.setOrderItemPrice(product.getProductPrice());
+        orderDetail.setCreateAt(new Date());
+        orderDetail.setStatus(1);
+        orderDetailRepository.save(orderDetail);
+        productDetailService.updateQuantityProductDetail(productDetail, quantity);
         return true;
     }
 }

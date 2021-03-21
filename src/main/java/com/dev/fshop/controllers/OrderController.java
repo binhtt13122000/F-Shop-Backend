@@ -53,6 +53,9 @@ public class OrderController {
     @Autowired
     private PromotionService promotionService;
 
+    @Autowired
+    private ProductService productService;
+
     @Operation(description = "get orders", responses = {
             @ApiResponse(
                     description = "get orders successfully!",
@@ -215,11 +218,11 @@ public class OrderController {
     })
     @PostMapping("/orders/carts/{cartId}")
     @Transactional
-    public ResponseEntity createNewOrder(@RequestParam("username") Optional<String> username,
-                                         @RequestBody Account account,
-                                         @RequestParam("promotionId") Optional<String> promotionId,
-                                         @PathVariable String cartId,
-                                         Authentication authentication) {
+    public ResponseEntity createNewOrderWithCart(@RequestParam("username") Optional<String> username,
+                                                 @RequestBody Account account,
+                                                 @RequestParam("promotionId") Optional<String> promotionId,
+                                                 @PathVariable String cartId,
+                                                 Authentication authentication) {
         Promotion checkPromotionExisted = null;
         if (username.isPresent()) {
             if (AuthenticatedRole.isMySelf(username.orElse(null), authentication) && AuthenticatedRole.isUser(authentication)) {
@@ -273,7 +276,67 @@ public class OrderController {
                 return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
             }
         } else {
-            return null;
+            return new ResponseEntity(("User does not found by user id!"), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/orders/products/{productId}/{productSize}/{quantity}")
+    @Transactional
+    public ResponseEntity createNewOrderWithAProduct(@RequestParam("username") Optional<String> username,
+                                                     @RequestBody Account account,
+                                                     @RequestParam("promotionId") Optional<String> promotionId,
+                                                     @PathVariable String productId,
+                                                     @PathVariable String productSize,
+                                                     @PathVariable int quantity,
+                                                     Authentication authentication) {
+        System.out.println(account);
+        Promotion checkPromotionExisted = null;
+        if (username.isPresent()) {
+            if (AuthenticatedRole.isMySelf(username.orElse(null), authentication) && AuthenticatedRole.isUser(authentication)) {
+                Account checkAccountExisted = accountService.getUserByUsername(username.orElse(null));
+                if (checkAccountExisted != null) {
+                    Product checkProduct = productService.getProductByProductId(productId);
+                    if (checkProduct != null) {
+
+                    }
+                    //check product is not out of stock
+                    ProductDetail checkProductDetail = productDetailService.getProductDetailByProductIdAndProductSize(productId, productSize, 1);
+                    if(checkProductDetail != null) {
+                        if(checkProductDetail.getProQuantity() != 0) {
+                            if (promotionId.isPresent()) {
+                                checkPromotionExisted = promotionService.getPromotionByPromotionId(promotionId.orElse(null));
+                                if (checkPromotionExisted != null) {
+                                    Orders orders = orderService.createNewOrderByProduct(account, checkAccountExisted, checkPromotionExisted, checkProductDetail, checkProduct, quantity);
+                                    boolean check = orderDetailService.createOrderDetailsByAProduct(quantity, checkProduct, checkProductDetail, orders);
+                                    if (check) {
+                                        return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
+                                    }
+                                    return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
+                                } else {
+                                    return new ResponseEntity("Promotion is not available!", HttpStatus.NOT_FOUND);
+                                }
+                            } else {
+                                Orders orders = orderService.createNewOrderByProduct(account, checkAccountExisted, null, checkProductDetail, checkProduct, quantity);
+                                boolean check = orderDetailService.createOrderDetailsByAProduct(quantity, checkProduct, checkProductDetail, orders);
+                                if (check) {
+                                    return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
+                                }
+                                return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
+                            }
+                        }else {
+                            return new ResponseEntity("Product is out of stock!", HttpStatus.BAD_REQUEST);
+                        }
+                    }else {
+                        return new ResponseEntity("Can not found by product id and product size!", HttpStatus.NOT_FOUND);
+                    }
+                } else {
+                    return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity("User does not found!", HttpStatus.NOT_FOUND);
         }
     }
 

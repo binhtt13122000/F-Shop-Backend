@@ -64,4 +64,11 @@ public class CartServiceImpl implements CartService {
         return true;
     }
 
+    @Override
+    public boolean changeStatusCart(Cart cart, int status) {
+        cart.setStatus(status);
+        cartRepository.save(cart);
+        return true;
+    }
+
 }

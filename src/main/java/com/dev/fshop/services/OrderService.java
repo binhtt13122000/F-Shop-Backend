@@ -1,10 +1,8 @@
 package com.dev.fshop.services;
 
 
-import com.dev.fshop.entities.Account;
-import com.dev.fshop.entities.Cart;
-import com.dev.fshop.entities.Orders;
-import com.dev.fshop.entities.Promotion;
+import com.dev.fshop.entities.*;
+import com.dev.fshop.supporters.ProductDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,6 +21,8 @@ public interface OrderService {
     public List<Orders> getOrdersByProductIdAndUserId(String productId, String userId, boolean isAdmin);
 
     public Orders createNewOrders(Account customInfo, Account accountBuyer, Promotion promotion, Cart cart);
+
+    public Orders createNewOrderByProduct(Account customInfo, Account accountBuyer, Promotion promotion, ProductDetail productDetail, Product product, int quantity);
 
     public boolean changeStatusOrders(Orders currentOrders, int status);
 

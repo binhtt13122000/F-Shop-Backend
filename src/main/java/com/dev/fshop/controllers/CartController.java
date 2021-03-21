@@ -266,9 +266,9 @@ public class CartController {
     @PostMapping("/carts/{cartId}/users/{username}/cartDetails")
     public ResponseEntity addProductInCartDetail(@PathVariable String cartId,
                                                  @PathVariable String username,
-                                                 @RequestParam  String productId,
-                                                 @RequestParam  String cartSize,
-                                                 @RequestParam  Integer cartQuantity,
+                                                 @RequestParam String productId,
+                                                 @RequestParam String cartSize,
+                                                 @RequestParam Integer cartQuantity,
                                                  Authentication authentication
     ) {
         if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
@@ -280,20 +280,33 @@ public class CartController {
                     if (checkProductDetailExisted != null) {
                         Cart checkCartExisted = cartService.getCartByCartIdAndUserId(cartId, checkAccountExisted.getUserId(), 0);
                         if (checkCartExisted != null) {
-                            if (checkCartExisted.getStatus() == 1) {
-                                CartDetail checkCartDetailExisted = cartDetailService.getCartDetailByCartIdAndProductIdAndCartSize(checkCartExisted.getCartId(),
-                                        checkProductExisted.getProductId(), checkProductDetailExisted.getProSize());
-                                if (checkCartDetailExisted != null) {
-                                    System.out.println(cartQuantity);
-                                    cartDetailService.addQuantityProductInCartDetailExisted(checkCartDetailExisted, checkProductExisted, cartQuantity);
-                                    return new ResponseEntity("Add product successfully!", HttpStatus.OK);
+                            if (cartQuantity <= checkProductDetailExisted.getProQuantity()) {
+                                if (checkCartExisted.getStatus() >= 0) {
+                                    CartDetail checkCartDetailExisted = cartDetailService.getCartDetailByCartIdAndProductIdAndCartSize(checkCartExisted.getCartId(),
+                                            checkProductExisted.getProductId(), checkProductDetailExisted.getProSize());
+                                    if (checkCartDetailExisted != null) {
+                                        if(checkCartDetailExisted.getCartQuantity() + cartQuantity <= checkProductDetailExisted.getProQuantity()) {
+                                            cartDetailService.addQuantityProductInCartDetailExisted(checkCartDetailExisted, checkProductExisted, cartQuantity);
+                                            if (checkCartExisted.getStatus() == 0) {
+                                                cartService.changeStatusCart(checkCartExisted, 1);
+                                            }
+                                            return new ResponseEntity("Add product successfully!", HttpStatus.OK);
+                                        }else {
+                                            return new ResponseEntity("Quantity of product is not enought!", HttpStatus.BAD_REQUEST);
+                                        }
+                                    } else {
+                                        cartDetailService.addProductInCartDetail(checkAccountExisted, checkCartExisted, checkProductExisted,
+                                                checkProductDetailExisted, cartQuantity);
+                                        if (checkCartExisted.getStatus() == 0) {
+                                            cartService.changeStatusCart(checkCartExisted, 1);
+                                        }
+                                        return new ResponseEntity("Add product successfully!", HttpStatus.OK);
+                                    }
                                 } else {
-                                    cartDetailService.addProductInCartDetail(checkAccountExisted, checkCartExisted, checkProductExisted,
-                                            checkProductDetailExisted, cartQuantity);
-                                    return new ResponseEntity("Add product successfully!", HttpStatus.OK);
+                                    return new ResponseEntity("Cart have been deleted!", HttpStatus.NOT_FOUND);
                                 }
                             } else {
-                                return new ResponseEntity("Cart is not found!", HttpStatus.NOT_FOUND);
+                                return new ResponseEntity("Quantity of product is not enought!", HttpStatus.BAD_REQUEST);
                             }
                         } else {
                             return new ResponseEntity("Cart is not found!", HttpStatus.NOT_FOUND);

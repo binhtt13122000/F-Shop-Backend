@@ -43,12 +43,11 @@ public class Orders implements Serializable {
 
     //fullname
     @Column(name = "fullname", nullable = false)
-    @NotNull
     @Size(max = 50)
     @Schema(example = "Trương Thanh Bình")
     private String fullname;
     //phone number
-    @NotNull
+
     @Size(max = 15)
     @Column(name = "phoneNumber", nullable = false)
     @Schema(example = "0335579880")
@@ -56,27 +55,25 @@ public class Orders implements Serializable {
 
     //address
     @Column(name = "address", nullable = false)
-    @NotNull
     @Size(max = 50)
     private String address;
 
     //create time
     @Column(name = "createAt", nullable = false)
-    @NotNull
     private Date createAt;
     //orderTotal
-    @NotNull
+
     @Min(1)
     @Column(name = "orderTotal", nullable = false)
     @Schema(example = "1200000")
     private float orderTotal;
     //orderTotal
     //status
-    @NotNull
+
     @Column(name = "status", nullable = false)
     private int status;
     //isOnline
-    @NotNull
+
     @Column(name = "isOnline", nullable = false)
     private boolean isOnline;
 

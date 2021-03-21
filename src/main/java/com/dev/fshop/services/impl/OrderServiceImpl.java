@@ -1,11 +1,9 @@
 package com.dev.fshop.services.impl;
 
-import com.dev.fshop.entities.Account;
-import com.dev.fshop.entities.Cart;
-import com.dev.fshop.entities.Orders;
-import com.dev.fshop.entities.Promotion;
+import com.dev.fshop.entities.*;
 import com.dev.fshop.repositories.OrdersRepository;
 import com.dev.fshop.services.OrderService;
+import com.dev.fshop.supporters.ProductDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,6 +67,22 @@ public class OrderServiceImpl implements OrderService {
         orders.setAddress(customInfo.getAddress());
         orders.setPromotion(promotion);
         orders.setOrderTotal(cart.getCartTotal());
+        orders.setCreateAt(new Date());
+        orders.setOnline(true);
+        orders.setStatus(0);
+        return ordersRepository.save(orders);
+    }
+
+    @Override
+    public Orders createNewOrderByProduct(Account customInfo, Account accountBuyer, Promotion promotion, ProductDetail productDetail, Product product, int quantity) {
+        Orders orders = new Orders();
+        orders.setAccount(accountBuyer);
+        orders.setSeller(null);
+        orders.setFullname(customInfo.getName());
+        orders.setPhoneNumber(customInfo.getPhoneNumber());
+        orders.setAddress(customInfo.getAddress());
+        orders.setPromotion(promotion);
+        orders.setOrderTotal(quantity * product.getProductPrice());
         orders.setCreateAt(new Date());
         orders.setOnline(true);
         orders.setStatus(0);
