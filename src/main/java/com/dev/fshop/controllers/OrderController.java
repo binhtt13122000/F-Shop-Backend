@@ -3,6 +3,7 @@ package com.dev.fshop.controllers;
 import com.dev.fshop.entities.*;
 import com.dev.fshop.services.*;
 import com.dev.fshop.supporters.CartDetail;
+import com.dev.fshop.supporters.OrderDetail;
 import com.dev.fshop.supporters.ProductDetail;
 import com.dev.fshop.utils.AuthenticatedRole;
 import io.swagger.v3.oas.annotations.Operation;
@@ -166,6 +167,81 @@ public class OrderController {
         }
     }
 
+    @Operation(description = "get order details", responses = {
+            @ApiResponse(
+                    description = "get order details successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Page.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Not found!",
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Not found!",
+                                    value = "Not found!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            )
+    })
+    @GetMapping("/orders/{orderId}/orderDetails")
+    public ResponseEntity getOrderDetailsByOrderId(
+            @RequestParam Optional<String> userName,
+            @PathVariable String orderId,
+            Authentication authentication
+    ) {
+        if (AuthenticatedRole.isAdmin(authentication)) {
+            Orders checkOrder = orderService.findOrderByOrderIdWithAdminAndSeller(orderId);
+            if (checkOrder != null) {
+                List<OrderDetail> orderDetailList = orderDetailService.getListOrderDetailsByOrder(checkOrder);
+                if (orderDetailList.size() != 0 && !orderDetailList.isEmpty()) {
+                    return new ResponseEntity(orderDetailList, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity("Not found order detail by order!", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Not found order by order id", HttpStatus.NOT_FOUND);
+            }
+        } else if (AuthenticatedRole.isMySelf(userName.orElse(null), authentication)) {
+            Account checkUser = accountService.getUserByUsername(userName.orElse(null));
+            if (checkUser != null) {
+                Orders checkOrder = orderService.findOrderByOrderIdWithUserId(orderId, checkUser.getUserId());
+                if (checkOrder != null) {
+                    List<OrderDetail> orderDetailList = orderDetailService.getListOrderDetailsByOrder(checkOrder);
+                    if (orderDetailList.size() != 0 && !orderDetailList.isEmpty()) {
+                        return new ResponseEntity(orderDetailList, HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity("Not found order detail by order!", HttpStatus.NOT_FOUND);
+                    }
+                } else {
+                    return new ResponseEntity("Not found order by order id", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity("Not found user by username!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
+    }
+
+
     @Operation(description = "create new order", responses = {
             @ApiResponse(
                     description = "create new order successfully!",
@@ -297,38 +373,43 @@ public class OrderController {
                 if (checkAccountExisted != null) {
                     Product checkProduct = productService.getProductByProductId(productId);
                     if (checkProduct != null) {
-
-                    }
-                    //check product is not out of stock
-                    ProductDetail checkProductDetail = productDetailService.getProductDetailByProductIdAndProductSize(productId, productSize, 1);
-                    if(checkProductDetail != null) {
-                        if(checkProductDetail.getProQuantity() != 0) {
-                            if (promotionId.isPresent()) {
-                                checkPromotionExisted = promotionService.getPromotionByPromotionId(promotionId.orElse(null));
-                                if (checkPromotionExisted != null) {
-                                    Orders orders = orderService.createNewOrderByProduct(account, checkAccountExisted, checkPromotionExisted, checkProductDetail, checkProduct, quantity);
-                                    boolean check = orderDetailService.createOrderDetailsByAProduct(quantity, checkProduct, checkProductDetail, orders);
-                                    if (check) {
-                                        return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
+                        ProductDetail checkProductDetail = productDetailService.getProductDetailByProductIdAndProductSize(productId, productSize, 1);
+                        if (checkProductDetail != null) {
+                            if (checkProductDetail.getProQuantity() != 0) {
+                                if(checkProductDetail.getProQuantity() >= quantity) {
+                                    if (promotionId.isPresent()) {
+                                        checkPromotionExisted = promotionService.getPromotionByPromotionId(promotionId.orElse(null));
+                                        if (checkPromotionExisted != null) {
+                                            Orders orders = orderService.createNewOrderByProduct(account, checkAccountExisted, checkPromotionExisted, checkProductDetail, checkProduct, quantity);
+                                            boolean check = orderDetailService.createOrderDetailsByAProduct(quantity, checkProduct, checkProductDetail, orders);
+                                            if (check) {
+                                                return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
+                                            }
+                                            return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
+                                        } else {
+                                            return new ResponseEntity("Promotion is not available!", HttpStatus.NOT_FOUND);
+                                        }
+                                    } else {
+                                        Orders orders = orderService.createNewOrderByProduct(account, checkAccountExisted, null, checkProductDetail, checkProduct, quantity);
+                                        boolean check = orderDetailService.createOrderDetailsByAProduct(quantity, checkProduct, checkProductDetail, orders);
+                                        if (check) {
+                                            return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
+                                        }
+                                        return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
                                     }
-                                    return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
-                                } else {
-                                    return new ResponseEntity("Promotion is not available!", HttpStatus.NOT_FOUND);
+                                }else {
+                                    return new ResponseEntity("Quantity of product details is not enough to order!", HttpStatus.BAD_REQUEST);
                                 }
                             } else {
-                                Orders orders = orderService.createNewOrderByProduct(account, checkAccountExisted, null, checkProductDetail, checkProduct, quantity);
-                                boolean check = orderDetailService.createOrderDetailsByAProduct(quantity, checkProduct, checkProductDetail, orders);
-                                if (check) {
-                                    return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
-                                }
-                                return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
+                                return new ResponseEntity("Product is out of stock!", HttpStatus.BAD_REQUEST);
                             }
-                        }else {
-                            return new ResponseEntity("Product is out of stock!", HttpStatus.BAD_REQUEST);
+                        } else {
+                            return new ResponseEntity("Can not found by product id and product size!", HttpStatus.NOT_FOUND);
                         }
                     }else {
-                        return new ResponseEntity("Can not found by product id and product size!", HttpStatus.NOT_FOUND);
+                        return new ResponseEntity("Product can not found by product id!", HttpStatus.NOT_FOUND);
                     }
+                    //check product is not out of stock
                 } else {
                     return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
                 }
@@ -457,7 +538,7 @@ public class OrderController {
     public ResponseEntity deleteOrder(@PathVariable("orderId") String orderId,
                                       @PathVariable("userName") String userName,
                                       Authentication authentication) {
-        if (AuthenticatedRole.isMySelf(userName, authentication) && AuthenticatedRole.isSeller(authentication)) {
+        if (AuthenticatedRole.isMySelf(userName, authentication) && AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(userName);
             if (checkAccountExisted != null) {
                 Orders checkOrderExisted = orderService.findOrderByOrderIdWithAdminAndSeller(orderId);
@@ -529,7 +610,7 @@ public class OrderController {
     public ResponseEntity confirmOrder(@PathVariable("orderId") String orderId,
                                        @PathVariable("userName") String userName,
                                        Authentication authentication) {
-        if (AuthenticatedRole.isMySelf(userName, authentication) && AuthenticatedRole.isSeller(authentication)) {
+        if (AuthenticatedRole.isAdmin(authentication) || AuthenticatedRole.isSeller(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(userName);
             if (checkAccountExisted != null) {
                 Orders checkOrderExisted = orderService.findOrderByOrderIdWithAdminAndSeller(orderId);
@@ -552,4 +633,5 @@ public class OrderController {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
+
 }

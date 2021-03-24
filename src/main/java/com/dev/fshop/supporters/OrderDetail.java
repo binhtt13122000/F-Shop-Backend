@@ -67,11 +67,13 @@ public class OrderDetail implements Serializable {
     private int status;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "proId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Product product;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "orderId")
     @EqualsAndHashCode.Exclude

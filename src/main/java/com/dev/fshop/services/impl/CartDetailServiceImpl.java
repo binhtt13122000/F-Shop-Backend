@@ -62,4 +62,16 @@ public class CartDetailServiceImpl implements CartDetailService {
         }
         return null;
     }
+
+    @Override
+    public boolean changeQuantity(CartDetail cartDetail, int quantity) {
+        cartDetail.setCartQuantity(quantity);
+        cartDetailRepository.save(cartDetail);
+        return true;
+    }
+
+    @Override
+    public CartDetail getCartDetailByCartDetailId(String cartDetailId) {
+        return cartDetailRepository.findById(cartDetailId).orElse(null);
+    }
 }

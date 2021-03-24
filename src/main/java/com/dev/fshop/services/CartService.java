@@ -19,6 +19,8 @@ public interface CartService {
     public Page<Cart> getCartByParameters(String userId, Date dateFrom, Date dateTo, Float priceFrom, Float priceTo,
                                           Pageable pageable);
 
+    public Cart getCartByCartId(String cartId);
+
     public Cart updateCartTotal(Cart cart, float cartPrice);
 
     public Page<Cart> getAllCarts(String userId, Pageable pageable);

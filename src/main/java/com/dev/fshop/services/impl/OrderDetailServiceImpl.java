@@ -57,4 +57,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         productDetailService.updateQuantityProductDetail(productDetail, quantity);
         return true;
     }
+
+    @Override
+    public List<OrderDetail> getListOrderDetailsByOrder(Orders orders) {
+        return orderDetailRepository.getOrderDetailsByOrders_OrderId(orders.getOrderId());
+    }
 }

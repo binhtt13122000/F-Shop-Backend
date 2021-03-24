@@ -18,4 +18,8 @@ public interface CartDetailService {
     public CartDetail addQuantityProductInCartDetailExisted(CartDetail cartDetail, Product product, Integer cartQuantity);
 
     public CartDetail addProductInCartDetail(Account account, Cart cart, Product product, ProductDetail productDetail, Integer cartQuantity);
+
+    public boolean changeQuantity(CartDetail cartDetail, int quantity);
+
+    public CartDetail getCartDetailByCartDetailId(String cartDetailId);
 }

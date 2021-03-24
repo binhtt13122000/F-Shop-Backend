@@ -48,6 +48,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public Cart getCartByCartId(String cartId) {
+        return cartRepository.findById(cartId).orElse(null);
+    }
+
+    @Override
     public Cart updateCartTotal(Cart cart, float cartPrice) {
         cart.setCartTotal(cart.getCartTotal() + cartPrice);
         return cartRepository.save(cart);

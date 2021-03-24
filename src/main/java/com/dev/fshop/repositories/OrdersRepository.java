@@ -26,8 +26,8 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
             " u.orders.status >= :status")
     public List<Orders> getOrdersByProductIdAndUserIdAndStatus(String productId, String userId, int status);
 
-    @Query("select u from Orders u where (:userId is null or u.account.userId = :userId)")
-    public Page<Orders> getAllOrderByUserIdWithAdmin(String userId, Pageable pageable);
+    @Query("select u from Orders u")
+    public Page<Orders> getAllOrderByUserIdWithAdmin(Pageable pageable);
 
     @Query("select u from Orders u where (:userId is null or u.account.userId = :userId) and u.status >= :status")
     public Page<Orders> getAllOrderByUserIdWithUser(String userId, int status, Pageable pageable);

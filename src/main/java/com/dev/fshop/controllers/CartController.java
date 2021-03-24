@@ -285,13 +285,13 @@ public class CartController {
                                     CartDetail checkCartDetailExisted = cartDetailService.getCartDetailByCartIdAndProductIdAndCartSize(checkCartExisted.getCartId(),
                                             checkProductExisted.getProductId(), checkProductDetailExisted.getProSize());
                                     if (checkCartDetailExisted != null) {
-                                        if(checkCartDetailExisted.getCartQuantity() + cartQuantity <= checkProductDetailExisted.getProQuantity()) {
+                                        if (checkCartDetailExisted.getCartQuantity() + cartQuantity <= checkProductDetailExisted.getProQuantity()) {
                                             cartDetailService.addQuantityProductInCartDetailExisted(checkCartDetailExisted, checkProductExisted, cartQuantity);
                                             if (checkCartExisted.getStatus() == 0) {
                                                 cartService.changeStatusCart(checkCartExisted, 1);
                                             }
                                             return new ResponseEntity("Add product successfully!", HttpStatus.OK);
-                                        }else {
+                                        } else {
                                             return new ResponseEntity("Quantity of product is not enought!", HttpStatus.BAD_REQUEST);
                                         }
                                     } else {
@@ -435,6 +435,102 @@ public class CartController {
                 }
             } else {
                 return new ResponseEntity("Can not found your account!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Operation(description = "Change quantity of product in cart details", responses = {
+            @ApiResponse(
+                    description = "Change quantity successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Change quantity successfully!",
+                                    value = "Change quantity successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "product or cart  is not available!",
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "product or cart details is not available!",
+                                    value = "product or cart details is not available!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Change quantity failed!",
+                    responseCode = "400",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Change quantity failed!",
+                                    value = "Change quantity failed!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+    })
+    @PutMapping("/cartDetails/{cartDetailId}/products/{productId}/{productSize}/{quantity}/users/{username}")
+    public ResponseEntity changeQuantityProductInCartDetails(@PathVariable String cartDetailId, @PathVariable String productId,
+                                                             @PathVariable String productSize, @PathVariable Integer quantity,
+                                                             @PathVariable String username, Authentication authentication) {
+        if (AuthenticatedRole.isMySelf(username, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
+            Account checkUser = accountService.getUserByUsername(username);
+            if (checkUser != null) {
+                Product checkProductExisted = productService.getProductByProductId(productId);
+                if (checkProductExisted != null) {
+                    ProductDetail productDetail = productDetailService.getProductDetailByProductIdAndProductSize(productId, productSize, 0);
+                    if (productDetail != null) {
+                        CartDetail checkCartDetails = cartDetailService.getCartDetailByCartDetailId(cartDetailId);
+                        if (checkCartDetails != null) {
+                            Cart checkCart = cartService.getCartByCartId(checkCartDetails.getCartId());
+                            if (checkCart != null) {
+                                if (quantity > 0 && quantity <= productDetail.getProQuantity()) {
+                                    float priceBeforeChange = checkCartDetails.getCartItemPrice() * checkCartDetails.getCartQuantity();
+                                    if (cartDetailService.changeQuantity(checkCartDetails, quantity)) {
+                                        float priceAfterChange = checkCartDetails.getCartItemPrice() * quantity;
+                                        float newPrice = priceAfterChange - priceBeforeChange;
+                                        cartService.updateCartTotal(checkCart, newPrice);
+                                        return new ResponseEntity("Change quantity in cart details successful.", HttpStatus.OK);
+                                    } else {
+                                        return new ResponseEntity("Change quantity failed!", HttpStatus.BAD_REQUEST);
+                                    }
+                                }else {
+                                    return new ResponseEntity("Quantity of product is not enough!", HttpStatus.BAD_REQUEST);
+                                }
+                            } else {
+                                return new ResponseEntity("Can not found cart by cart id!", HttpStatus.NOT_FOUND);
+                            }
+                        } else {
+                            return new ResponseEntity("Can not found cart detail by cart detail id!", HttpStatus.NOT_FOUND);
+                        }
+                    }
+                    return new ResponseEntity("add quantity failed!", HttpStatus.BAD_REQUEST);
+                }
+                return new ResponseEntity("product is not available!", HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity("Can not found user by username!", HttpStatus.NOT_FOUND);
             }
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);

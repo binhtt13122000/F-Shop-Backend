@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<Orders> getOrdersWithUserId(String userId, boolean isAdmin, Pageable pageable) {
         if(isAdmin) {
-            return ordersRepository.getAllOrderByUserIdWithAdmin(userId, pageable);
+            return ordersRepository.getAllOrderByUserIdWithAdmin(pageable);
         }else {
             return ordersRepository.getAllOrderByUserIdWithUser(userId, 0, pageable);
         }
