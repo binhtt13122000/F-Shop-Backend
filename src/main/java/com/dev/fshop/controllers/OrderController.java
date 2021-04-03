@@ -94,10 +94,9 @@ public class OrderController {
     @GetMapping("/orders")
     public ResponseEntity getOrders(
             @RequestParam Optional<String> username,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateFrom,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "MMddyyyy") Date dateTo,
-            @RequestParam Optional<Float> priceFrom,
-            @RequestParam Optional<Float> priceTo,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "MM/dd/yyyy") Date dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "MM/dd/yyyy") Date dateTo,
+            @RequestParam Optional<Integer> status,
             @RequestParam Optional<Integer> pageIndex,
             @RequestParam Optional<Integer> pageSize,
             Authentication authentication
@@ -107,16 +106,16 @@ public class OrderController {
             if (username.isPresent()) {
                 Account checkAccountExisted = accountService.getUserByUsername(username.orElse(null));
                 if (checkAccountExisted != null) {
-                    if (dateFrom == null && dateTo == null && !priceFrom.isPresent() && !priceTo.isPresent()) {
-                        Page<Orders> ordersPage = orderService.getOrdersWithUserId(checkAccountExisted.getUserId(), true, pageable);
+                    if (dateFrom == null && dateTo == null) {
+                        Page<Orders> ordersPage = orderService.getOrdersWithUserId(checkAccountExisted.getUserId(), true, status.orElse(2), pageable);
                         if (!ordersPage.isEmpty() && ordersPage != null) {
                             return new ResponseEntity(ordersPage, HttpStatus.OK);
                         } else {
                             return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                         }
                     } else {
-                        Page<Orders> ordersPage = orderService.getOrdersWithParameters(checkAccountExisted.getUserId(), dateFrom, dateTo,
-                                priceFrom.orElse(null), priceTo.orElse(null), true, pageable);
+                        Page<Orders> ordersPage = orderService.getOrdersWithParameters(checkAccountExisted.getUserId(), dateFrom, dateTo, status.orElse(2),
+                                 true, pageable);
                         if (!ordersPage.isEmpty() && ordersPage != null) {
                             return new ResponseEntity(ordersPage, HttpStatus.OK);
                         } else {
@@ -127,16 +126,16 @@ public class OrderController {
                     return new ResponseEntity("Account is not available!", HttpStatus.NOT_FOUND);
                 }
             } else {
-                if (dateFrom == null && dateTo == null && !priceFrom.isPresent() && !priceTo.isPresent()) {
-                    Page<Orders> ordersPage = orderService.getOrdersWithUserId(username.orElse(null), true, pageable);
+                if (dateFrom == null && dateTo == null) {
+                    Page<Orders> ordersPage = orderService.getOrdersWithUserId(username.orElse(null), true, status.orElse(2), pageable);
                     if (!ordersPage.isEmpty() && ordersPage != null) {
                         return new ResponseEntity(ordersPage, HttpStatus.OK);
                     } else {
                         return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                     }
                 } else {
-                    Page<Orders> ordersPage = orderService.getOrdersWithParameters(username.orElse(null), dateFrom, dateTo,
-                            priceFrom.orElse(null), priceTo.orElse(null), true, pageable);
+                    Page<Orders> ordersPage = orderService.getOrdersWithParameters(username.orElse(null), dateFrom, dateTo, status.orElse(2),
+                             true, pageable);
                     if (!ordersPage.isEmpty() && ordersPage != null) {
                         return new ResponseEntity(ordersPage, HttpStatus.OK);
                     } else {
@@ -146,16 +145,17 @@ public class OrderController {
             }
         } else if (AuthenticatedRole.isMySelf(username.orElse(null), authentication) && AuthenticatedRole.isUser(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(username.orElse(null));
-            if (dateFrom == null && dateTo == null && !priceFrom.isPresent() && !priceTo.isPresent()) {
-                Page<Orders> ordersPage = orderService.getOrdersWithUserId(checkAccountExisted.getUserId(), false, pageable);
+            if (dateFrom == null && dateTo == null ) {
+                System.out.println(status);
+                Page<Orders> ordersPage = orderService.getOrdersWithUserId(checkAccountExisted.getUserId(), false, status.orElse(2), pageable);
                 if (!ordersPage.isEmpty() && ordersPage != null) {
                     return new ResponseEntity(ordersPage, HttpStatus.OK);
                 } else {
                     return new ResponseEntity("Not found!", HttpStatus.NOT_FOUND);
                 }
             } else {
-                Page<Orders> ordersPage = orderService.getOrdersWithParameters(checkAccountExisted.getUserId(), dateFrom, dateTo,
-                        priceFrom.orElse(null), priceTo.orElse(null), false, pageable);
+                Page<Orders> ordersPage = orderService.getOrdersWithParameters(checkAccountExisted.getUserId(), dateFrom, dateTo, status.orElse(2),
+                         false, pageable);
                 if (!ordersPage.isEmpty() && ordersPage != null) {
                     return new ResponseEntity(ordersPage, HttpStatus.OK);
                 } else {
@@ -538,13 +538,17 @@ public class OrderController {
     public ResponseEntity deleteOrder(@PathVariable("orderId") String orderId,
                                       @PathVariable("userName") String userName,
                                       Authentication authentication) {
-        if (AuthenticatedRole.isMySelf(userName, authentication) && AuthenticatedRole.isAdmin(authentication)) {
+        if (AuthenticatedRole.isMySelf(userName, authentication) || AuthenticatedRole.isAdmin(authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(userName);
             if (checkAccountExisted != null) {
                 Orders checkOrderExisted = orderService.findOrderByOrderIdWithAdminAndSeller(orderId);
                 if (checkOrderExisted != null) {
-                    orderService.changeStatusOrders(checkOrderExisted, -1);
-                    return new ResponseEntity("Delete order successfully!", HttpStatus.OK);
+                    if(checkOrderExisted.getUserId().equals(checkAccountExisted.getUserId())) {
+                        orderService.changeStatusOrders(checkOrderExisted, -1);
+                        return new ResponseEntity("Delete order successfully!", HttpStatus.OK);
+                    }else {
+                        return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+                    }
                 } else {
                     return new ResponseEntity("Order is not found!", HttpStatus.NOT_FOUND);
                 }

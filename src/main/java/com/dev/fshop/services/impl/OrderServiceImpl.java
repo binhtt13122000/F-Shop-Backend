@@ -30,20 +30,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Orders> getOrdersWithParameters(String userId, Date dateFrom, Date dateTo, float priceFrom, float priceTo, boolean isAdmin, Pageable pageable) {
-        if(isAdmin) {
-            return ordersRepository.getListOrdersByParameters(userId, dateFrom, dateTo, priceFrom, priceTo, -1, pageable);
+    public Page<Orders> getOrdersWithParameters(String userId, Date dateFrom, Date dateTo, int status, boolean isAdmin, Pageable pageable) {
+        if(status == 2) {
+            if (isAdmin) {
+                return ordersRepository.getAllListOrdersByParameters(userId, dateFrom, dateTo, -1, pageable);
+            } else {
+                return ordersRepository.getAllListOrdersByParameters(userId, dateFrom, dateTo, -1, pageable);
+            }
         }else {
-            return ordersRepository.getListOrdersByParameters(userId, dateFrom, dateTo, priceFrom, priceTo, 0, pageable);
+            if (isAdmin) {
+                return ordersRepository.getListOrdersByParametersAndStatus(userId, dateFrom, dateTo, status, pageable);
+            } else {
+                return ordersRepository.getListOrdersByParametersAndStatus(userId, dateFrom, dateTo, status, pageable);
+            }
         }
     }
 
     @Override
-    public Page<Orders> getOrdersWithUserId(String userId, boolean isAdmin, Pageable pageable) {
-        if(isAdmin) {
-            return ordersRepository.getAllOrderByUserIdWithAdmin(pageable);
+    public Page<Orders> getOrdersWithUserId(String userId, boolean isAdmin, int status, Pageable pageable) {
+        if(status == 2) {
+            if (isAdmin) {
+                return ordersRepository.getAllOrderByUserIdWithAdmin(pageable);
+            } else {
+                return ordersRepository.getAllOrderByUserIdWithUser(userId, -1, pageable);
+            }
         }else {
-            return ordersRepository.getAllOrderByUserIdWithUser(userId, 0, pageable);
+            if (isAdmin) {
+                return ordersRepository.getAllOrderByUserIdWithAdmin(pageable);
+            } else {
+                return ordersRepository.getAllOrderByUserIdAndStatusWithUser(userId, status, pageable);
+            }
         }
     }
 

@@ -58,7 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         List<String> origin = new ArrayList<>();
         origin.add("http://localhost:8080");
         origin.add("http://localhost:3000");
-        origin.add("https://f-shop-chat.netlify.app");
+        origin.add("https://fire-base-f-shop.firebaseapp.com");
         configuration.setAllowedOrigins(origin);
 
         List<String> method = new ArrayList<>();

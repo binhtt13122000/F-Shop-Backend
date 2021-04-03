@@ -14,9 +14,9 @@ public interface OrderService {
 
     public Orders findOrderByOrderIdWithUserId(String orderId, String userId);
 
-    public Page<Orders> getOrdersWithParameters(String userId, Date dateFrom, Date dateTo, float priceFrom, float priceTo, boolean isAdmin, Pageable pageable);
+    public Page<Orders> getOrdersWithParameters(String userId, Date dateFrom, Date dateTo, int status, boolean isAdmin, Pageable pageable);
 
-    public Page<Orders> getOrdersWithUserId(String userId, boolean isAdmin, Pageable pageable);
+    public Page<Orders> getOrdersWithUserId(String userId, boolean isAdmin, int status, Pageable pageable);
 
     public List<Orders> getOrdersByProductIdAndUserId(String productId, String userId, boolean isAdmin);
 

@@ -18,9 +18,12 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
     public Orders getOrdersByOrderIdAndAccount_UserIdAndStatusGreaterThanEqual(String orderId, String userId, int status);
 
     @Query("select u from Orders u where (:userId is null  or u.account.userId = :userId) and ((:dateFrom is null and :dateTo is null) or " +
-            "(u.createAt between :dateFrom and :dateTo)) and ((:priceFrom is null and :priceTo is null) or (u.orderTotal between " +
-            ":priceFrom and :priceTo)) and u.status >= :status")
-    public Page<Orders> getListOrdersByParameters(String userId, Date dateFrom, Date dateTo, float priceFrom, float priceTo, int status, Pageable pageable);
+            "(u.createAt between :dateFrom and :dateTo)) and u.status >= :status")
+    public Page<Orders> getAllListOrdersByParameters(String userId, Date dateFrom, Date dateTo, int status, Pageable pageable);
+
+    @Query("select u from Orders u where (:userId is null  or u.account.userId = :userId) and ((:dateFrom is null and :dateTo is null) or " +
+            "(u.createAt between :dateFrom and :dateTo)) and u.status = :status")
+    public Page<Orders> getListOrdersByParametersAndStatus(String userId, Date dateFrom, Date dateTo, int status, Pageable pageable);
 
     @Query("select u.orders from OrderDetail u where u.product.productId = :productId and u.orders.account.userId = :userId and" +
             " u.orders.status >= :status")
@@ -31,4 +34,7 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
 
     @Query("select u from Orders u where (:userId is null or u.account.userId = :userId) and u.status >= :status")
     public Page<Orders> getAllOrderByUserIdWithUser(String userId, int status, Pageable pageable);
+
+    @Query("select u from Orders u where (:userId is null or u.account.userId = :userId) and u.status = :status")
+    public Page<Orders> getAllOrderByUserIdAndStatusWithUser(String userId, int status, Pageable pageable);
 }
