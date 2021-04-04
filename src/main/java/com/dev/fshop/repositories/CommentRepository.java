@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface CommentRepository extends JpaRepository<Comment, String> {
     public Page<Comment> findCommentsByProduct_ProductIdAndParent_CommentId(String productId, String commentId, Pageable pageable);
 
-    public Page<Comment> findCommentsByProduct_ProductIdAndAccount_UserIdAndParent_CommentIdAndStatusGreaterThanEqual(String productId, String userId, String commentId, int status, Pageable pageable);
+    public Page<Comment> findCommentsByProduct_ProductIdAndParent_CommentIdAndStatusGreaterThanEqual(String productId, String commentId, int status, Pageable pageable);
 
     public Comment findCommentByCommentIdAndAccount_UserIdAndStatusGreaterThanEqual(String commentId, String userId, int status);
 }

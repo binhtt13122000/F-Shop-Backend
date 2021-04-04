@@ -31,9 +31,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<Comment> getCommentsByProductIdWithUser(String userId, Comment parent, String productId, Pageable pageable) {
         if (parent != null) {
-            return commentRepository.findCommentsByProduct_ProductIdAndAccount_UserIdAndParent_CommentIdAndStatusGreaterThanEqual(productId, userId, parent.getCommentId(), 0, pageable);
+            return commentRepository.findCommentsByProduct_ProductIdAndParent_CommentIdAndStatusGreaterThanEqual(productId,  parent.getCommentId(), 0, pageable);
         } else {
-            return commentRepository.findCommentsByProduct_ProductIdAndAccount_UserIdAndParent_CommentIdAndStatusGreaterThanEqual(productId, userId, null, 0, pageable);
+            return commentRepository.findCommentsByProduct_ProductIdAndParent_CommentIdAndStatusGreaterThanEqual(productId, null, 0, pageable);
         }
     }
 
