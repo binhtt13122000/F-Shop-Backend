@@ -28,8 +28,8 @@ public class Promotion implements Serializable {
 
     //promotion id
     @Id
-    @JsonIgnore
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_prmotion")
+//    @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_promotion")
     @GenericGenerator(
             name = "sequence_promotion",
             strategy = "com.dev.fshop.generator.entities.UserIdPrefixedSequencePromotionIdGenerator",

@@ -319,6 +319,7 @@ public class OrderController {
                                         if (check) {
                                             checkCartExisted.setStatus(-1);
                                             cartService.deleteCart(checkCartExisted);
+                                            promotionService.changeStatusPromotion(checkPromotionExisted, false);
                                             return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
                                         }
                                         return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);

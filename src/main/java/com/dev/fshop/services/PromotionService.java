@@ -13,4 +13,6 @@ public interface PromotionService {
     public Promotion updatePromotion(Promotion currentPromotion, Promotion newPromotion);
 
     public Promotion getPromotionByPromotionId(String promotionId);
+
+    public boolean changeStatusPromotion(Promotion promotion, boolean status);
 }

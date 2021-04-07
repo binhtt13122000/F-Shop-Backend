@@ -82,7 +82,11 @@ public class OrderServiceImpl implements OrderService {
         orders.setPhoneNumber(customInfo.getPhoneNumber());
         orders.setAddress(customInfo.getAddress());
         orders.setPromotion(promotion);
-        orders.setOrderTotal(cart.getCartTotal());
+        if(promotion == null) {
+            orders.setOrderTotal(cart.getCartTotal());
+        }else {
+            orders.setOrderTotal(cart.getCartTotal() - (cart.getCartTotal()) * promotion.getPromo() / 100);
+        }
         orders.setCreateAt(new Date());
         orders.setOnline(true);
         orders.setStatus(0);

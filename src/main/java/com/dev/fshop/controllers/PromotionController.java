@@ -224,4 +224,68 @@ public class PromotionController {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
         }
     }
+
+    @Operation(description = "Check promotion", responses = {
+            @ApiResponse(
+                    description = "Check promotion successfully!",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Check promotion successfully!",
+                                    value = "Check promotion successfully!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Access denied!",
+                    responseCode = "403",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Access denied!",
+                                    value = "Access denied!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Account is not available!",
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Promotion is not available!",
+                                    value = "Promotion is not available!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Check failed!",
+                    responseCode = "400",
+                    content = @Content(
+                            mediaType = "text/plain; charset=utf-8",
+                            examples = @ExampleObject(
+                                    description = "Check failed!",
+                                    value = "Check failed!"
+                            ),
+                            schema = @Schema(implementation = String.class)
+                    )
+            ),
+    })
+    @GetMapping("/users/{username}/promotions/{promotionId}")
+    public ResponseEntity checkPromotionValid(@PathVariable String promotionId,@PathVariable String username, Authentication authentication) {
+        if (AuthenticatedRole.isAdmin(authentication) || AuthenticatedRole.isMySelf(username, authentication)) {
+            Promotion currentPromotion = promotionService.getPromotionByPromotionId(promotionId);
+            if (currentPromotion != null) {
+                return new ResponseEntity(currentPromotion, HttpStatus.OK);
+            } else {
+                return new ResponseEntity("Promotion is not available!", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+        }
+    }
 }
