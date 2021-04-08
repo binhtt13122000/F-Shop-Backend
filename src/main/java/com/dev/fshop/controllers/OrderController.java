@@ -311,7 +311,7 @@ public class OrderController {
                             //check product is not out of stock
                             boolean checkIsNotOutOfStock = productDetailService.checkProductIsNotOutOfStock(cartDetailList);
                             if (checkIsNotOutOfStock) {
-                                if (promotionId.isPresent()) {
+                                if (promotionId.isPresent() && !promotionId.get().equals("")) {
                                     checkPromotionExisted = promotionService.getPromotionByPromotionId(promotionId.orElse(null));
                                     if (checkPromotionExisted != null) {
                                         Orders orders = orderService.createNewOrders(account, checkAccountExisted, checkPromotionExisted, checkCartExisted);
@@ -320,6 +320,7 @@ public class OrderController {
                                             checkCartExisted.setStatus(-1);
                                             cartService.deleteCart(checkCartExisted);
                                             promotionService.changeStatusPromotion(checkPromotionExisted, false);
+                                            createVoucherInOrder(checkCartExisted, checkAccountExisted, checkPromotionExisted);
                                             return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
                                         }
                                         return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
@@ -332,6 +333,7 @@ public class OrderController {
                                     if (check) {
                                         checkCartExisted.setStatus(-1);
                                         cartService.deleteCart(checkCartExisted);
+                                        createVoucherInOrder(checkCartExisted, checkAccountExisted, checkPromotionExisted);
                                         return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
                                     }
                                     return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
@@ -357,6 +359,63 @@ public class OrderController {
         }
     }
 
+    private void createVoucherInOrder(Cart checkCartExisted, Account checkAccountExisted, Promotion checkPromotionExisted) {
+        float promoion = 0;
+        float total = 0;
+        if(checkPromotionExisted == null) {
+            total = checkCartExisted.getCartTotal();
+        }else {
+            total = checkCartExisted.getCartTotal() - (checkCartExisted.getCartTotal() * checkPromotionExisted.getPromo() / 100);
+        }
+        System.out.println(total);
+        if (total >= 1000000 && total < 2000000) {
+            promoion = 10;
+        } else if (total >= 2000000 && total < 5000000) {
+            promoion = 20;
+        } else if (total >= 5000000 && total < 8000000) {
+            promoion = 30;
+        } else if (total >= 8000000 && total < 10000000) {
+            promoion = 40;
+        } else if (total >= 10000000 && total < 14000000) {
+            promoion = 50;
+        } else if (total >= 14000000) {
+            promoion = 60;
+        }
+        Promotion createPromotion = new Promotion();
+        createPromotion.setPromotionName("GIẢM GIÁ " + promoion + "%");
+        createPromotion.setPromo(promoion);
+        promotionService.createPromotion(createPromotion, checkAccountExisted);
+    }
+
+    private void createVoucherWithProduct(Product product, int quantity, Account checkAccountExisted, Promotion checkPromotionExisted) {
+        float promotion = 0;
+        float total = 0;
+        if(checkPromotionExisted == null) {
+            total = quantity * product.getProductPrice();
+        }else {
+            total = quantity * product.getProductPrice() - (quantity * product.getProductPrice() * checkPromotionExisted.getPromo() / 100);
+        }
+        if (total >= 1000000 && total < 2000000) {
+            promotion = 10;
+        } else if (total >= 2000000 && total < 5000000) {
+            promotion = 20;
+        } else if (total >= 5000000 && total < 8000000) {
+            promotion = 30;
+        } else if (total >= 8000000 && total < 10000000) {
+            promotion = 40;
+        } else if (total >= 10000000 && total < 14000000) {
+            promotion = 50;
+        } else if (total >= 14000000) {
+            promotion = 60;
+        }
+        if(promotion != 0.0) {
+            Promotion createPromotion = new Promotion();
+            createPromotion.setPromotionName("GIẢM GIÁ " + promotion + "%");
+            createPromotion.setPromo(promotion);
+            promotionService.createPromotion(createPromotion, checkAccountExisted);
+        }
+        }
+
     @PostMapping("/orders/products/{productId}/{productSize}/{quantity}")
     @Transactional
     public ResponseEntity createNewOrderWithAProduct(@RequestParam("username") Optional<String> username,
@@ -366,7 +425,6 @@ public class OrderController {
                                                      @PathVariable String productSize,
                                                      @PathVariable int quantity,
                                                      Authentication authentication) {
-        System.out.println(account);
         Promotion checkPromotionExisted = null;
         if (username.isPresent()) {
             if (AuthenticatedRole.isMySelf(username.orElse(null), authentication) && AuthenticatedRole.isUser(authentication)) {
@@ -378,12 +436,14 @@ public class OrderController {
                         if (checkProductDetail != null) {
                             if (checkProductDetail.getProQuantity() != 0) {
                                 if(checkProductDetail.getProQuantity() >= quantity) {
-                                    if (promotionId.isPresent()) {
+                                    if (promotionId.isPresent() && !promotionId.get().equals("")) {
                                         checkPromotionExisted = promotionService.getPromotionByPromotionId(promotionId.orElse(null));
                                         if (checkPromotionExisted != null) {
                                             Orders orders = orderService.createNewOrderByProduct(account, checkAccountExisted, checkPromotionExisted, checkProductDetail, checkProduct, quantity);
                                             boolean check = orderDetailService.createOrderDetailsByAProduct(quantity, checkProduct, checkProductDetail, orders);
                                             if (check) {
+                                                promotionService.changeStatusPromotion(checkPromotionExisted, false);
+                                                createVoucherWithProduct(checkProduct, quantity,checkAccountExisted,checkPromotionExisted);
                                                 return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
                                             }
                                             return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);
@@ -394,6 +454,7 @@ public class OrderController {
                                         Orders orders = orderService.createNewOrderByProduct(account, checkAccountExisted, null, checkProductDetail, checkProduct, quantity);
                                         boolean check = orderDetailService.createOrderDetailsByAProduct(quantity, checkProduct, checkProductDetail, orders);
                                         if (check) {
+                                            createVoucherWithProduct(checkProduct, quantity,checkAccountExisted,checkPromotionExisted);
                                             return new ResponseEntity("Create new order successfully!", HttpStatus.OK);
                                         }
                                         return new ResponseEntity("Create new order failed!", HttpStatus.BAD_REQUEST);

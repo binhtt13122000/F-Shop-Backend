@@ -24,8 +24,7 @@ public class PromotionServiceImpl implements PromotionService {
     public Promotion createPromotion(Promotion promotion, Account account) {
         promotion.setUserId(account.getUserId());
         promotion.setAccount(account);
-        System.out.println(1232423);
-        System.out.println(promotion);
+        promotion.setStatus(true);
         return promotionRepository.save(promotion);
     }
 

@@ -85,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
         if(promotion == null) {
             orders.setOrderTotal(cart.getCartTotal());
         }else {
-            orders.setOrderTotal(cart.getCartTotal() - (cart.getCartTotal()) * promotion.getPromo() / 100);
+            orders.setOrderTotal(cart.getCartTotal() - (cart.getCartTotal() * promotion.getPromo() / 100));
         }
         orders.setCreateAt(new Date());
         orders.setOnline(true);
@@ -102,7 +102,11 @@ public class OrderServiceImpl implements OrderService {
         orders.setPhoneNumber(customInfo.getPhoneNumber());
         orders.setAddress(customInfo.getAddress());
         orders.setPromotion(promotion);
-        orders.setOrderTotal(quantity * product.getProductPrice());
+        if(promotion == null) {
+            orders.setOrderTotal(quantity * product.getProductPrice());
+        }else {
+            orders.setOrderTotal(quantity * product.getProductPrice() - (quantity * product.getProductPrice() * promotion.getPromo() / 100));
+        }
         orders.setCreateAt(new Date());
         orders.setOnline(true);
         orders.setStatus(0);
