@@ -31,9 +31,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<Comment> getCommentsByProductIdWithUser(String userId, Comment parent, String productId, Pageable pageable) {
         if (parent != null) {
-            return commentRepository.findCommentsByProduct_ProductIdAndParent_CommentIdAndStatusGreaterThanEqual(productId,  parent.getCommentId(), 0, pageable);
+            return commentRepository.findCommentsByProduct_ProductIdAndParent_CommentIdAndStatusGreaterThanEqualAndOrderByCreateTimeAsc(productId,  parent.getCommentId(), 0, pageable);
         } else {
-            return commentRepository.findCommentsByProduct_ProductIdAndParent_CommentIdAndStatusGreaterThanEqual(productId, null, 0, pageable);
+            return commentRepository.findCommentsByProduct_ProductIdAndParent_CommentIdAndStatusGreaterThanEqualAndOrderByCreateTimeAsc(productId, null, 0, pageable);
         }
     }
 
@@ -44,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment getCommentByCommentIdAndUserId(String commentId, String userId) {
-        return commentRepository.findCommentByCommentIdAndAccount_UserIdAndStatusGreaterThanEqual(commentId, userId, 0);
+        return commentRepository.findCommentByCommentIdAndAccount_UserIdAndStatusGreaterThanEqualAndOrderByCreateTimeAsc(commentId, userId, 0);
     }
 
     @Override

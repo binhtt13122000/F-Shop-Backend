@@ -96,7 +96,7 @@ public class CommentController {
                                               @RequestParam Optional<Integer> pageSize,
                                               @RequestParam Optional<String> parentId,
                                               Authentication authentication) {
-        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(4));
+        Pageable pageable = PageRequest.of(pageIndex.orElse(1) - 1, pageSize.orElse(20));
         String usName = username.orElse(null);
         Comment parent = null;
         if (usName != null && AuthenticatedRole.isMySelf(usName, authentication) && !AuthenticatedRole.isAdmin(authentication)) {
@@ -113,6 +113,7 @@ public class CommentController {
                     }
                     Page<Comment> commentList = commentService.getCommentsByProductIdWithUser(checkAccountExisted.getUserId(), parent,
                             checkProductExisted.getProductId(), pageable);
+                    System.out.println(commentList);
                     if (commentList.isEmpty() || commentList == null) {
                         return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
                     }
@@ -195,6 +196,7 @@ public class CommentController {
                                       @RequestParam Optional<String> parentId,
                                       @RequestBody Comment comment,
                                       Authentication authentication) {
+        System.out.println(parentId.orElse(null));
         if (AuthenticatedRole.isMySelf(username, authentication)) {
             Account checkAccountExisted = accountService.getUserByUsername(username);
             if (checkAccountExisted != null) {
@@ -203,14 +205,14 @@ public class CommentController {
                     if (parentId.isPresent()) {
                         Comment parentComment = commentService.getCommentByCommentId(parentId.orElse(null));
                         if (parentComment != null) {
-                            commentService.createNewComment(comment, parentComment, checkAccountExisted, checkProductExisted);
-                            return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                            Comment newComment = commentService.createNewComment(comment, parentComment, checkAccountExisted, checkProductExisted);
+                            return new ResponseEntity(newComment, HttpStatus.OK);
                         } else {
                             return new ResponseEntity("Parent Comment is not found!", HttpStatus.NOT_FOUND);
                         }
                     } else {
-                        commentService.createNewComment(comment, null, checkAccountExisted, checkProductExisted);
-                        return new ResponseEntity("Create new comment successfully!", HttpStatus.OK);
+                        Comment newComment =  commentService.createNewComment(comment, null, checkAccountExisted, checkProductExisted);
+                        return new ResponseEntity(newComment, HttpStatus.OK);
                     }
 
                 } else {
@@ -362,6 +364,7 @@ public class CommentController {
             Account checkAccountExisted = accountService.getUserByUsername(usName);
             if (checkAccountExisted != null) {
                 Comment checkCommentExisted = commentService.getCommentByCommentIdAndUserId(commentId, checkAccountExisted.getUserId());
+                System.out.println(checkAccountExisted);
                 if (checkCommentExisted != null) {
                     if (checkCommentExisted.getStatus() == -1) {
                         return new ResponseEntity("Comment is not found!", HttpStatus.NOT_FOUND);
