@@ -605,11 +605,16 @@ public class OrderController {
             if (checkAccountExisted != null) {
                 Orders checkOrderExisted = orderService.findOrderByOrderIdWithAdminAndSeller(orderId);
                 if (checkOrderExisted != null) {
-                    if(checkOrderExisted.getUserId().equals(checkAccountExisted.getUserId())) {
+                    if(AuthenticatedRole.isAdmin(authentication)) {
                         orderService.changeStatusOrders(checkOrderExisted, -1);
                         return new ResponseEntity("Delete order successfully!", HttpStatus.OK);
                     }else {
-                        return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+                        if(checkOrderExisted.getUserId().equals(checkAccountExisted.getUserId())) {
+                            orderService.changeStatusOrders(checkOrderExisted, -1);
+                            return new ResponseEntity("Delete order successfully!", HttpStatus.OK);
+                        }else {
+                            return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
+                        }
                     }
                 } else {
                     return new ResponseEntity("Order is not found!", HttpStatus.NOT_FOUND);

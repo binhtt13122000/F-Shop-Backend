@@ -134,13 +134,13 @@ public class SupplierController {
                     Integer number = Integer.parseInt(splitSupplierName[1]);
                     String newSupplierName = splitSupplierName[0] + "-" + String.format("%03d", (++number));
                     supplier.setSupplierName(newSupplierName);
-                supplierService.createNewSupplier(supplier);
-                return new ResponseEntity("Create Supplier successful!", HttpStatus.OK);
+                Supplier newSup = supplierService.createNewSupplier(supplier);
+                return new ResponseEntity(newSup, HttpStatus.OK);
             } else {
                 String newSupplierName = supplier.getSupplierName() + "-" + String.format("%03d", (1));
                 supplier.setSupplierName(newSupplierName);
-                supplierService.createNewSupplier(supplier);
-                return new ResponseEntity("Create Supplier successful!", HttpStatus.OK);
+                Supplier newSup = supplierService.createNewSupplier(supplier);
+                return new ResponseEntity(newSup, HttpStatus.OK);
             }
         } else {
             return new ResponseEntity("Access denied!", HttpStatus.FORBIDDEN);
