@@ -1,0 +1,16 @@
+//access field
+@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+--> field chỉ có thể đọc từ JSON mà không thể parse ra Json. (De-Serialization)
+READ_ONLY ngược lại (Serialization)
+
+------------------------------------
+
+@Unique(className = "Account", fieldName = "userName", message = "Value is taken")
+message can change,
+fieldName is name field,
+className is class name
+cần thêm code thì vô UniqueServiceImp chỉnh sửa
+
+------------------------------------
+
+sử dụng exist in để kiểm tra thuộc tính khóa ngoại có tồn tại ở bảng kia chưa
